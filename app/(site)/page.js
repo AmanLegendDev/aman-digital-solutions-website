@@ -18,7 +18,7 @@ export default function Home() {
             Fast, clean and easy-to-use QR menu system built for local businesses
             in Himachal Pradesh. Update items, manage orders, and deliver a premium
             customer experience.
-          </p>
+          </p>  
 
           {/* UDYAM Registration Badge */}
           <div className="mt-4 flex items-center gap-2 bg-green-50 border border-green-200 px-4 py-2 rounded-lg w-fit">
@@ -47,7 +47,7 @@ export default function Home() {
         {/* Right Side Mockup */}
         <div className="flex justify-center">
           <img
-            src="/phone-mockup.png"
+            src="/menu.png"
             alt="Digital Menu Mockup"
             className="w-[260px] md:w-[320px] drop-shadow-2xl"
           />
@@ -106,7 +106,7 @@ export default function Home() {
 
         <div className="flex justify-center mt-8">
           <img
-            src="/qr-sample.png"
+            src="/qrcode.jpeg"
             alt="QR Code"
             className="w-40 h-40 shadow-lg rounded-xl"
           />

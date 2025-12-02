@@ -23,7 +23,7 @@ export default function Footer() {
         <div>
           <h3 className="text-lg font-semibold mb-3">Contact</h3>
           <p className="text-neutral-300">Shimla, Himachal Pradesh</p>
-          <p className="text-neutral-300">Email: amanbusiness@gmail.com</p>
+          <p className="text-neutral-300">Email: amanansaricodes@gmail.com  </p>
           <p className="text-neutral-300 mt-3">
             © {new Date().getFullYear()} Aman Digital Solutions
           </p>
