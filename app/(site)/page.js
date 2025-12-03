@@ -49,7 +49,7 @@ export default function Home() {
           <img
             src="/menu.png"
             alt="Digital Menu Mockup"
-            className="w-[260px] md:w-[320px] drop-shadow-2xl"
+            className="w-[260px] md:w-[320px] drop-shadow-2xl rounded-2xl"
           />
         </div>
       </section>
