@@ -11,13 +11,9 @@
   --brand-black: #171717;
   --brand-gold: #FFC727;
   --brand-white: #F9F9F9;
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* 🛡 Prevent auto-dark inversion on Android */
+  color-scheme: light;
 }
 
 /* ----------------------------------------
@@ -31,6 +27,37 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: "Inter", sans-serif;
+
+  /* 🛡 Makes sure browsers don't flip colors */
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ----------------------------------------
+   SIDEBAR FIX (No blur, no transparency)
+---------------------------------------- */
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);  /* background blur OFF */
+  backdrop-filter: blur(0px);
+  z-index: 40;
+}
+
+.sidebar-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  background: #ffffff;        /* Always white */
+  color: #171717;
+  z-index: 50;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-panel.hidden {
+  transform: translateX(-100%);
 }
 
 /* ----------------------------------------

@@ -47,9 +47,9 @@ export default function Home() {
         {/* Right Side Mockup */}
         <div className="flex justify-center">
           <img
-            src="/menu.png"
+            src="/menu-2.png"
             alt="Digital Menu Mockup"
-            className="w-[260px] md:w-[320px] drop-shadow-2xl rounded-2xl"
+            className="w-[260px] md:w-[320px] "
           />
         </div>
       </section>
@@ -57,7 +57,7 @@ export default function Home() {
       {/* -------------------------------------- 
           WHY CHOOSE US 
       --------------------------------------- */}
-      <section className="max-w-7xl mx-auto px-6 mt-20 text-center">
+      <section className="max-w-7xl mx-auto px-6 text-center">
         <h2 className="text-3xl font-bold text-black">Why Choose Us?</h2>
         <p className="text-neutral-600 mt-2 max-w-2xl mx-auto">
           We provide a complete digital solution designed specifically for Himachal
@@ -108,7 +108,7 @@ export default function Home() {
           <img
             src="/qrcode.jpeg"
             alt="QR Code"
-            className="w-40 h-40 shadow-lg rounded-xl"
+            className="w-40 h-40 shadow-lg rounded-l-4xl"
           />
         </div>
       </section>
