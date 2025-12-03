@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 
-export default function Pricing() {
+
+  export default function Pricing() {
   const plans = [
     {
       title: "Restaurants",
@@ -10,55 +11,63 @@ export default function Pricing() {
       monthly: "₹999 / Month",
       tag: "Maintenance",
       features: [
-        "Hosting",
-        "Database management",
-        "Unlimited menu edits",
-        "Technical support",
-        "Updates & monitoring",
+        "Fast & secure hosting",
+        "Managed database",
+        "Unlimited menu updates",
+        "Smart analytics dashboard",
+        "Standard technical support",
+        "Daily health monitoring",
       ],
+      note: "Perfect for cafés & restaurants with a single menu.",
       buttonColor: "bg-green-600 hover:bg-green-700",
     },
+
     {
       title: "Hotels",
       setup: "₹8000",
       monthly: "₹1499 / Month",
       tag: "Maintenance",
       features: [
-        "Hosting + Database",
-        "Unlimited menu edits",
-        "Priority technical support",
-        "Multi-menu support (Breakfast, Lunch, Dinner)",
-        "Advanced order monitoring",
-        "Staff training (free 1-day session)",
-        "Dedicated WhatsApp support",
+        "Hosting + Dedicated database",
+        "Unlimited menu edits across all departments",
+        "High-priority technical support",
+        "Multi-menu system (Breakfast • Lunch • Dinner • Room Service)",
+        "Advanced order & load monitoring",
+        "1-day staff onboarding & training",
+        "Dedicated WhatsApp support (10AM–10PM)",
       ],
+      note: "Built for hotels with multiple menus, higher staff usage & critical uptime needs.",
       buttonColor: "bg-blue-600 hover:bg-blue-700",
     },
+
     {
       title: "Full Ownership",
       setup: "₹24,999",
       monthly: "One-time Payment",
       tag: "Lifetime Access",
       features: [
-        "Lifetime hosting",
-        "Full source code ownership",
-        "Admin dashboard",
-        "Unlimited edits forever",
-        "Priority updates for 1 year",
-        "White-label branding with your logo",
-        "24/7 support for first 3 months",
+        "Lifetime hosting (no renewal)",
+        "Full source code (you own everything)",
+        "Advanced admin dashboard",
+        "3 months priority updates",
+        "White-label branding with your logo + name",
+        "24/7 premium support for first 90 days",
       ],
+      note: "Best for brands who want complete control with zero monthly fees.",
       buttonColor: "bg-yellow-500 hover:bg-yellow-600 text-black",
     },
   ];
 
+
+
+
   return (
-    <div className="min-h-screen bg-black px-4 py-10 md:px-10">
-      <h1 className="text-3xl md:text-4xl font-bold text-white text-center">
+    <div className="min-h-screen px-4 py-10 md:px-10">
+      <h1 className="text-3xl md:text-4xl font-bold text-black text-center">
         Pricing Plans
       </h1>
 
-      <p className="text-gray-300 text-center mt-2 text-sm md:text-base">
+      <p className="text-gray-500 text-center mt-2 text-sm md:text-base">
         Choose the plan that fits your business
       </p>
 

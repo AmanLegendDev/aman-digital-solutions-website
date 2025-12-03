@@ -31,28 +31,47 @@ export default function FeaturesPage() {
 
 const features = [
   {
-    title: "Real-Time Menu Updates",
-    desc: "Update menu items instantly from your dashboard.",
+    title: "Instant Menu Updates",
+    desc: "Update prices, items, availability, and categories in real-time without page refresh.",
   },
   {
-    title: "Admin Dashboard",
-    desc: "Full control over items, prices, categories, and orders.",
+    title: "Smart Admin Dashboard",
+    desc: "Full control of menu, images, pricing, categories, orders, and customer activity.",
   },
   {
-    title: "Order Placement System",
-    desc: "Customers can order directly from the table through QR.",
+    title: "QR-Based Ordering",
+    desc: "Guests can scan, view items, add quantity, place orders, and add special notes.",
   },
   {
-    title: "Cloud Image Upload",
-    desc: "All food images stored securely using Cloudinary.",
+    title: "Cloud Image Storage",
+    desc: "All images are optimized and stored securely on Cloudinary for fast loading.",
   },
   {
     title: "Unlimited Categories",
-    desc: "Add as many categories as you need — no limits.",
+    desc: "Support for any number of categories — Breakfast, Drinks, Starters, Room Service & more.",
   },
   {
-    title: "Blazing Fast Next.js",
-    desc: "Super-fast loading times with Next.js 14.",
+    title: "Lightning Fast Performance",
+    desc: "Next.js 14 ensures instant loading with edge caching & optimized builds.",
+  },
+  {
+    title: "Role-Based Access",
+    desc: "Create staff accounts with limited permissions for safer hotel/restaurant operations.",
+  },
+  {
+    title: "Table & Room Tracking",
+    desc: "Track every order with table/room number for smooth operations.",
+  },
+  {
+    title: "Secure Admin Access",
+    desc: "Encrypted login, hashed passwords, and secure sessions using NextAuth.",
+  },
+  {
+    title: "Multi-Menu Support (Hotels)",
+    desc: "Separate menus for Breakfast, Lunch, Dinner, and Room Service with independent control.",
+  },
+  {
+    title: "Responsive UI",
+    desc: "Perfect experience on phones, tablets, desktops, and POS screens.",
   },
 ];
-

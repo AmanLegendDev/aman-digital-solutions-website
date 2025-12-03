@@ -18,7 +18,7 @@ export default function DemoPage() {
         <div className="bg-white shadow-md p-6 rounded-xl">
           <h2 className="text-2xl font-semibold text-green-600">Customer Demo</h2>
           <p className="text-neutral-600 mt-2">
-            Scan the QR or click the button to see the customer view.
+            Scan the QR or click the link to see the customer view.
           </p>
 
           <div className="flex justify-center mt-6">

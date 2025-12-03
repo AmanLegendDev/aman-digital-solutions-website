@@ -22,6 +22,10 @@ export const metadata = {
 export default function SiteLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        {/* 👇 This line forces browsers NOT to auto-dark your website */}
+        <meta name="color-scheme" content="light only" />
+      </head>
       <body className={`${inter.className} bg-white text-black`}>
         <Navbar />
         <main className="pt-6 pb-20 min-h-screen fade-in">{children}</main>
