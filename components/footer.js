@@ -1,37 +1,30 @@
+"use client";
 import Link from "next/link";
 
-export default function Footer() {
+export default function Footer(){
   return (
-    <footer className="bg-black text-white py-10 mt-20">
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-
+    <footer className="bg-black border-t border-neutral-800 text-neutral-300 mt-20">
+      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
-          <h2 className="text-xl font-semibold mb-3">Aman Digital Solutions</h2>
-          <p className="text-neutral-300">
-            Premium QR Digital Menu system for restaurants & hotels in Himachal.
-          </p>
+          <h3 className="text-yellow-300 font-bold">Aman Digital Solutions</h3>
+          <p className="mt-2 text-sm">Premium QR menus — Shimla, Himachal</p>
         </div>
-
         <div>
-          <h3 className="text-lg font-semibold mb-3">Quick Links</h3>
-          <ul className="space-y-2 text-neutral-300">
-            <Link href="/features"><li>Features</li></Link>
-            <Link href="/pricing"><li>Pricing</li></Link>
-            <Link href="/demo"><li>Demo</li></Link>
-            <Link href="/contact"><li>Contact</li></Link>
+          <h4 className="font-semibold">Quick Links</h4>
+          <ul className="mt-3 space-y-2">
+            <li><Link href="/features">Features</Link></li>
+            <li><Link href="/pricing">Pricing</Link></li>
+            <li><Link href="/demo">Demo</Link></li>
+            <li><Link href="/contact">Contact</Link></li>
           </ul>
         </div>
-
         <div>
-          <h3 className="text-lg font-semibold mb-3">Contact</h3>
-          <p className="text-neutral-300">Shimla, Himachal Pradesh</p>
-          <p className="text-neutral-300">Email: amanansaricodes@gmail.com  </p>
-          <p className="text-neutral-300 mt-3">
-            © {new Date().getFullYear()} Aman Digital Solutions
-          </p>
+          <h4 className="font-semibold">Contact</h4>
+          <p className="mt-2 text-sm">Shimla, Himachal Pradesh</p>
+          <p className="mt-1 text-sm">amanansaricodes@gmail.com</p>
         </div>
-
       </div>
+      <div className="text-center text-neutral-500 py-4">© {new Date().getFullYear()} Aman Digital Solutions</div>
     </footer>
   );
 }

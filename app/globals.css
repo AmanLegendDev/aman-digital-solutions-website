@@ -1,79 +1,58 @@
+
+
+
 @import "tailwindcss";
 
-/* ----------------------------------------
-   THEME COLORS
----------------------------------------- */
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-
-  --brand-green: #10B981;
-  --brand-black: #171717;
-  --brand-gold: #FFC727;
-  --brand-white: #F9F9F9;
-
-  /* 🛡 Prevent auto-dark inversion on Android */
-  color-scheme: light;
+/* THEME */
+:root{
+  --bg: #070606;
+  --card: #0f0f0f;
+  --muted: #9ca3af;
+  --gold: #FFC727;
+  --accent: #FFD965;
+  --green: #10B981;
+  --white: #f8f8f8;
 }
 
-/* ----------------------------------------
-   GLOBAL RESET
----------------------------------------- */
-html {
-  scroll-behavior: smooth;
+/* base */
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--white);
+  -webkit-font-smoothing:antialiased;
 }
 
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: "Inter", sans-serif;
-
-  /* 🛡 Makes sure browsers don't flip colors */
-  -webkit-text-size-adjust: 100%;
+/* contact input (floating look) */
+.contactInput{
+  background: rgba(255,255,255,0.02);
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.04);
+  outline: none;
+  width: 100%;
+  color: var(--white);
 }
 
-/* ----------------------------------------
-   SIDEBAR FIX (No blur, no transparency)
----------------------------------------- */
-
-.sidebar-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.3);  /* background blur OFF */
-  backdrop-filter: blur(0px);
-  z-index: 40;
+/* card */
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.04);
+  backdrop-filter: blur(6px);
+  transition: transform .28s cubic-bezier(.2,.9,.3,1), box-shadow .28s;
+}
+.card:hover{
+  transform: translateY(-8px) rotateX(1deg);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 40px rgba(255,199,39,0.06);
 }
 
-.sidebar-panel {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 260px;
-  height: 100vh;
-  background: #ffffff;        /* Always white */
-  color: #171717;
-  z-index: 50;
-  transition: transform 0.3s ease;
-}
+/* utilities */
+.fade-in{animation:fadeIn 0.6s cubic-bezier(.22,.9,.24,1) both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-.sidebar-panel.hidden {
-  transform: translateX(-100%);
-}
+.hero-title {font-weight:800; line-height:1; letter-spacing:-0.02em;}
+.hero-sub {opacity:.9; color:var(--muted)}
 
-/* ----------------------------------------
-   ANIMATIONS
----------------------------------------- */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.fade-in {
-  animation: fadeIn 0.6s ease-out both;
+/* responsive tweaks */
+@media (max-width: 768px) {
+  .hero-title { font-size: 1.8rem; }
 }

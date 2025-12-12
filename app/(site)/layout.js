@@ -1,34 +1,36 @@
+"use client"
+// app/layout.js
 import "../globals.css";
 import Navbar from "@/components/navbaar";
 import Footer from "@/components/footer";
 import { Inter, Poppins } from "next/font/google";
+import { AnimatePresence, motion } from "framer-motion";
 
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-});
+const inter = Inter({ subsets:["latin"], weight:["300","400","600","700","800"] });
+const poppins = Poppins({ subsets:["latin"], weight:["400","600","700"] });
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
-export const metadata = {
-  title: "Aman Digital Solutions",
-  description:
-    "QR Menu System for Hotels & Restaurants | Modern Digital Menu for Cafes & Hotels in Himachal",
-};
 
-export default function SiteLayout({ children }) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <head>
-        {/* 👇 This line forces browsers NOT to auto-dark your website */}
-        <meta name="color-scheme" content="light only" />
-      </head>
-      <body className={`${inter.className} bg-white text-black`}>
+      <head />
+      <body className={`${inter.className} bg-[var(--bg)] text-[var(--white)]`}>
         <Navbar />
-        <main className="pt-6 pb-20 min-h-screen fade-in">{children}</main>
+        <main className="pt-20 min-h-screen">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key="page"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.4 }}
+              className="min-h-[80vh]"
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
+        </main>
         <Footer />
       </body>
     </html>

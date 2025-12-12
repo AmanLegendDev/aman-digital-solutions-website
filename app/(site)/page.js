@@ -1,151 +1,93 @@
+"use client";
+
+import { motion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
+import TiltCard from "@/components/TiltCard";
+import Navbar from "@/components/navbaar";
+import Footer from "@/components/footer";
+
+const heroVariant = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.09 } }
+};
+const charVariant = {
+  hidden: { opacity: 0, y: 18, scale: 0.97 },
+  show: { opacity: 1, y: 0, scale: 1, transition: { duration: .45, ease: [0.22,0.9,0.24,1] } }
+};
+
 export default function Home() {
+  const { scrollY } = useScroll();
+  const y = useTransform(scrollY, [0, 400], [0, -30]);
+
   return (
-    <div className="fade-in">
+    <>
+      
 
-      {/* ---------------------------------------------------
-          HERO SECTION  (Premium SaaS Quality)
-      ----------------------------------------------------- */}
-      <section className="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <motion.main className="min-h-[80vh] max-w-7xl mx-auto px-6 py-20" initial="hidden" animate="show" variants={heroVariant}>
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+          <div>
+            <motion.h1 className="hero-title text-4xl md:text-6xl leading-tight" variants={charVariant}>
+              Transform your business with a <span className="text-yellow-400">premium QR Digital Menu</span>
+            </motion.h1>
 
-        {/* LEFT CONTENT */}
-        <div>
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight text-black">
-            Transform Your Business with a
-            <span className="text-green-500"> Modern QR Digital Menu</span>
-          </h1>
+            <motion.p className="hero-sub mt-5 max-w-xl" variants={charVariant}>
+              Elegant, lightning fast, and built for real restaurants & hotels in Shimla. Instant updates, cloud images and professional support.
+            </motion.p>
 
-          <p className="text-neutral-700 mt-4 text-lg">
-            A powerful and clean QR menu system built for restaurants, cafés and hotels. 
-            Fast, reliable, and built with real Himachal businesses in mind.
-          </p>
+            <motion.div className="mt-8 flex gap-4" variants={charVariant}>
+              <a href="/demo" className="hero-cta inline-block bg-yellow-400 text-black px-6 py-3 rounded-xl font-semibold shadow-md">
+                View Live Demo
+              </a>
+              <a href="/pricing" className="inline-block border border-yellow-300 text-yellow-300 px-6 py-3 rounded-xl">
+                Pricing
+              </a>
+            </motion.div>
 
-          {/* TRUST BADGE */}
-          <div className="mt-4 flex items-center gap-2 bg-green-50 border border-green-200 px-4 py-2 rounded-lg w-fit">
-            <span className="text-green-600 text-sm font-semibold">
-              ✔ Govt Registered: UDYAM-HP-09-0033862
-            </span>
+            <motion.div className="mt-6 flex gap-3" variants={charVariant}>
+              <div className="text-sm text-neutral-300">Govt Reg: <span className="text-yellow-300 font-semibold">UDYAM-HP-09-0033862</span></div>
+            </motion.div>
           </div>
 
-          {/* CTA BUTTONS */}
-          <div className="mt-6 flex gap-4">
-            <a
-              href="/demo"
-              className="bg-green-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-600 transition shadow-md"
-            >
-              View Live Demo
-            </a>
-            <a
-              href="/pricing"
-              className="border border-green-500 text-green-600 px-6 py-3 rounded-lg font-medium hover:bg-green-50 transition"
-            >
-              View Pricing
-            </a>
+          <motion.div style={{ y }} className="flex justify-center">
+            <div className="hero-mock card p-6 rounded-3xl tilt" >
+              <Image src="/menu.png" alt="menu" width={420} height={420} className="rounded-2xl" priority />
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Why choose */}
+        <section className="mt-20 text-center">
+          <motion.h2 className="text-3xl font-bold">Why Choose Us?</motion.h2>
+          <motion.p className="max-w-2xl mx-auto mt-3 text-neutral-400">Premium UI, quick setup and on-ground support in Shimla.</motion.p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+            <TiltCard title="Instant Updates" desc="Edit items & prices in seconds." emoji="⚡" />
+            <TiltCard title="Beautiful Interface" desc="Clean, premium UI for customers." emoji="🎨" />
+            <TiltCard title="Local Support" desc="On-ground help in Shimla & Dhalli." emoji="🤝" />
           </div>
-        </div>
+        </section>
 
-        {/* RIGHT MOCKUP */}
-        <div className="flex justify-center">
-          <img
-            src="/menu-3.png"
-            alt="Digital Menu Mockup"
-            className="w-[270px] md:w-[330px] rounded-3xl"
-          />
-        </div>
-      </section>
+        {/* Features */}
+        <section className="mt-24">
+          <motion.h3 className="text-2xl font-bold text-center">Powerful Features</motion.h3>
+          <div className="grid md:grid-cols-3 gap-6 mt-8">
+            <motion.div className="card p-6 rounded-2xl card-glow">
+              <h4 className="text-lg font-semibold">Real-Time Editing</h4>
+              <p className="mt-2 text-neutral-300">Update menu without reload.</p>
+            </motion.div>
+            <motion.div className="card p-6 rounded-2xl card-glow">
+              <h4 className="text-lg font-semibold">Cloud Images</h4>
+              <p className="mt-2 text-neutral-300">Optimized Cloudinary delivery.</p>
+            </motion.div>
+            <motion.div className="card p-6 rounded-2xl card-glow">
+              <h4 className="text-lg font-semibold">Order Tracking</h4>
+              <p className="mt-2 text-neutral-300">Table wise order flow & KOTs.</p>
+            </motion.div>
+          </div>
+        </section>
+      </motion.main>
 
-      {/* ---------------------------------------------------
-          WHY CHOOSE US (Upgraded Cards)
-      ----------------------------------------------------- */}
-      <section className="max-w-7xl mx-auto px-6 mt-2 text-center">
-        <h2 className="text-3xl font-bold text-black">Why Choose Us?</h2>
-        <p className="text-neutral-700 mt-2 max-w-2xl mx-auto">
-          Designed for local restaurants & hotels — focused on speed, simplicity, and 
-          premium customer experience.
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-          <WhyCard 
-            title="Instant Updates" 
-            desc="Edit prices, items and availability in seconds — no waiting." 
-          />
-          <WhyCard 
-            title="Beautiful Interface" 
-            desc="Clean, premium UI that gives customers a smooth experience." 
-          />
-          <WhyCard 
-            title="Local Support" 
-            desc="On-ground help available in Shimla, Dhalli & nearby areas." 
-          />
-        </div>
-      </section>
-
-      {/* ---------------------------------------------------
-          FEATURE PREVIEW (Upgraded)
-      ----------------------------------------------------- */}
-      <section className="max-w-7xl mx-auto px-6 mt-24">
-        <h2 className="text-3xl font-bold text-black text-center">
-          Powerful Features Built for Real Work
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-          <FeatureCard title="Real-Time Menu Editing" desc="Update items, categories & photos instantly." />
-          <FeatureCard title="Advanced Admin Panel" desc="Control everything from one dashboard." />
-          <FeatureCard title="Secure Cloud Storage" desc="High-quality images stored on Cloudinary." />
-        </div>
-      </section>
-
-      {/* ---------------------------------------------------
-          QR SAMPLE
-      ----------------------------------------------------- */}
-      <section className="max-w-7xl mx-auto px-6 mt-24 text-center">
-        <h2 className="text-3xl font-bold text-black">Try the Experience</h2>
-        <p className="text-neutral-700 mt-2">Scan this QR code to try the menu yourself.</p>
-
-        <div className="flex justify-center mt-8">
-          <img
-            src="/qrcode.jpeg"
-            alt="QR Code"
-            className="w-40 h-40 shadow-xl rounded-xl"
-          />
-        </div>
-      </section>
-
-      {/* ---------------------------------------------------
-          TRUST SECTION (Optional: uncomment later)
-      ----------------------------------------------------- */}
-      {/* 
-      <section className="max-w-7xl mx-auto px-6 mt-24 text-center pb-20">
-        <h3 className="text-xl text-neutral-600">Trusted by businesses in Shimla</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6 opacity-80">
-          <div>🍽️ Apple View</div>
-          <div>🏨 Hotel Hilltop</div>
-          <div>☕ Café Central</div>
-          <div>🌲 Mall Road Kitchens</div>
-        </div>
-      </section>
-      */}
-    </div>
-  );
-}
-
-/* ----------------------------------------
-   Reusable Components
------------------------------------------ */
-
-function WhyCard({ title, desc }) {
-  return (
-    <div className="bg-white shadow-md p-6 rounded-xl border border-neutral-100 hover:shadow-lg transition">
-      <h3 className="text-xl font-semibold text-green-600 mb-2">{title}</h3>
-      <p className="text-neutral-700">{desc}</p>
-    </div>
-  );
-}
-
-function FeatureCard({ title, desc }) {
-  return (
-    <div className="bg-white p-6 shadow-md rounded-xl border border-neutral-100 hover:shadow-lg transition">
-      <h3 className="text-xl font-semibold text-green-600 mb-2">{title}</h3>
-      <p className="text-neutral-700">{desc}</p>
-    </div>
+      
+    </>
   );
 }

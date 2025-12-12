@@ -1,112 +1,100 @@
 "use client";
-
 import Link from "next/link";
-import { useState } from "react";
 import Image from "next/image";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 20);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <>
-      {/* TOP NAVBAR */}
-      <nav className="w-full border-b border-neutral-200 bg-white sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <motion.nav
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.45 }}
+      className={`fixed w-full z-50 ${
+        scrolled
+          ? "bg-black/90 border-b border-neutral-800"
+          : "bg-black/40"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        
+        {/* LOGO */}
+        <Link href="/" className="flex items-center gap-3">
+          <Image src="/logo.png" width={44} height={44} alt="logo" />
+          <span className="text-lg font-bold text-yellow-300">Aman Digital Solutions</span>
+        </Link>
 
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
-            <Image
-              src="/logo.png"
-              alt="ADS Logo"
-              width={48}
-              height={48}
-              className="opacity-90"
-              priority
-            />
-            <span className="text-xl font-semibold text-green-600 tracking-wide">
-              Aman Digital Solutions
-            </span>
-          </Link>
-
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8 text-black font-medium">
-            <Link href="/features" className="hover:text-green-600 transition">Features</Link>
-            <Link href="/demo" className="hover:text-green-600 transition">Demo</Link>
-            <Link href="/pricing" className="hover:text-green-600 transition">Pricing</Link>
-            <Link href="/about" className="hover:text-green-600 transition">About</Link>
-            <Link href="/contact" className="hover:text-green-600 transition">Contact</Link>
-
-            <Link
-              href="/demo"
-              className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition shadow-sm"
-            >
-              View Demo
-            </Link>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setOpen(true)}
-            className="md:hidden text-black text-3xl"
-          >
-            ☰
-          </button>
-        </div>
-      </nav>
-
-      {/* OVERLAY (outside nav) */}
-      <div
-        className={`fixed inset-0 bg-black/40 transition-opacity duration-300 z-40 ${
-          open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
-        onClick={() => setOpen(false)}
-      ></div>
-
-      {/* SIDEBAR PANEL */}
-      <div
-        className={`fixed top-0 right-0 h-full w-72 bg-white shadow-xl p-6 z-50 transform transition-transform duration-300 ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        {/* Close Button */}
-        <button
-          onClick={() => setOpen(false)}
-          className="text-black text-2xl mb-6"
-        >
-          ✕
-        </button>
-
-        {/* Menu Items */}
-        <div className="flex flex-col gap-4 text-black font-medium">
-          <Link href="/features" className="hover:text-green-600 transition" onClick={() => setOpen(false)}>
-            Features
-          </Link>
-
-          <Link href="/demo" className="hover:text-green-600 transition" onClick={() => setOpen(false)}>
-            Demo
-          </Link>
-
-          <Link href="/pricing" className="hover:text-green-600 transition" onClick={() => setOpen(false)}>
-            Pricing
-          </Link>
-
-          <Link href="/about" className="hover:text-green-600 transition" onClick={() => setOpen(false)}>
-            About
-          </Link>
-
-          <Link href="/contact" className="hover:text-green-600 transition" onClick={() => setOpen(false)}>
-            Contact
-          </Link>
+        {/* DESKTOP MENU */}
+        <div className="hidden md:flex items-center gap-8 text-neutral-200">
+          <Link href="/features" className="hover:text-yellow-300">Features</Link>
+          <Link href="/demo" className="hover:text-yellow-300">Demo</Link>
+          <Link href="/pricing" className="hover:text-yellow-300">Pricing</Link>
+          <Link href="/about" className="hover:text-yellow-300">About</Link>
+          <Link href="/contact" className="hover:text-yellow-300">Contact</Link>
 
           <Link
             href="/demo"
-            className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition shadow-sm w-fit"
-            onClick={() => setOpen(false)}
+            className="bg-yellow-400 text-black px-4 py-2 rounded-lg shadow hover:bg-yellow-300 transition"
           >
             View Demo
           </Link>
         </div>
+
+        {/* MOBILE ICON */}
+        <button
+          onClick={() => setOpen(true)}
+          className="md:hidden text-yellow-300 text-2xl"
+        >
+          ☰
+        </button>
       </div>
-    </>
+
+      {/* MOBILE SIDEBAR */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 z-50"
+          >
+            <motion.div
+              initial={{ x: 260 }}
+              animate={{ x: 0 }}
+              exit={{ x: 260 }}
+              transition={{ type: "tween", duration: 0.3 }}
+              className="absolute right-0 w-72 h-full bg-[#0e0e0e] p-6 shadow-xl"
+            >
+              <button
+                onClick={() => setOpen(false)}
+                className="text-white text-2xl mb-6"
+              >
+                ✕
+              </button>
+
+              <div className="flex flex-col gap-5 text-neutral-200 text-lg">
+                <Link href="/features" onClick={() => setOpen(false)} className="hover:text-yellow-300">Features</Link>
+                <Link href="/demo" onClick={() => setOpen(false)} className="hover:text-yellow-300">Demo</Link>
+                <Link href="/pricing" onClick={() => setOpen(false)} className="hover:text-yellow-300">Pricing</Link>
+                <Link href="/about" onClick={() => setOpen(false)} className="hover:text-yellow-300">About</Link>
+                <Link href="/contact" onClick={() => setOpen(false)} className="hover:text-yellow-300">Contact</Link>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.nav>
   );
 }
