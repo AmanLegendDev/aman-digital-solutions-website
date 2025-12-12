@@ -48,7 +48,7 @@ export default function Home() {
       {/* WHY + TILT CARDS */}
       <SectionReveal>
         <div className="mt-20 text-center">
-          <h2 className="text-3xl font-bold">Why Aman Digital?</h2>
+          <h2 className="text-3xl font-bold">Why Aman Digital Solutions?</h2>
           <p className="text-neutral-400 mt-2 max-w-2xl mx-auto">We deliver premium UX, fast deployment and reliable local support — built specifically for Himachal restaurants and hotels.</p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
