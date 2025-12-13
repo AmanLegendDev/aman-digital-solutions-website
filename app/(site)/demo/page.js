@@ -36,7 +36,7 @@ export default function DemoPage() {
           </div>
 
           <a
-            href="https://onebite-menu.vercel.app/menu/"
+            href="https://onebite-menu.vercel.app/table/6933faca03c84fe543e30e0d/start"
             target="_blank"
             className="block mt-8 bg-yellow-400 text-black px-5 py-3 rounded-xl text-center font-semibold hover:bg-yellow-300 transition"
           >
@@ -57,7 +57,7 @@ export default function DemoPage() {
           </div>
 
           <a
-            href="https://digital-menu-system-dun.vercel.app/"
+            href="https://onebite-menu.vercel.app/admin"
             target="_blank"
             className="block mt-8 bg-white text-black px-5 py-3 rounded-xl text-center font-semibold hover:bg-neutral-200 transition"
           >
