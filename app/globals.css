@@ -3,6 +3,21 @@
 
 @import "tailwindcss";
 
+.contactInput {
+  background: #111111;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 14px;
+  border-radius: 12px;
+  width: 100%;
+  outline: none;
+}
+
+.contactInput option {
+  background: #111111;
+  color: white;
+}
+
 /* THEME */
 :root{
   --bg: #070606;
