@@ -5,17 +5,23 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const projects = [
-{
-title: "Hans Jewellers",
-image: "/projects/hans.webp",
-},
+
 {
 title: "Veloura Bakery",
 image: "/projects/veloura.webp",
 },
 {
+  title: "Mechanic Near You",
+image: "/projects/mechanic.webp"
+},
+{
 title: "OneBite QR Ordering",
 image: "/projects/onebite.webp",
+},
+
+{
+title: "Hans Jewellers",
+image: "/projects/hans.webp",
 },
 ];
 

@@ -5,14 +5,16 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
 const projects = [
-{
-title: "Hans Jewellers",
-image: "/projects/hans.webp",
-link: "https://hansjwellers.vercel.app/",
-category: "Luxury Jewellery Website",
-description:
-"Premium jewellery website concept designed with a luxury black and gold experience for modern jewellery brands.",
+
+  {
+  title: "Mechanic Near You",
+  image: "/projects/mechanic.webp",
+  link: "https://mechanicnearyou.com.au",
+  category: "Mobile Mechanic Booking Platform",
+  description:
+    "A premium mobile mechanic website built for an Australian business, featuring online service booking, SEO optimisation, responsive design, and a high-performance experience that helps customers book trusted vehicle repairs with ease.",
 },
+
 {
 title: "Veloura Bakery",
 image: "/projects/veloura.webp",
@@ -29,6 +31,15 @@ category: "Restaurant QR Ordering System",
 description:
 "Digital QR ordering system built for restaurants to simplify ordering and improve customer experience.",
 },
+{
+title: "Hans Jewellers",
+image: "/projects/hans.webp",
+link: "https://hansjwellers.vercel.app/",
+category: "Luxury Jewellery Website",
+description:
+"Premium jewellery website concept designed with a luxury black and gold experience for modern jewellery brands.",
+},
+
 ];
 
 export default function Portfolio() {
