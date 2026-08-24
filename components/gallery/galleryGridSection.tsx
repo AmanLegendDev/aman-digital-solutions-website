@@ -18,7 +18,7 @@ type GalleryGridSectionProps = {
 
 /* =========================================================
    COMPONENT
-========================================================= */
+============================================== */
 
 export default function GalleryGridSection({
   galleries,
