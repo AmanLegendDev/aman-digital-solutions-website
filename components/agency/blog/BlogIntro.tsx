@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, BookOpen } from "lucide-react";
+import {
+  ArrowUpRight,
+  BookOpen,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function BlogIntro() {
@@ -23,15 +26,15 @@ export default function BlogIntro() {
         duration: 0.55,
         ease: [0.22, 1, 0.36, 1],
       }}
-      className="mx-auto max-w-3xl"
+      className="max-w-xl"
     >
       {/* EYEBROW */}
-      <div className="inline-flex items-center gap-2 rounded-full border border-[#292929] bg-[#0D0D0D] px-3.5 py-2">
-        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#FFC400]/10 text-[#FFC400]">
-          <BookOpen size={12} />
+      <div className="flex items-center gap-3">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] bg-[#0D0D0D] text-[#FFC400]">
+          <BookOpen size={13} />
         </span>
 
-        <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#858585] sm:text-[11px]">
+        <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#FFC400]">
           Ideas &amp; insights
         </span>
       </div>
@@ -39,7 +42,7 @@ export default function BlogIntro() {
       {/* HEADING */}
       <h2
         id="blog-heading"
-        className="mt-6 text-[clamp(2.5rem,6vw,5rem)] font-semibold leading-[0.94] tracking-[-0.055em] text-[#F5F5F5]"
+        className="mt-6 text-[clamp(2.5rem,5vw,4.7rem)] font-semibold leading-[0.94] tracking-[-0.055em] text-[#F5F5F5]"
       >
         Thoughts that
         <span className="block text-[#FFC400]">
@@ -48,16 +51,30 @@ export default function BlogIntro() {
       </h2>
 
       {/* DESCRIPTION */}
-      <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-[#858585] sm:text-base sm:leading-7">
-        Practical ideas on websites, technology, digital
-        strategy and building a stronger presence online —
-        without the unnecessary noise.
+      <p className="mt-6 max-w-md text-sm leading-7 text-[#858585] sm:text-base sm:leading-7">
+        Practical ideas on websites, technology,
+        digital strategy and building a stronger
+        online presence — without the unnecessary
+        noise.
       </p>
+
+      {/* SIGNAL */}
+      <div className="mt-9 border-y border-[#202020] py-4">
+        <p className="text-[10px] uppercase tracking-[0.16em] text-[#555]">
+          Strategy
+          <span className="mx-2 text-[#333]">/</span>
+          Technology
+          <span className="mx-2 text-[#333]">/</span>
+          Growth
+          <span className="mx-2 text-[#333]">/</span>
+          Insights
+        </p>
+      </div>
 
       {/* CTA */}
       <Link
         href="/blog"
-        className="group mt-8 inline-flex items-center gap-2 text-sm font-medium text-[#D8D8D8] transition-colors duration-200 hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
+        className="group mt-7 inline-flex items-center gap-2 text-sm font-medium text-[#D8D8D8] transition-colors duration-200 hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
       >
         Explore all insights
 

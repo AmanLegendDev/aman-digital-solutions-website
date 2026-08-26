@@ -1,7 +1,8 @@
 "use client";
 
-import { ArrowDown, Sparkles } from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function PricingIntro() {
   return (
@@ -22,7 +23,7 @@ export default function PricingIntro() {
         duration: 0.55,
         ease: [0.22, 1, 0.36, 1],
       }}
-      className="mx-auto max-w-3xl"
+      className="mx-auto max-w-3xl text-center"
     >
       {/* EYEBROW */}
       <div className="inline-flex items-center gap-2 rounded-full border border-[#292929] bg-[#0D0D0D] px-3.5 py-2">
@@ -31,7 +32,7 @@ export default function PricingIntro() {
         </span>
 
         <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#8A8A8A] sm:text-[11px]">
-          Simple, transparent options
+          Clear starting points
         </span>
       </div>
 
@@ -48,18 +49,38 @@ export default function PricingIntro() {
 
       {/* DESCRIPTION */}
       <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-[#858585] sm:text-base sm:leading-7">
-        Choose a starting point that fits your business.
-        Every project is shaped around your goals, audience
-        and the experience your customers deserve.
+        Clear starting points for businesses at different
+        stages. Choose an approach that fits your current
+        needs, then scale when your business is ready.
       </p>
 
-      {/* SCROLL HINT */}
-      <div className="mt-8 flex items-center justify-center gap-2 text-[9px] font-medium uppercase tracking-[0.18em] text-[#4F4F4F]">
-        <span>Explore plans</span>
+      {/* QUICK ACTIONS */}
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+        <Link
+          href="/pricing"
+          className="group inline-flex items-center gap-2 text-xs font-medium text-[#D8D8D8] transition-colors duration-200 hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
+        >
+          Explore pricing
 
-        <span className="flex h-6 w-6 items-center justify-center rounded-full border border-[#252525]">
-          <ArrowDown size={12} />
-        </span>
+          <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] transition-all duration-200 group-hover:border-[#FFC400]/40 group-hover:bg-[#FFC400]/10">
+            <ArrowUpRight
+              size={13}
+              className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            />
+          </span>
+        </Link>
+
+        <span
+          aria-hidden="true"
+          className="hidden h-4 w-px bg-[#252525] sm:block"
+        />
+
+        <Link
+          href="start-a-project"
+          className="text-xs font-medium text-[#666] transition-colors duration-200 hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
+        >
+          Talk about your project
+        </Link>
       </div>
     </motion.div>
   );

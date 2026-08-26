@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
+
 import { connectDB } from "@/lib/db/connect";
 import PricingPlan from "@/models/PricingPlan";
 
@@ -15,6 +18,7 @@ async function getPricingPlans() {
       displayOrder: 1,
       createdAt: -1,
     })
+    .limit(3)
     .select(
       [
         "name",
@@ -48,12 +52,15 @@ async function getPricingPlans() {
     priceSuffix: plan.priceSuffix ?? null,
     pricingType: plan.pricingType,
     billingPeriod: plan.billingPeriod,
+
     features: Array.isArray(plan.features)
       ? plan.features
       : [],
+
     serviceId: plan.serviceId
       ? plan.serviceId.toString()
       : null,
+
     ctaText: plan.ctaText,
     ctaLink: plan.ctaLink,
     isFeatured: plan.isFeatured,
@@ -82,21 +89,12 @@ export default async function PricingSection() {
 
       <div className="relative mx-auto w-full max-w-7xl min-w-0 px-5 sm:px-8 lg:px-10">
         {/* INTRO */}
-        <div className="mx-auto max-w-3xl text-center">
+        <div className="mx-auto max-w-4xl">
           <PricingIntro />
         </div>
 
         {/* PLANS */}
-        <div
-          className={[
-            "mx-auto mt-14 grid w-full min-w-0 gap-4",
-            plans.length === 1
-              ? "max-w-xl"
-              : plans.length === 2
-                ? "max-w-4xl md:grid-cols-2"
-                : "max-w-6xl md:grid-cols-2 xl:grid-cols-3",
-          ].join(" ")}
-        >
+        <div className="mx-auto mt-14 grid w-full max-w-6xl min-w-0 gap-5 md:grid-cols-2 xl:grid-cols-3">
           {plans.map((plan, index) => (
             <PricingCard
               key={plan.id}
@@ -104,6 +102,33 @@ export default async function PricingSection() {
               index={index}
             />
           ))}
+        </div>
+
+        {/* VIEW ALL */}
+        <div className="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <Link
+            href="/pricing"
+            className="group inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#292929] bg-[#0D0D0D] px-5 text-xs font-medium text-[#D8D8D8] transition-all duration-200 hover:border-[#FFC400]/35 hover:bg-[#FFC400]/[0.06] hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
+          >
+            View all pricing
+
+            <ArrowUpRight
+              size={14}
+              className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            />
+          </Link>
+
+          <Link
+            href="/start-a-project"
+            className="group inline-flex min-h-11 items-center justify-center gap-2 px-3 text-xs font-medium text-[#666] transition-colors duration-200 hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
+          >
+            Talk about your project
+
+            <ArrowUpRight
+              size={14}
+              className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            />
+          </Link>
         </div>
 
         {/* BOTTOM NOTE */}
@@ -114,7 +139,7 @@ export default async function PricingSection() {
           />
 
           <p className="text-[10px] uppercase tracking-[0.16em] text-[#555]">
-            Need something more specific? Let's build around
+            Need something more specific? Let&apos;s build around
             your requirements.
           </p>
         </div>

@@ -49,29 +49,31 @@ export default function LocationsIntro() {
 
       {/* DESCRIPTION */}
       <p className="mt-6 max-w-md text-sm leading-7 text-[#858585] sm:text-base sm:leading-7">
-        We work with businesses across locations and
-        markets, combining close communication with
-        digital experiences built to reach customers
-        wherever they are.
+        Based in Shimla and available to businesses beyond
+        our local market, we build digital experiences that
+        work wherever your customers are.
       </p>
 
       {/* LOCATION SIGNAL */}
       <div className="mt-9 border-y border-[#202020] py-4">
         <div className="flex items-center gap-3">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#FFC400] shadow-[0_0_12px_rgba(255,196,0,0.5)]" />
+          <span
+            aria-hidden="true"
+            className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#FFC400] shadow-[0_0_12px_rgba(255,196,0,0.5)]"
+          />
 
           <p className="text-[10px] uppercase tracking-[0.16em] text-[#555]">
-            Available for businesses beyond our local base
+            Based in Shimla · Working beyond Shimla
           </p>
         </div>
       </div>
 
       {/* CTA */}
       <Link
-        href="#contact"
+        href="/start-a-project"
         className="group mt-7 inline-flex items-center gap-2 text-sm font-medium text-[#D8D8D8] transition-colors duration-200 hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
       >
-        Talk about your location
+        Start a project
 
         <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] transition-all duration-200 group-hover:border-[#FFC400]/40 group-hover:bg-[#FFC400]/10">
           <ArrowUpRight

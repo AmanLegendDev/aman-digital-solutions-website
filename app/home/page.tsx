@@ -24,7 +24,7 @@ export default function HomePage() {
 <ServicesSection />
 <ProjectsSection />
 <WhyUsSection />
-<TestimonialsSection />
+
 <PricingSection />
 <LocationsSection />
 <GallerySection />

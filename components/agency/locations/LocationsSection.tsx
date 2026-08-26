@@ -8,62 +8,68 @@ async function getLocations() {
   await connectDB();
 
   const locations = await Location.find({
-    published: true,
+  published: true,
+})
+  .populate({
+    path: "services",
+    select: "title slug",
+    match: {
+      published: true,
+    },
   })
-    .sort({
-      featured: -1,
-      displayOrder: 1,
-      createdAt: -1,
-    })
-    .select(
-      [
-        "name",
-        "slug",
-        "shortDescription",
-        "image",
-        "city",
-        "state",
-        "country",
-        "services",
-        "featured",
-      ].join(" ")
-    )
-    .lean();
+  .sort({
+    featured: -1,
+    displayOrder: 1,
+    createdAt: -1,
+  })
+  .limit(3)
+  .select(
+    [
+      "name",
+      "slug",
+      "shortDescription",
+      "image",
+      "city",
+      "state",
+      "country",
+      "services",
+      "featured",
+    ].join(" ")
+  )
+  .lean();
 
-  return locations.map((location) => ({
-    id: location._id.toString(),
+return locations.map((location) => ({
+  id: location._id.toString(),
 
-    name: location.name,
+  name: location.name,
+  slug: location.slug,
+  shortDescription: location.shortDescription,
 
-    slug: location.slug,
+  image: location.image
+    ? {
+        url: location.image.url,
+        publicId: location.image.publicId ?? null,
+        alt: location.image.alt ?? location.name,
+      }
+    : null,
 
-    shortDescription: location.shortDescription,
+  city: location.city,
+  state: location.state ?? null,
+  country: location.country,
 
-    image: location.image
-      ? {
-          url: location.image.url,
-          publicId: location.image.publicId ?? null,
-          alt:
-            location.image.alt ??
-            location.name,
-        }
-      : null,
-
-    city: location.city,
-
-    state: location.state ?? null,
-
-    country: location.country,
-
-    // MongoDB ObjectIds → UI strings
-    services: Array.isArray(location.services)
-      ? location.services.map((service) =>
-          service.toString()
+  services: Array.isArray(location.services)
+    ? location.services
+        .filter(
+          (service) =>
+            service &&
+            typeof service === "object" &&
+            "title" in service
         )
-      : [],
+        .map((service) => service.title)
+    : [],
 
-    featured: location.featured,
-  }));
+  featured: location.featured,
+}));
 }
 
 export default async function LocationsSection() {
@@ -87,13 +93,19 @@ export default async function LocationsSection() {
 
       <div className="relative mx-auto w-full max-w-7xl min-w-0 px-5 sm:px-8 lg:px-10">
         <div className="grid min-w-0 gap-14 lg:grid-cols-[0.72fr_1.28fr] lg:gap-20">
-          {/* INTRO */}
-          <div className="min-w-0 lg:sticky lg:top-32 lg:self-start">
+          {/* LEFT — STICKY INTRO */}
+          <aside className="min-w-0 lg:sticky lg:top-32 lg:self-start">
             <LocationsIntro />
-          </div>
+          </aside>
 
-          {/* LOCATIONS */}
-          <div className="grid min-w-0 gap-4 sm:grid-cols-2">
+          {/* RIGHT — LOCATIONS */}
+          <div
+            className={
+              locations.length === 1
+                ? "min-w-0 max-w-2xl"
+                : "grid min-w-0 gap-4 sm:grid-cols-2"
+            }
+          >
             {locations.map((location, index) => (
               <LocationCard
                 key={location.id}

@@ -1,15 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowDown, ArrowUpRight } from "lucide-react";
+import {
+  ArrowUpRight,
+  MoveUpRight,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function ServicesIntro() {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.25 }}
+      initial={{
+        opacity: 0,
+        y: 20,
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+      }}
+      viewport={{
+        once: true,
+        amount: 0.25,
+      }}
       transition={{
         duration: 0.55,
         ease: [0.22, 1, 0.36, 1],
@@ -18,7 +30,10 @@ export default function ServicesIntro() {
     >
       {/* EYEBROW */}
       <div className="flex items-center gap-3">
-        <span className="h-px w-8 bg-[#FFC400]" />
+        <span
+          aria-hidden="true"
+          className="h-px w-8 bg-[#FFC400]"
+        />
 
         <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#FFC400]">
           What we do
@@ -31,7 +46,9 @@ export default function ServicesIntro() {
         className="mt-6 text-[clamp(2.5rem,5vw,4.7rem)] font-semibold leading-[0.94] tracking-[-0.055em] text-[#F5F5F5]"
       >
         Digital work with a{" "}
-        <span className="text-[#FFC400]">reason.</span>
+        <span className="text-[#FFC400]">
+          reason.
+        </span>
       </h2>
 
       {/* DESCRIPTION */}
@@ -41,44 +58,48 @@ export default function ServicesIntro() {
         needs — with clarity, purpose and room to grow.
       </p>
 
-      {/* MINI NAV */}
-      <div className="mt-8 flex flex-wrap items-center gap-3">
-        <Link
-          href="#work"
-          className="group inline-flex items-center gap-2 rounded-full border border-[#292929] bg-[#0D0D0D] px-4 py-2.5 text-xs font-medium text-[#D8D8D8] transition-all duration-200 hover:border-[#FFC400]/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
-        >
-          See our work
-
-          <ArrowUpRight
-            size={14}
-            className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+      {/* SIGNAL */}
+      <div className="mt-9 flex items-center gap-4 border-y border-[#202020] py-4">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#292929] bg-[#0D0D0D]">
+          <MoveUpRight
+            size={15}
+            className="text-[#FFC400]"
           />
+        </div>
+
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.16em] text-[#555]">
+            Our capabilities
+          </p>
+
+          <p className="mt-0.5 text-xs text-[#888]">
+            Strategy, design, development & growth
+          </p>
+        </div>
+      </div>
+
+      {/* CTA */}
+      <div className="mt-7 flex flex-wrap items-center gap-5">
+        <Link
+          href="/services"
+          className="group inline-flex items-center gap-2 text-sm font-medium text-[#D8D8D8] transition-colors duration-200 hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
+        >
+          Explore all services
+
+          <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] transition-all duration-200 group-hover:border-[#FFC400]/40 group-hover:bg-[#FFC400]/10">
+            <ArrowUpRight
+              size={14}
+              className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            />
+          </span>
         </Link>
 
         <Link
           href="#contact"
-          className="group inline-flex items-center gap-2 px-2 py-2.5 text-xs font-medium text-[#666] transition-colors duration-200 hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
+          className="text-xs font-medium text-[#555] transition-colors duration-200 hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
         >
           Start a conversation
-
-          <ArrowDown
-            size={14}
-            className="transition-transform duration-200 group-hover:translate-y-0.5"
-          />
         </Link>
-      </div>
-
-      {/* SMALL POSITIONING LINE */}
-      <div className="mt-12 hidden border-l border-[#FFC400]/30 pl-4 lg:block">
-        <p className="text-xs leading-5 text-[#555]">
-          Strategy
-          <span className="mx-2 text-[#333]">/</span>
-          Design
-          <span className="mx-2 text-[#333]">/</span>
-          Development
-          <span className="mx-2 text-[#333]">/</span>
-          Growth
-        </p>
       </div>
     </motion.div>
   );

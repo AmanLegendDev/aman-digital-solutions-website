@@ -67,10 +67,10 @@ export default function FAQIntro() {
 
       {/* CTA */}
       <Link
-        href="#contact"
+        href="/start-a-project"
         className="group mt-7 inline-flex items-center gap-2 text-sm font-medium text-[#D8D8D8] transition-colors duration-200 hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
       >
-        Ask us directly
+        Start a conversation
 
         <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] transition-all duration-200 group-hover:border-[#FFC400]/40 group-hover:bg-[#FFC400]/10">
           <ArrowUpRight

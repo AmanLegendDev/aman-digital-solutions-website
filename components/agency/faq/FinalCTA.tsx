@@ -21,6 +21,12 @@ export default function FinalCTA() {
         className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#FFC400]/[0.045] blur-[150px]"
       />
 
+      {/* SECONDARY AMBIENT GLOW */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-40 top-1/3 h-[320px] w-[320px] rounded-full bg-[#FFC400]/[0.018] blur-[120px]"
+      />
+
       {/* SUBTLE GRID */}
       <div
         aria-hidden="true"
@@ -34,6 +40,17 @@ export default function FinalCTA() {
           WebkitMaskImage:
             "radial-gradient(circle at center, black, transparent 72%)",
         }}
+      />
+
+      {/* TOP / BOTTOM EDGE FADE */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#050505] to-transparent"
+      />
+
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#050505] to-transparent"
       />
 
       <div className="relative mx-auto w-full max-w-5xl px-5 text-center sm:px-8 lg:px-10">
@@ -81,13 +98,14 @@ export default function FinalCTA() {
           <p className="mx-auto mt-7 max-w-2xl text-sm leading-7 text-[#777] sm:text-base sm:leading-7">
             Whether you need a new website, a stronger digital
             presence, or a better way to turn visitors into
-            customers, let's talk about what you're building.
+            customers, let&apos;s talk about what you&apos;re building.
           </p>
 
           {/* ACTIONS */}
           <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            {/* PRIMARY CTA */}
             <Link
-              href="#contact-form"
+              href="/start-a-project"
               className="group inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full bg-[#FFC400] px-7 text-sm font-semibold text-black transition-all duration-200 hover:bg-[#FFD43B] hover:shadow-[0_0_40px_rgba(255,196,0,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505] sm:w-auto"
             >
               Start a project
@@ -98,17 +116,18 @@ export default function FinalCTA() {
               />
             </Link>
 
-            <Link
+            {/* SECONDARY CTA */}
+            <a
               href="mailto:hello@amandigitalsolutions.com"
               className="group inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full border border-[#292929] bg-[#0C0C0C]/80 px-7 text-sm font-medium text-[#D5D5D5] backdrop-blur-sm transition-all duration-200 hover:border-[#FFC400]/30 hover:bg-[#111111] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] sm:w-auto"
             >
               <MessageCircle
                 size={16}
-                className="text-[#777] transition-colors group-hover:text-[#FFC400]"
+                className="text-[#777] transition-colors duration-200 group-hover:text-[#FFC400]"
               />
 
               Talk to us
-            </Link>
+            </a>
           </div>
 
           {/* MICRO TRUST */}
@@ -136,6 +155,12 @@ export default function FinalCTA() {
 
             <span>Growth</span>
           </div>
+
+          {/* SMALL REASSURANCE */}
+          <p className="mt-7 text-[10px] leading-5 text-[#3F3F3F]">
+            Clear requirements. Honest communication. A digital
+            experience built around your business.
+          </p>
         </motion.div>
       </div>
     </section>

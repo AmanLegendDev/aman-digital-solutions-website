@@ -13,6 +13,8 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import Editor from "@/components/editor/Editor";
+
 import { blogSchema } from "@/schemas/blog.schema";
 import type { z } from "zod";
 
@@ -375,26 +377,15 @@ const result = await createBlog(finalValues);
             Content *
           </label>
 
-          <textarea
-            {...register("content")}
-            rows={22}
-            placeholder={`Write your article here...
-
-Example:
-
-Introduction
-
-Explain the problem your reader is facing.
-
-Main section
-
-Provide useful information, examples and practical advice.
-
-Conclusion
-
-Summarize the key points and give the reader a clear next step.`}
-            className={`${textareaClass} min-h-[500px]`}
-          />
+      <Editor
+  value={content}
+  onChange={(html) => {
+    setValue("content", html, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  }}
+/>
 
           <div className="mt-3 flex flex-col gap-2 text-xs text-white/30 sm:flex-row sm:items-center sm:justify-between">
             <FieldError

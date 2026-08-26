@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
+
 import { connectDB } from "@/lib/db/connect";
 import Project from "@/models/Project";
 
@@ -15,6 +18,7 @@ async function getProjects() {
       displayOrder: 1,
       createdAt: -1,
     })
+    .limit(3)
     .select(
       [
         "title",
@@ -37,8 +41,6 @@ async function getProjects() {
 
     slug: project.slug,
 
-    // Model mein optional hai,
-    // UI card ko stable string chahiye.
     client: project.client ?? "",
 
     industry: project.industry ?? "",
@@ -52,8 +54,7 @@ async function getProjects() {
     coverImage: project.coverImage
       ? {
           url: project.coverImage.url,
-          publicId:
-            project.coverImage.publicId ?? null,
+          publicId: project.coverImage.publicId ?? null,
         }
       : null,
 
@@ -84,20 +85,37 @@ export default async function ProjectsSection() {
 
       <div className="relative mx-auto w-full max-w-7xl min-w-0 px-5 sm:px-8 lg:px-10">
         <div className="grid min-w-0 gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20">
-          {/* INTRO */}
+          {/* LEFT — STICKY INTRO */}
           <div className="min-w-0 lg:sticky lg:top-32 lg:self-start">
             <ProjectsIntro />
           </div>
 
-          {/* PROJECTS */}
-          <div className="min-w-0 space-y-5">
-            {projects.map((project, index) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                index={index}
-              />
-            ))}
+          {/* RIGHT — PROJECTS */}
+          <div className="min-w-0">
+            <div className="space-y-5">
+              {projects.map((project, index) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  index={index}
+                />
+              ))}
+            </div>
+
+            {/* VIEW ALL */}
+            <div className="flex justify-start pt-8 sm:justify-end">
+              <Link
+                href="/projects"
+                className="group inline-flex items-center gap-2 rounded-full border border-[#292929] bg-[#0A0A0A] px-5 py-3 text-xs font-medium tracking-wide text-[#CFCFCF] transition-all duration-300 hover:border-[#FFC400]/40 hover:bg-[#FFC400]/[0.06] hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]/70"
+              >
+                View all projects
+
+                <ArrowUpRight
+                  size={14}
+                  className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                />
+              </Link>
+            </div>
           </div>
         </div>
       </div>
