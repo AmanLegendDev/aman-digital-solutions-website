@@ -1,31 +1,47 @@
 export const NAV_ITEMS = [
   {
     label: "Home",
-    href: "#home",
+    href: "/",
   },
   {
     label: "Services",
-    href: "#services",
+    href: "/services",
   },
   {
     label: "Work",
-    href: "#work",
+    href: "/projects",
   },
   {
     label: "Gallery",
-    href: "#gallery",
+    href: "/gallery",
+  },
+  {
+    label: "Pricing",
+    href: "/pricing",
+  },
+  {
+    label: "Blogs",
+    href: "/blog",
   },
   {
     label: "FAQ",
-    href: "#faq",
+    href: "/faq",
   },
   {
     label: "About",
-    href: "#about",
+    href: "/about",
   },
 ] as const;
 
 export const NAV_CTA = {
   label: "Let's Talk",
-  href: "#contact",
+  href: "/start-a-project",
+} as const;
+
+export const NAV_WHATSAPP =
+  "https://wa.me/918219174058";
+
+export const NAV_START_PROJECT = {
+  label: "Start a Project",
+  href: "/start-a-project",
 } as const;
