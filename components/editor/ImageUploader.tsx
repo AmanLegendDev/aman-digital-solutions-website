@@ -25,11 +25,15 @@ export default function MediaUploader({
   const [uploading, setUploading] =
     useState(false);
 
-  if (!editor) return null;
-
   const isImage = type === "image";
 
   async function uploadMedia(file: File) {
+    const currentEditor = editor;
+
+    if (!currentEditor) {
+      return;
+    }
+
     try {
       setUploading(true);
 
@@ -81,7 +85,7 @@ export default function MediaUploader({
        * IMAGE
        */
       if (isImage) {
-        editor
+        currentEditor
           .chain()
           .focus()
           .setImage({
@@ -98,7 +102,7 @@ export default function MediaUploader({
        * Requires the custom Tiptap
        * VideoExtension to be registered.
        */
-      editor
+      currentEditor
         .chain()
         .focus()
         .insertContent({
@@ -136,7 +140,9 @@ export default function MediaUploader({
     const file =
       event.target.files?.[0];
 
-    if (!file) return;
+    if (!file) {
+      return;
+    }
 
     void uploadMedia(file);
   }

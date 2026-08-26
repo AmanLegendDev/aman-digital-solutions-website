@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { connectDB } from "@/lib/db/connect";
-
+import type { IService } from "@/models/Service";
 import FAQ from "@/models/FAQ";
 import Project from "@/models/Project";
 import Service from "@/models/Service";
@@ -139,10 +139,10 @@ export default async function ServicePage({
   await connectDB();
 
   const service =
-    await Service.findOne({
-      slug,
-      published: true,
-    }).lean();
+  await Service.findOne({
+    slug,
+    published: true,
+  }).lean<IService>();
 
   if (!service) {
     notFound();

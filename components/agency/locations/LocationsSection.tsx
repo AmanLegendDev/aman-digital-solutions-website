@@ -38,38 +38,46 @@ async function getLocations() {
   )
   .lean();
 
-return locations.map((location) => ({
-  id: location._id.toString(),
+return locations.map((location) => {
+  const populatedServices = Array.isArray(location.services)
+    ? (location.services as Array<{
+        title?: unknown;
+      }>)
+    : [];
 
-  name: location.name,
-  slug: location.slug,
-  shortDescription: location.shortDescription,
+  return {
+    id: location._id.toString(),
 
-  image: location.image
-    ? {
-        url: location.image.url,
-        publicId: location.image.publicId ?? null,
-        alt: location.image.alt ?? location.name,
-      }
-    : null,
+    name: location.name,
+    slug: location.slug,
+    shortDescription: location.shortDescription,
 
-  city: location.city,
-  state: location.state ?? null,
-  country: location.country,
+    image: location.image
+      ? {
+          url: location.image.url,
+          publicId: location.image.publicId ?? null,
+          alt: location.image.alt ?? location.name,
+        }
+      : null,
 
-  services: Array.isArray(location.services)
-    ? location.services
-        .filter(
-          (service) =>
-            service &&
-            typeof service === "object" &&
-            "title" in service
-        )
-        .map((service) => service.title)
-    : [],
+    city: location.city,
+    state: location.state ?? null,
+    country: location.country,
 
-  featured: location.featured,
-}));
+    services: populatedServices
+      .map((service) =>
+        typeof service.title === "string"
+          ? service.title
+          : null
+      )
+      .filter(
+        (title): title is string =>
+          title !== null
+      ),
+
+    featured: location.featured,
+  };
+});
 }
 
 export default async function LocationsSection() {
