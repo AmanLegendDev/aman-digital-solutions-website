@@ -1,3 +1,4 @@
+import ProjectDetailHero from "./ProjectDetailHero";
 import ProjectOverviewSection from "./ProjectOverviewSection";
 import ProjectFeaturesSection from "./ProjectFeaturesSection";
 import ProjectResultsSection from "./ProjectResultsSection";
@@ -47,6 +48,8 @@ export type ProjectDetailData = {
   liveUrl?: string;
   githubUrl?: string;
 
+  featured: boolean;
+
   services: {
     _id: string;
     title: string;
@@ -75,17 +78,26 @@ export default function ProjectDetailPage({
 }: ProjectDetailPageProps) {
   return (
     <main className="min-h-screen bg-[#050505] text-white">
+
+      {/* ===================================================
+          HERO
+      ==================================================== */}
+
+      <ProjectDetailHero
+        project={project}
+      />
+
       {/* ===================================================
           OVERVIEW
-      =================================================== */}
+      ==================================================== */}
 
-     <ProjectOverviewSection
-  project={project}
-/>
+      <ProjectOverviewSection
+        project={project}
+      />
 
       {/* ===================================================
           FEATURES
-      =================================================== */}
+      ==================================================== */}
 
       <ProjectFeaturesSection
         features={project.features}
@@ -93,7 +105,7 @@ export default function ProjectDetailPage({
 
       {/* ===================================================
           RESULTS
-      =================================================== */}
+      ==================================================== */}
 
       <ProjectResultsSection
         results={project.results}
@@ -101,7 +113,7 @@ export default function ProjectDetailPage({
 
       {/* ===================================================
           TECHNOLOGIES
-      =================================================== */}
+      ==================================================== */}
 
       <ProjectTechnologiesSection
         technologies={project.technologies}
@@ -109,7 +121,7 @@ export default function ProjectDetailPage({
 
       {/* ===================================================
           GALLERY
-      =================================================== */}
+      ==================================================== */}
 
       <ProjectGallerySection
         gallery={project.gallery}
@@ -117,7 +129,7 @@ export default function ProjectDetailPage({
 
       {/* ===================================================
           RELATED SERVICES
-      =================================================== */}
+      ==================================================== */}
 
       <ProjectRelatedServicesSection
         services={project.services}
@@ -125,11 +137,12 @@ export default function ProjectDetailPage({
 
       {/* ===================================================
           FINAL CTA
-      =================================================== */}
+      ==================================================== */}
 
       <ProjectFinalCtaSection
         projectTitle={project.title}
       />
+
     </main>
   );
 }

@@ -9,6 +9,9 @@ import ProjectDetailPage, {
   type ProjectDetailData,
 } from "@/components/projects/detail/ProjectDetailPage";
 
+import Navbar from "@/components/agency/navbar/Navbar";
+import Footer from "@/components/agency/footer/Footer";
+
 import Service from "@/models/Service";
 
 /* =========================================================
@@ -312,6 +315,9 @@ export default async function ProjectPage({
     githubUrl:
       project.githubUrl || undefined,
 
+      featured:
+  project.featured,
+
     /* =====================================================
        RELATED SERVICES
     ===================================================== */
@@ -356,39 +362,45 @@ export default async function ProjectPage({
   ======================================================= */
 
   return (
-    <>
-      {/* =================================================
-          BREADCRUMB
-      ================================================= */}
+  <>
+    <Navbar />
 
-      <nav
-        aria-label="Breadcrumb"
-        className="sr-only"
-      >
-        <ol>
-          <li>
-            <a href="/">Home</a>
-          </li>
+    {/* =================================================
+        BREADCRUMB
+    ================================================= */}
 
-          <li>
-            <a href="/projects">
-              Projects
-            </a>
-          </li>
+    <nav
+      aria-label="Breadcrumb"
+      className="sr-only"
+    >
+      <ol>
+        <li>
+          <a href="/">Home</a>
+        </li>
 
-          <li aria-current="page">
-            {project.title}
-          </li>
-        </ol>
-      </nav>
+        <li>
+          <a href="/projects">
+            Projects
+          </a>
+        </li>
 
-      {/* =================================================
-          PROJECT DETAIL
-      ================================================= */}
+        <li aria-current="page">
+          {project.title}
+        </li>
+      </ol>
+    </nav>
 
+    {/* =================================================
+        PROJECT DETAIL
+    ================================================= */}
+
+    <main>
       <ProjectDetailPage
         project={projectData}
       />
-    </>
-  );
+    </main>
+
+    <Footer />
+  </>
+);
 }

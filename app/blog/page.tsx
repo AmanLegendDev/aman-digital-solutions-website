@@ -7,6 +7,10 @@ import BlogPageClient, {
   type BlogCardData,
 } from "@/components/blog/BlogPageClient";
 
+
+import Navbar from "@/components/agency/navbar/Navbar";
+import Footer from "@/components/agency/footer/Footer";
+
 /* =========================================================
    METADATA
 ========================================================= */
@@ -116,8 +120,16 @@ export default async function BlogPage() {
   const blogs = await getPublishedBlogs();
 
   return (
-    <BlogPageClient
-      blogs={blogs}
-    />
+    <>
+      <Navbar />
+
+      <main>
+        <BlogPageClient
+          blogs={blogs}
+        />
+      </main>
+
+      <Footer />
+    </>
   );
 }

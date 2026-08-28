@@ -134,7 +134,7 @@ export default function Navbar() {
           ================================================= */}
 
           <Link
-            href="#home"
+            href="/"
             onClick={() =>
               setMenuOpen(false)
             }
@@ -168,42 +168,42 @@ export default function Navbar() {
 
             {/* BRAND TEXT */}
 
-            <div
-              className="
-                ml-3
-                flex
-                min-w-0
-                flex-col
-                justify-center
-              "
-            >
-              <span
-                className="
-                  truncate
-                  text-[12px]
-                  font-semibold
-                  leading-[1.1]
-                  tracking-[-0.015em]
-                  text-white
-                "
-              >
-                Aman Digital Solutions
-              </span>
+           <div
+  className="
+    ml-3
+    flex
+    min-w-0
+    flex-col
+    justify-center
+  "
+>
+  <span
+    className="
+      truncate
+      text-[13px]
+      font-semibold
+      leading-[1.1]
+      tracking-[-0.015em]
+      text-white
+    "
+  >
+    Aman Digital Solutions
+  </span>
 
-              <span
-                className="
-                  mt-1.5
-                  truncate
-                  text-[7px]
-                  font-medium
-                  leading-none
-                  tracking-[0.03em]
-                  text-neutral-500
-                "
-              >
-                Digital solutions that mean business.
-              </span>
-            </div>
+  <span
+    className="
+      mt-1.5
+      truncate
+      text-[8px]
+      font-medium
+      leading-none
+      tracking-[0.03em]
+      text-neutral-500
+    "
+  >
+    Digital solutions that mean business.
+  </span>
+</div>
           </Link>
 
           {/* =================================================

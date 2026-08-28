@@ -33,7 +33,7 @@ export default function DesktopNav({
     >
       {/* BRAND */}
       <Link
-        href="#home"
+        href="/"
         aria-label="Aman Digital Solutions home"
         className="group flex shrink-0 items-center rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
       >

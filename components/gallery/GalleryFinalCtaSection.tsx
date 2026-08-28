@@ -65,7 +65,7 @@ export default function GalleryFinalCtaSection() {
 
         <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
-            href="/contact"
+            href="/start-a-project"
             className="group inline-flex items-center justify-center gap-3 rounded-xl bg-[#FFC400] px-6 py-3.5 text-xs font-semibold text-black transition-all duration-300 hover:bg-[#FFD23D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
           >
             Start a conversation

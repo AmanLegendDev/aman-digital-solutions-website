@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 
+import Navbar from "@/components/agency/navbar/Navbar";
+import Footer from "@/components/agency/footer/Footer";
+
 import ContactHero from "@/components/contact/ContactHero";
 import ContactMethods from "@/components/contact/ContactMethods";
 import ContactForm from "@/components/contact/ContactForm";
@@ -8,11 +11,14 @@ import ContactCTA from "@/components/contact/ContactCTA";
 
 export const metadata: Metadata = {
   title: "Contact Aman Digital Solutions | Start a Project",
+
   description:
     "Have a website, e-commerce store, web application or digital project in mind? Contact Aman Digital Solutions to discuss your requirements and start a project.",
+
   alternates: {
     canonical: "/contact",
   },
+
   openGraph: {
     title: "Contact Aman Digital Solutions | Start a Project",
     description:
@@ -20,6 +26,7 @@ export const metadata: Metadata = {
     url: "/contact",
     type: "website",
   },
+
   twitter: {
     card: "summary_large_image",
     title: "Contact Aman Digital Solutions",
@@ -30,21 +37,27 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-[#080808] text-white">
-      {/* 01 — INTRO */}
-      <ContactHero />
+    <>
+      <Navbar />
 
-      {/* 02 — DIRECT CONTACT OPTIONS */}
-      <ContactMethods />
+      <main className="min-h-screen bg-[#080808] text-white">
+        {/* 01 — INTRO */}
+        <ContactHero />
 
-      {/* 03 — PROJECT ENQUIRY */}
-      <ContactForm />
+        {/* 02 — DIRECT CONTACT OPTIONS */}
+        <ContactMethods />
 
-      {/* 04 — WHAT HAPPENS NEXT */}
-      <ContactExpectations />
+        {/* 03 — PROJECT ENQUIRY */}
+        <ContactForm />
 
-      {/* 05 — DIRECT CONVERSATION */}
-      <ContactCTA />
-    </main>
+        {/* 04 — WHAT HAPPENS NEXT */}
+        <ContactExpectations />
+
+        {/* 05 — DIRECT CONVERSATION */}
+        <ContactCTA />
+      </main>
+
+      <Footer />
+    </>
   );
 }

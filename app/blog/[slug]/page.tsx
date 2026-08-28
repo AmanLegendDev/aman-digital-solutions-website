@@ -8,6 +8,9 @@ import BlogDetailPage, {
   type BlogDetailData,
 } from "@/components/blog/detail/BlogDetailPage";
 
+import Navbar from "@/components/agency/navbar/Navbar";
+import Footer from "@/components/agency/footer/Footer";
+
 /* =========================================================
    PARAMS
 ========================================================= */
@@ -215,35 +218,39 @@ export default async function BlogPage({
   };
 
   return (
-    <>
-      {/* ===================================================
-          SEMANTIC BREADCRUMB
-      =================================================== */}
+  <>
+    <Navbar />
 
-      <nav
-        aria-label="Breadcrumb"
-        className="sr-only"
-      >
-        <ol>
-          <li>
-            <a href="/">Home</a>
-          </li>
+    {/* ===================================================
+        SEMANTIC BREADCRUMB
+    =================================================== */}
+    <nav
+      aria-label="Breadcrumb"
+      className="sr-only"
+    >
+      <ol>
+        <li>
+          <a href="/">Home</a>
+        </li>
 
-          <li>
-            <a href="/blog">Blog</a>
-          </li>
+        <li>
+          <a href="/blog">Blog</a>
+        </li>
 
-          <li aria-current="page">
-            {blog.title}
-          </li>
-        </ol>
-      </nav>
+        <li aria-current="page">
+          {blog.title}
+        </li>
+      </ol>
+    </nav>
 
-      {/* ===================================================
-          BLOG DETAIL
-      =================================================== */}
-
+    {/* ===================================================
+        BLOG DETAIL
+    =================================================== */}
+    <main>
       <BlogDetailPage blog={blogData} />
-    </>
-  );
+    </main>
+
+    <Footer />
+  </>
+);
 }

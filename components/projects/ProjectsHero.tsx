@@ -124,7 +124,7 @@ export default function ProjectsHero({
 
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <Link
-                href="/contact"
+                href="/start-a-project"
                 className="group inline-flex items-center gap-2 rounded-full bg-[#FFC400] px-5 py-3 text-xs font-semibold text-black transition-all duration-200 hover:bg-[#FFD43B] hover:shadow-[0_0_30px_rgba(255,196,0,0.14)]"
               >
                 Start a project

@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 
+import Navbar from "@/components/agency/navbar/Navbar";
+import Footer from "@/components/agency/footer/Footer";
+
 import AboutHero from "@/components/AboutPage/AboutHero";
 import FounderStory from "@/components/AboutPage/FounderStory";
 import WhatWeBuild from "@/components/AboutPage/WhatWeBuild";
@@ -13,11 +16,14 @@ import AboutCTA from "@/components/AboutPage/AboutCTA";
 
 export const metadata: Metadata = {
   title: "About Aman Digital Solutions | Founder-Led Digital Agency",
+
   description:
     "Learn about Aman Digital Solutions, a founder-led digital agency building modern websites, business systems and digital experiences for ambitious businesses.",
+
   alternates: {
     canonical: "/about",
   },
+
   openGraph: {
     title: "About Aman Digital Solutions | Founder-Led Digital Agency",
     description:
@@ -25,6 +31,7 @@ export const metadata: Metadata = {
     url: "/about",
     type: "website",
   },
+
   twitter: {
     card: "summary_large_image",
     title: "About Aman Digital Solutions",
@@ -35,56 +42,62 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-[#080808] text-white">
-      {/* =====================================================
-          01 — INTRODUCTION
-      ===================================================== */}
-      <AboutHero />
+    <>
+      <Navbar />
 
-      {/* =====================================================
-          02 — FOUNDER STORY
-      ===================================================== */}
-      <FounderStory />
+      <main className="min-h-screen bg-[#080808] text-white">
+        {/* =====================================================
+            01 — INTRODUCTION
+        ===================================================== */}
+        <AboutHero />
 
-      {/* =====================================================
-          03 — WHAT WE BUILD
-      ===================================================== */}
-      <WhatWeBuild />
+        {/* =====================================================
+            02 — FOUNDER STORY
+        ===================================================== */}
+        <FounderStory />
 
-      {/* =====================================================
-          04 — OUR APPROACH
-      ===================================================== */}
-      <OurApproach />
+        {/* =====================================================
+            03 — WHAT WE BUILD
+        ===================================================== */}
+        <WhatWeBuild />
 
-      {/* =====================================================
-          05 — CAPABILITIES
-      ===================================================== */}
-      <Capabilities />
+        {/* =====================================================
+            04 — OUR APPROACH
+        ===================================================== */}
+        <OurApproach />
 
-      {/* =====================================================
-          06 — REAL WORK / PROOF
-      ===================================================== */}
-      <ProofPortfolio />
+        {/* =====================================================
+            05 — CAPABILITIES
+        ===================================================== */}
+        <Capabilities />
 
-      {/* =====================================================
-          07 — VALUES
-      ===================================================== */}
-      <Values />
+        {/* =====================================================
+            06 — REAL WORK / PROOF
+        ===================================================== */}
+        <ProofPortfolio />
 
-      {/* =====================================================
-          08 — WHY WORK WITH US
-      ===================================================== */}
-      <WhyWorkWithUs />
+        {/* =====================================================
+            07 — VALUES
+        ===================================================== */}
+        <Values />
 
-      {/* =====================================================
-          09 — LONG-TERM VISION
-      ===================================================== */}
-      <FutureVision />
+        {/* =====================================================
+            08 — WHY WORK WITH US
+        ===================================================== */}
+        <WhyWorkWithUs />
 
-      {/* =====================================================
-          10 — FINAL CTA
-      ===================================================== */}
-      <AboutCTA />
-    </main>
+        {/* =====================================================
+            09 — LONG-TERM VISION
+        ===================================================== */}
+        <FutureVision />
+
+        {/* =====================================================
+            10 — FINAL CTA
+        ===================================================== */}
+        <AboutCTA />
+      </main>
+
+      <Footer />
+    </>
   );
 }

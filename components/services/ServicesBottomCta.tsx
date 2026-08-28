@@ -95,7 +95,7 @@ export default function ServicesBottomCta() {
             {/* RIGHT ACTIONS */}
             <div className="flex w-full flex-col gap-3 sm:w-auto">
               <Link
-                href="/contact"
+                href="/start-a-project"
                 className="group inline-flex min-w-[190px] items-center justify-between gap-6 rounded-2xl bg-[#FFC400] px-5 py-4 text-sm font-semibold text-black transition-all duration-300 hover:bg-[#FFD43B] hover:shadow-[0_0_40px_rgba(255,196,0,0.14)]"
               >
                 <span>Start a Conversation</span>
@@ -108,17 +108,19 @@ export default function ServicesBottomCta() {
                 </span>
               </Link>
 
-              <Link
-                href="/contact"
-                className="group inline-flex min-w-[190px] items-center justify-between gap-6 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-5 py-4 text-sm font-medium text-neutral-300 transition-all duration-300 hover:border-white/[0.15] hover:bg-white/[0.045] hover:text-white"
-              >
-                <span>Tell Us About Your Project</span>
+           <a
+  href="https://wa.me/918219174058"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="group inline-flex min-w-[190px] items-center justify-between gap-6 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-5 py-4 text-sm font-medium text-neutral-300 transition-all duration-300 hover:border-white/[0.15] hover:bg-white/[0.045] hover:text-white"
+>
+  <span>Tell Us About Your Project</span>
 
-                <MessageCircle
-                  size={16}
-                  className="text-neutral-600 transition-colors duration-300 group-hover:text-[#FFC400]"
-                />
-              </Link>
+  <MessageCircle
+    size={16}
+    className="text-neutral-600 transition-colors duration-300 group-hover:text-[#FFC400]"
+  />
+</a>
             </div>
           </div>
 

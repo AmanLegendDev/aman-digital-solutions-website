@@ -238,7 +238,7 @@ export default function FeaturedServices({
 
                         {/* BOOKING */}
                         <Link
-                          href="/booking"
+                          href="/start-a-project"
                           onClick={(event) =>
                             event.stopPropagation()
                           }

@@ -7,6 +7,7 @@ import {
   MapPin,
   MessageCircle,
 } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 
 /* =========================================================
    BUSINESS LINKS
@@ -21,10 +22,10 @@ const BUSINESS = {
    Example for India:
    "919876543210"
   */
-  whatsapp: "YOUR_WHATSAPP_NUMBER",
+  whatsapp: "918219174058",
 
-  instagram: "https://instagram.com/YOUR_INSTAGRAM",
-  linkedin: "https://linkedin.com/in/YOUR_LINKEDIN",
+  instagram: "https://www.instagram.com/amandigital.solutions/",
+  linkedin: "https://www.linkedin.com/in/amancodes60/",
 };
 
 /* =========================================================
@@ -33,12 +34,12 @@ const BUSINESS = {
 
 const NAVIGATION = [
   { label: "Home", href: "#top" },
-  { label: "Services", href: "#services" },
-  { label: "Work", href: "#work" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Gallery", href: "#gallery" },
-  { label: "Blog", href: "#blog" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Services", href: "/services" },
+  { label: "Work", href: "/projects" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Blog", href: "/blog" },
+  { label: "FAQ", href: "/faq" },
 ];
 
 /* =========================================================
@@ -58,7 +59,7 @@ const SERVICES = [
 
 export default function Footer() {
   const whatsappHref =
-    BUSINESS.whatsapp !== "YOUR_WHATSAPP_NUMBER"
+    BUSINESS.whatsapp !== "8219174058"
       ? `https://wa.me/${BUSINESS.whatsapp}`
       : "/start-a-project";
 
@@ -186,7 +187,7 @@ export default function Footer() {
                 aria-label="WhatsApp"
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-[#252525] bg-[#0A0A0A] text-[#666] transition-all duration-200 hover:border-[#FFC400]/30 hover:bg-[#FFC400]/[0.06] hover:text-[#FFC400]"
               >
-                <MessageCircle size={15} />
+               <FaWhatsapp size={15} />
               </a>
 
               {/* EMAIL */}
@@ -288,23 +289,23 @@ export default function Footer() {
               <a
                 href={whatsappHref}
                 target={
-                  BUSINESS.whatsapp !== "YOUR_WHATSAPP_NUMBER"
+                  BUSINESS.whatsapp !== "8219174058"
                     ? "_blank"
                     : undefined
                 }
                 rel={
-                  BUSINESS.whatsapp !== "YOUR_WHATSAPP_NUMBER"
+                  BUSINESS.whatsapp !== "8219174058"
                     ? "noopener noreferrer"
                     : undefined
                 }
                 className="group flex items-start gap-3 text-sm text-[#777] transition-colors duration-200 hover:text-[#FFC400]"
               >
-                <MessageCircle
-                  size={15}
-                  className="mt-0.5 shrink-0 text-[#555] transition-colors group-hover:text-[#FFC400]"
-                />
+               
 
-                <span>WhatsApp us</span>
+               <span className="flex items-center gap-2">
+  <FaWhatsapp size={17} />
+  WhatsApp us
+</span>
               </a>
 
               {/* LOCATION */}

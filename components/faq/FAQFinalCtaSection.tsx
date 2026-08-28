@@ -56,18 +56,19 @@ export default function FAQFinalCtaSection() {
         {/* ACTIONS */}
 
         <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-          <Link
-            href="/contact"
-            className="group inline-flex items-center justify-center gap-3 rounded-xl bg-[#FFC400] px-6 py-3.5 text-xs font-semibold text-black transition-all duration-300 hover:bg-[#FFD23D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
-          >
-            Ask us directly
+          <a
+  href="https://wa.me/918219174058?text=Hi%20Aman%2C%20I%20want%20to%20discuss%20a%20project."
+  target="_blank"
+  rel="noopener noreferrer"
+  className="group inline-flex items-center justify-center gap-3 rounded-xl bg-[#FFC400] px-6 py-3.5 text-xs font-semibold text-black transition-all duration-300 hover:bg-[#FFD23D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
+>
+  Ask us directly
 
-            <ArrowRight
-              size={15}
-              className="transition-transform duration-300 group-hover:translate-x-1"
-            />
-          </Link>
-
+  <ArrowRight
+    size={15}
+    className="transition-transform duration-300 group-hover:translate-x-1"
+  />
+</a>
           <Link
             href="/services"
             className="inline-flex items-center justify-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-6 py-3.5 text-xs font-semibold text-white/70 transition-all duration-300 hover:border-white/[0.15] hover:text-white"

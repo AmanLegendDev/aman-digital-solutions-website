@@ -7,6 +7,9 @@ import FAQPageClient, {
   type FAQData,
 } from "@/components/faq/FAQPageClient";
 
+import Navbar from "@/components/agency/navbar/Navbar";
+import Footer from "@/components/agency/footer/Footer";
+
 /* =========================================================
    METADATA
 ========================================================= */
@@ -101,8 +104,16 @@ export default async function FAQPage() {
   const faqs = await getPublishedFAQs();
 
   return (
-    <FAQPageClient
-      faqs={faqs}
-    />
+    <>
+      <Navbar />
+
+      <main>
+        <FAQPageClient
+          faqs={faqs}
+        />
+      </main>
+
+      <Footer />
+    </>
   );
 }

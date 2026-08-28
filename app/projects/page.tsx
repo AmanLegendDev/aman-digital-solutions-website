@@ -2,6 +2,8 @@ import { connectDB } from "@/lib/db/connect";
 import Project from "@/models/Project";
 
 import ProjectsPageClient from "@/components/projects/ProjectsPageClient";
+import Navbar from "@/components/agency/navbar/Navbar";
+import Footer from "@/components/agency/footer/Footer";
 
 export default async function ProjectsPage() {
   await connectDB();
@@ -48,10 +50,18 @@ export default async function ProjectsPage() {
       (project) => !project.featured
     );
 
-  return (
-    <ProjectsPageClient
-      featuredProjects={featuredProjects}
-      allProjects={allProjects}
-    />
-  );
+ return (
+  <>
+    <Navbar />
+
+    <main>
+      <ProjectsPageClient
+        featuredProjects={featuredProjects}
+        allProjects={allProjects}
+      />
+    </main>
+
+    <Footer />
+  </>
+);
 }

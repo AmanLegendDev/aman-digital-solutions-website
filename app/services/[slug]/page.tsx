@@ -9,6 +9,9 @@ import Service from "@/models/Service";
 
 import ServiceDetailPage from "@/components/services/detail/ServiceDetailPage";
 
+import Navbar from "@/components/agency/navbar/Navbar";
+import Footer from "@/components/agency/footer/Footer";
+
 type PageProps = {
   params: Promise<{
     slug: string;
@@ -318,33 +321,29 @@ export default async function ServicePage({
   };
 
   return (
-    <>
-      {/* ===================================================
-          SERVICE STRUCTURED DATA
-      ==================================================== */}
+  <>
+    {/* NAVBAR */}
+    <Navbar />
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            jsonLd
-          ),
-        }}
-      />
+    {/* SERVICE STRUCTURED DATA */}
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(jsonLd),
+      }}
+    />
 
-      {/* ===================================================
-          PAGE
-      ==================================================== */}
-
+    {/* SERVICE PAGE */}
+    <main>
       <ServiceDetailPage
         service={service}
-        relatedProjects={
-          relatedProjects
-        }
-        relatedFaqs={
-          relatedFaqs
-        }
+        relatedProjects={relatedProjects}
+        relatedFaqs={relatedFaqs}
       />
-    </>
-  );
+    </main>
+
+    {/* FOOTER */}
+    <Footer />
+  </>
+);
 }

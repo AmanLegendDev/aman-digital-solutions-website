@@ -76,7 +76,7 @@ export default function ProjectFinalCtaSection({
 
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
-            href="/booking"
+            href="/start-a-project"
             className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#FFC400] px-6 py-3.5 text-sm font-semibold text-black transition-all duration-300 hover:bg-[#FFD43B] hover:shadow-[0_0_40px_rgba(255,196,0,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505] sm:w-auto"
           >
             Start a conversation
@@ -132,17 +132,19 @@ export default function ProjectFinalCtaSection({
               </div>
             </div>
 
-            <Link
-              href="/booking"
-              className="group inline-flex shrink-0 items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-500 transition-colors hover:text-[#FFC400]"
-            >
-              Let's talk
+          <a
+  href="https://wa.me/918219174058?text=Hi%20Aman%2C%20I%27d%20like%20to%20discuss%20a%20project."
+  target="_blank"
+  rel="noopener noreferrer"
+  className="group inline-flex shrink-0 items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-500 transition-colors hover:text-[#FFC400]"
+>
+  Let's talk
 
-              <ArrowUpRight
-                size={12}
-                className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-              />
-            </Link>
+  <ArrowUpRight
+    size={12}
+    className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+  />
+</a>
           </div>
         </div>
       </div>

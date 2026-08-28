@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import { connectDB } from "@/lib/db/connect";
 import Gallery from "@/models/Gallery";
 
+import Navbar from "@/components/agency/navbar/Navbar";
+import Footer from "@/components/agency/footer/Footer";
+
 import GalleryPageClient, {
   type GalleryCardData,
 } from "@/components/gallery/GalleryPageClient";
@@ -194,8 +197,16 @@ export default async function GalleryPage() {
     await getPublishedGalleries();
 
   return (
-    <GalleryPageClient
-      galleries={galleries}
-    />
-  );
+  <>
+    <Navbar />
+
+    <main>
+      <GalleryPageClient
+        galleries={galleries}
+      />
+    </main>
+
+    <Footer />
+  </>
+);
 }

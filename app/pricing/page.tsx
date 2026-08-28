@@ -5,6 +5,8 @@ import PricingPlan from "@/models/PricingPlan";
 
 import PricingPageClient from "@/components/pricing/PricingPageClient";
 import type { PricingPlanCardData } from "@/components/pricing/PricingPlanCard";
+import Navbar from "@/components/agency/navbar/Navbar";
+import Footer from "@/components/agency/footer/Footer";
 
 /* =========================================================
    METADATA
@@ -126,9 +128,17 @@ async function getPricingPlans(): Promise<
 export default async function PricingPage() {
   const plans = await getPricingPlans();
 
-  return (
-    <PricingPageClient
-      plans={plans}
-    />
-  );
+return (
+  <>
+    <Navbar />
+
+    <main>
+      <PricingPageClient
+        plans={plans}
+      />
+    </main>
+
+    <Footer />
+  </>
+);
 }

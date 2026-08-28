@@ -27,6 +27,10 @@ export const NAV_ITEMS = [
     label: "FAQ",
     href: "/faq",
   },
+    {
+    label: "Contact",
+    href: "/contact",
+  },
   {
     label: "About",
     href: "/about",

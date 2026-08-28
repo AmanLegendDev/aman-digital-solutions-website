@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 
+import Navbar from "@/components/agency/navbar/Navbar";
+import Footer from "@/components/agency/footer/Footer";
+
 import PrivacyHero from "@/components/PrivacyPage/PrivacyHero";
 import PrivacyOverview from "@/components/PrivacyPage/PrivacyOverview";
 import InformationWeCollect from "@/components/PrivacyPage/InformationWeCollect";
@@ -11,38 +14,52 @@ import PrivacyContact from "@/components/PrivacyPage/PrivacyContact";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Aman Digital Solutions",
+
   description:
     "Read the Privacy Policy for Aman Digital Solutions and learn how we collect, use, protect and handle personal information.",
+
   alternates: {
-    canonical: "https://amandigitalsolutions.com/privacy",
+    canonical:
+      "https://amandigitalsolutions.com/privacy",
   },
+
   openGraph: {
     title: "Privacy Policy | Aman Digital Solutions",
+
     description:
       "Learn how Aman Digital Solutions collects, uses and protects personal information.",
-    url: "https://amandigitalsolutions.com/privacy",
+
+    url:
+      "https://amandigitalsolutions.com/privacy",
+
     type: "website",
   },
 };
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-[#080808] text-white">
-      <PrivacyHero />
+    <>
+      <Navbar />
 
-      <PrivacyOverview />
+      <main className="min-h-screen bg-[#080808] text-white">
+        <PrivacyHero />
 
-      <InformationWeCollect />
+        <PrivacyOverview />
 
-      <HowWeUseInformation />
+        <InformationWeCollect />
 
-      <DataSharing />
+        <HowWeUseInformation />
 
-      <SecurityAndRetention />
+        <DataSharing />
 
-      <RightsAndCookies />
+        <SecurityAndRetention />
 
-      <PrivacyContact />
-    </main>
+        <RightsAndCookies />
+
+        <PrivacyContact />
+      </main>
+
+      <Footer />
+    </>
   );
 }

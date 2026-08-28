@@ -76,7 +76,7 @@ export default function HeroContent() {
         className="mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row lg:mt-6"
       >
         <Link
-          href="#contact"
+          href="/start-a-project"
           className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#FFC400] px-6 text-sm font-semibold text-black transition-all duration-200 hover:bg-[#FFD43B] hover:shadow-[0_0_32px_rgba(255,196,0,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505]"
         >
           Start a project
@@ -88,7 +88,7 @@ export default function HeroContent() {
         </Link>
 
         <Link
-          href="#work"
+          href="/projects"
           className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#292929] bg-[#0D0D0D]/70 px-6 text-sm font-medium text-[#E5E5E5] backdrop-blur-sm transition-all duration-200 hover:border-[#FFC400]/30 hover:bg-[#111111] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
         >
           Explore our work

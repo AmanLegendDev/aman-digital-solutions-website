@@ -5,6 +5,10 @@ import { connectDB } from "@/lib/db/connect";
 import Gallery from "@/models/Gallery";
 import Project from "@/models/Project";
 
+
+import Navbar from "@/components/agency/navbar/Navbar";
+import Footer from "@/components/agency/footer/Footer";
+
 import GalleryDetailPage, {
   type GalleryDetailData,
 } from "@/components/gallery/detail/GalleryDetailPage";
@@ -388,42 +392,52 @@ export default async function GallerySlugPage({
      RENDER
   ======================================================= */
 
-  return (
-    <>
-      {/* =================================================
-          SEMANTIC BREADCRUMB
-      ================================================= */}
+ return (
+  <>
+    {/* =================================================
+        NAVBAR
+    ================================================= */}
 
-      <nav
-        aria-label="Breadcrumb"
-        className="sr-only"
-      >
-        <ol>
-          <li>
-            <a href="/">
-              Home
-            </a>
-          </li>
+    <Navbar />
 
-          <li>
-            <a href="/gallery">
-              Gallery
-            </a>
-          </li>
+    {/* =================================================
+        SEMANTIC BREADCRUMB
+    ================================================= */}
 
-          <li aria-current="page">
-            {gallery.title}
-          </li>
-        </ol>
-      </nav>
+    <nav
+      aria-label="Breadcrumb"
+      className="sr-only"
+    >
+      <ol>
+        <li>
+          <a href="/">Home</a>
+        </li>
 
-      {/* =================================================
-          DETAIL PAGE
-      ================================================= */}
+        <li>
+          <a href="/gallery">Gallery</a>
+        </li>
 
+        <li aria-current="page">
+          {gallery.title}
+        </li>
+      </ol>
+    </nav>
+
+    {/* =================================================
+        DETAIL PAGE
+    ================================================= */}
+
+    <main>
       <GalleryDetailPage
         gallery={galleryData}
       />
-    </>
-  );
+    </main>
+
+    {/* =================================================
+        FOOTER
+    ================================================= */}
+
+    <Footer />
+  </>
+);
 }

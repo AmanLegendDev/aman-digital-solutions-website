@@ -88,7 +88,7 @@ export default function MobileNav({
               <div className="flex shrink-0 items-center justify-between border-b border-[#202020] pb-5">
                 {/* BRAND */}
                 <Link
-                  href="#home"
+                  href="/"
                   onClick={onClose}
                   aria-label="Aman Digital Solutions home"
                   className="
@@ -114,15 +114,15 @@ export default function MobileNav({
                     "
                   />
 
-                  <div className="ml-3 flex min-w-0 flex-col justify-center">
-                    <span className="truncate text-[13px] font-semibold leading-[1.1] tracking-[-0.015em] text-white">
-                      Aman Digital Solutions
-                    </span>
+                <div className="ml-3 flex min-w-0 flex-col justify-center">
+  <span className="truncate text-[14px] font-semibold leading-[1.1] tracking-[-0.015em] text-white">
+    Aman Digital Solutions
+  </span>
 
-                    <span className="mt-1.5 truncate text-[7.5px] font-medium leading-none tracking-[0.035em] text-neutral-500">
-                      Digital solutions that mean business.
-                    </span>
-                  </div>
+  <span className="mt-1.5 truncate text-[10px] font-medium leading-none tracking-[0.035em] text-neutral-500">
+    Digital solutions that mean business.
+  </span>
+</div>
                 </Link>
 
                 {/* CLOSE */}
@@ -335,9 +335,13 @@ export default function MobileNav({
                     <ArrowUpRight size={17} />
                   </span>
                 </Link>
+               
               </div>
+         
             </div>
+            
           </motion.aside>
+          
         </>
       )}
     </AnimatePresence>
