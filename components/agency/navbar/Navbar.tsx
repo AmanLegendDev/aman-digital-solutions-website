@@ -166,7 +166,7 @@ export default function Navbar() {
               "
             />
 
-            {/* BRAND TEXT */}
+            {/* BRAND TEXT hai bht jyadad */}
 
            <div
   className="
