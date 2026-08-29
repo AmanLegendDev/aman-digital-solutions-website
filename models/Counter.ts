@@ -1,29 +1,36 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, {
+  Schema,
+  Model,
+} from "mongoose";
 
-export interface ICounter extends Document {
+export interface ICounter {
   _id: string;
   sequence: number;
 }
 
-const CounterSchema = new Schema<ICounter>(
-  {
-    _id: {
-      type: String,
-      required: true,
-    },
+const CounterSchema =
+  new Schema<ICounter>(
+    {
+      _id: {
+        type: String,
+        required: true,
+      },
 
-    sequence: {
-      type: Number,
-      default: 0,
+      sequence: {
+        type: Number,
+        default: 0,
+      },
     },
-  },
-  {
-    timestamps: false,
-  }
-);
+    {
+      timestamps: false,
+    }
+  );
 
 const Counter: Model<ICounter> =
   mongoose.models.Counter ||
-  mongoose.model<ICounter>("Counter", CounterSchema);
+  mongoose.model<ICounter>(
+    "Counter",
+    CounterSchema
+  );
 
 export default Counter;
