@@ -1,3 +1,7 @@
+import type { Metadata } from "next";
+
+import { getWebPageSchema } from "@/lib/seo/schema";
+
 import Navbar from "@/components/agency/navbar/Navbar";
 import Hero from "@/components/agency/hero/Hero";
 import TrustSection from "@/components/agency/trust/TrustSection";
@@ -13,25 +17,105 @@ import FAQSection from "@/components/agency/faq/FAQSection";
 import FinalCTA from "@/components/agency/cta/FinalCTA";
 import Footer from "@/components/agency/footer/Footer";
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "https://www.amandigitalsolutions.com";
+
+const HOME_TITLE =
+  "Web Development & Digital Solutions for Businesses | Aman Digital Solutions";
+
+const HOME_DESCRIPTION =
+  "Aman Digital Solutions builds fast, modern websites, web applications, e-commerce platforms, SEO strategies and business systems for businesses across India and worldwide, from Shimla, Himachal Pradesh.";
+
+export const metadata: Metadata = {
+  title: HOME_TITLE,
+
+  description: HOME_DESCRIPTION,
+
+  alternates: {
+    canonical: "/",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+  },
+
+  openGraph: {
+    title: HOME_TITLE,
+
+    description:
+      "Modern websites, web applications, e-commerce platforms, SEO and business systems built for businesses across India and worldwide.",
+
+    url: "/",
+
+    type: "website",
+
+    siteName: "Aman Digital Solutions",
+
+    locale: "en_IN",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+
+    title: HOME_TITLE,
+
+    description:
+      "Modern websites, web applications, e-commerce platforms, SEO and business systems built for businesses across India and worldwide.",
+  },
+};
+
 export default function HomePage() {
+  const webPageSchema = getWebPageSchema({
+    url: SITE_URL,
+
+    name: HOME_TITLE,
+
+    description: HOME_DESCRIPTION,
+  });
+
   return (
     <>
+      {/* =====================================================
+          HOMEPAGE STRUCTURED DATA
+      ===================================================== */}
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(webPageSchema),
+        }}
+      />
+
       <Navbar />
 
-      <main>
-      <Hero />
-<TrustSection />
-<ServicesSection />
-<ProjectsSection />
-<WhyUsSection />
+      <main id="main-content">
+        <Hero />
 
-<PricingSection />
-<LocationsSection />
-<GallerySection />
-<BlogSection />
-<FAQSection />
-<FinalCTA />
+        <TrustSection />
+
+        <ServicesSection />
+
+        <ProjectsSection />
+
+        <WhyUsSection />
+
+        <TestimonialsSection />
+
+        <PricingSection />
+
+        <LocationsSection />
+
+        <GallerySection />
+
+        <BlogSection />
+
+        <FAQSection />
+
+        <FinalCTA />
       </main>
+
       <Footer />
     </>
   );

@@ -9,6 +9,18 @@ import "@/models/Service";
 import LocationDetailPage, {
   type LocationDetailData,
 } from "@/components/locations/detail/LocationDetailPage";
+import Navbar from "@/components/agency/navbar/Navbar";
+
+import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import Footer from "@/components/agency/footer/Footer";
+
+/* =========================================================
+   SITE CONFIG
+========================================================= */
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "https://www.amandigitalsolutions.com";
 
 /* =========================================================
    PARAMS
@@ -26,8 +38,10 @@ type LocationPageProps = {
 
 type PopulatedLocationService = {
   _id: Types.ObjectId;
+
   title: string;
   slug: string;
+
   shortDescription?: string;
   category?: string;
 };
@@ -50,6 +64,7 @@ type PopulatedLocation = {
   };
 
   address?: string;
+
   city: string;
   state?: string;
   country: string;
@@ -87,15 +102,22 @@ async function getLocationBySlug(
 ): Promise<PopulatedLocation | null> {
   await connectDB();
 
-const location = await Location.findOne({
-  slug: slug.toLowerCase(),
-  published: true,
-})
-  .populate({
-    path: "services",
-    select: "_id title slug shortDescription category",
-  })
-  .lean();
+  const location =
+    await Location.findOne({
+      slug:
+        slug.toLowerCase(),
+
+      published:
+        true,
+    })
+      .populate({
+        path:
+          "services",
+
+        select:
+          "_id title slug shortDescription category",
+      })
+      .lean();
 
   if (!location) {
     return null;
@@ -111,30 +133,64 @@ const location = await Location.findOne({
 export async function generateMetadata({
   params,
 }: LocationPageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug } =
+    await params;
 
-  const location = await getLocationBySlug(slug);
+  const location =
+    await getLocationBySlug(
+      slug
+    );
+
+  /* -------------------------------------------------------
+     NOT FOUND
+  ------------------------------------------------------- */
 
   if (!location) {
     return {
       title:
         "Location Not Found | Aman Digital Solutions",
+
       description:
         "The requested location could not be found.",
+
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
+
+  /* -------------------------------------------------------
+     TITLE
+  ------------------------------------------------------- */
 
   const title =
     location.seoTitle ||
     `${location.name} | Aman Digital Solutions`;
 
+  /* -------------------------------------------------------
+     DESCRIPTION
+  ------------------------------------------------------- */
+
   const description =
     location.seoDescription ||
     location.shortDescription;
 
+  /* -------------------------------------------------------
+     CANONICAL
+  ------------------------------------------------------- */
+
   const canonical =
-    location.canonicalUrl ||
-    `https://www.amandigitalsolutions.in/locations/${location.slug}`;
+    location.canonicalUrl &&
+    !location.canonicalUrl.includes(
+      "localhost"
+    )
+      ? location.canonicalUrl
+      : `${SITE_URL}/locations/${location.slug}`;
+
+  /* -------------------------------------------------------
+     OG
+  ------------------------------------------------------- */
 
   const ogTitle =
     location.ogTitle ||
@@ -150,8 +206,14 @@ export async function generateMetadata({
     location.ogImage?.url ||
     location.image?.url;
 
+  const ogImageAlt =
+    location.ogImage?.alt ||
+    location.image?.alt ||
+    location.name;
+
   return {
     title,
+
     description,
 
     alternates: {
@@ -159,20 +221,33 @@ export async function generateMetadata({
     },
 
     openGraph: {
-      title: ogTitle,
-      description: ogDescription,
-      url: canonical,
-      type: "website",
+      title:
+        ogTitle,
+
+      description:
+        ogDescription,
+
+      url:
+        canonical,
+
+      type:
+        "website",
+
+      siteName:
+        "Aman Digital Solutions",
+
+      locale:
+        "en_IN",
 
       ...(ogImage
         ? {
             images: [
               {
-                url: ogImage,
+                url:
+                  ogImage,
+
                 alt:
-                  location.ogImage?.alt ||
-                  location.image?.alt ||
-                  location.name,
+                  ogImageAlt,
               },
             ],
           }
@@ -180,15 +255,35 @@ export async function generateMetadata({
     },
 
     twitter: {
-      card: "summary_large_image",
-      title: ogTitle,
-      description: ogDescription,
+      card:
+        "summary_large_image",
+
+      title:
+        ogTitle,
+
+      description:
+        ogDescription,
 
       ...(ogImage
         ? {
-            images: [ogImage],
+            images: [
+              ogImage,
+            ],
           }
         : {}),
+    },
+
+    robots: {
+      index: true,
+      follow: true,
+
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
     },
   };
 }
@@ -200,21 +295,269 @@ export async function generateMetadata({
 export default async function LocationPage({
   params,
 }: LocationPageProps) {
-  const { slug } = await params;
+  const { slug } =
+    await params;
 
-  const location = await getLocationBySlug(slug);
+  const location =
+    await getLocationBySlug(
+      slug
+    );
+
+  /* =======================================================
+     NOT FOUND
+  ======================================================== */
 
   if (!location) {
     notFound();
   }
 
   /* =======================================================
-     SERIALIZE DATA
-  ======================================================= */
+     URL
+  ======================================================== */
 
-  const locationData: LocationDetailData = {
-    name: location.name,
-    slug: location.slug,
+  const locationUrl =
+    `${SITE_URL}/locations/${location.slug}`;
+
+  /* =======================================================
+     SEO VALUES
+  ======================================================== */
+
+  const seoTitle =
+    location.seoTitle ||
+    `${location.name} | Aman Digital Solutions`;
+
+  const seoDescription =
+    location.seoDescription ||
+    location.shortDescription;
+
+  const primaryImage =
+    location.ogImage?.url ||
+    location.image?.url;
+
+  const primaryImageAlt =
+    location.ogImage?.alt ||
+    location.image?.alt ||
+    location.name;
+
+  /* =======================================================
+     LOCATION STRUCTURED DATA
+  ======================================================== */
+
+  const locationSchema = {
+    "@context":
+      "https://schema.org",
+
+    "@type":
+      "Place",
+
+    "@id":
+      `${locationUrl}#place`,
+
+    name:
+      location.name,
+
+    description:
+      location.description ||
+      location.shortDescription,
+
+    url:
+      locationUrl,
+
+    ...(location.address
+      ? {
+          address: {
+            "@type":
+              "PostalAddress",
+
+            streetAddress:
+              location.address,
+
+            addressLocality:
+              location.city,
+
+            ...(location.state
+              ? {
+                  addressRegion:
+                    location.state,
+                }
+              : {}),
+
+            postalCode:
+              location.postalCode,
+
+            addressCountry:
+              location.country,
+          },
+        }
+      : {
+          address: {
+            "@type":
+              "PostalAddress",
+
+            addressLocality:
+              location.city,
+
+            ...(location.state
+              ? {
+                  addressRegion:
+                    location.state,
+                }
+              : {}),
+
+            addressCountry:
+              location.country,
+          },
+        }),
+
+    ...(typeof location.latitude ===
+      "number" &&
+    typeof location.longitude ===
+      "number"
+      ? {
+          geo: {
+            "@type":
+              "GeoCoordinates",
+
+            latitude:
+              location.latitude,
+
+            longitude:
+              location.longitude,
+          },
+        }
+      : {}),
+
+    ...(location.phone
+      ? {
+          telephone:
+            location.phone,
+        }
+      : {}),
+
+    ...(location.email
+      ? {
+          email:
+            location.email,
+        }
+      : {}),
+
+    ...(primaryImage
+      ? {
+          image:
+            primaryImage,
+        }
+      : {}),
+  };
+
+  /* =======================================================
+     WEBPAGE SCHEMA
+  ======================================================== */
+
+  const webPageSchema = {
+    "@context":
+      "https://schema.org",
+
+    "@type":
+      "WebPage",
+
+    "@id":
+      `${locationUrl}#webpage`,
+
+    url:
+      locationUrl,
+
+    name:
+      seoTitle,
+
+    description:
+      seoDescription,
+
+    isPartOf: {
+      "@id":
+        `${SITE_URL}/#website`,
+    },
+
+    mainEntity: {
+      "@id":
+        `${locationUrl}#place`,
+    },
+
+    breadcrumb: {
+      "@id":
+        `${locationUrl}#breadcrumb`,
+    },
+  };
+
+  /* =======================================================
+     BREADCRUMB SCHEMA
+  ======================================================== */
+
+  const breadcrumbSchema = {
+    "@context":
+      "https://schema.org",
+
+    "@type":
+      "BreadcrumbList",
+
+    "@id":
+      `${locationUrl}#breadcrumb`,
+
+    itemListElement: [
+      {
+        "@type":
+          "ListItem",
+
+        position:
+          1,
+
+        name:
+          "Home",
+
+        item:
+          SITE_URL,
+      },
+
+      {
+        "@type":
+          "ListItem",
+
+        position:
+          2,
+
+        name:
+          "Locations",
+
+        item:
+          `${SITE_URL}/locations`,
+      },
+
+      {
+        "@type":
+          "ListItem",
+
+        position:
+          3,
+
+        name:
+          location.name,
+
+        item:
+          locationUrl,
+      },
+    ],
+  };
+
+  /* =======================================================
+     SERIALIZE DATA
+  ======================================================== */
+
+  const locationData:
+    LocationDetailData = {
+    name:
+      location.name,
+
+    slug:
+      location.slug,
 
     shortDescription:
       location.shortDescription,
@@ -222,93 +565,129 @@ export default async function LocationPage({
     description:
       location.description,
 
-    /* =====================================================
-       IMAGE
-    ===================================================== */
+    image:
+      location.image
+        ? {
+            url:
+              location.image.url,
 
-    image: location.image
-      ? {
-          url: location.image.url,
-          publicId:
-            location.image.publicId ||
-            undefined,
-          alt:
-            location.image.alt ||
-            undefined,
-        }
-      : undefined,
+            publicId:
+              location.image.publicId ||
+              undefined,
 
-    /* =====================================================
-       ADDRESS
-    ===================================================== */
+            alt:
+              location.image.alt ||
+              location.name,
+          }
+        : undefined,
 
     address:
-      location.address || undefined,
+      location.address ||
+      undefined,
 
-    city: location.city,
+    city:
+      location.city,
 
     state:
-      location.state || undefined,
+      location.state ||
+      undefined,
 
-    country: location.country,
+    country:
+      location.country,
 
     postalCode:
-      location.postalCode || undefined,
-
-    /* =====================================================
-       COORDINATES
-    ===================================================== */
+      location.postalCode ||
+      undefined,
 
     latitude:
-      location.latitude !== undefined
-        ? location.latitude
-        : undefined,
+      location.latitude ??
+      undefined,
 
     longitude:
-      location.longitude !== undefined
-        ? location.longitude
-        : undefined,
-
-    /* =====================================================
-       CONTACT
-    ===================================================== */
+      location.longitude ??
+      undefined,
 
     phone:
-      location.phone || undefined,
+      location.phone ||
+      undefined,
 
     email:
-      location.email || undefined,
+      location.email ||
+      undefined,
 
     mapUrl:
-      location.mapUrl || undefined,
+      location.mapUrl ||
+      undefined,
 
-    /* =====================================================
-       RELATED SERVICES
-    ===================================================== */
+    services:
+      (
+        location.services ||
+        []
+      ).map((service) => ({
+        _id:
+          String(service._id),
 
-    services: (
-      location.services || []
-    ).map((service) => ({
-      _id: String(service._id),
+        title:
+          service.title,
 
-      title: service.title,
+        slug:
+          service.slug,
 
-      slug: service.slug,
+        shortDescription:
+          service.shortDescription ||
+          undefined,
 
-      shortDescription:
-        service.shortDescription ||
-        undefined,
-
-      category:
-        service.category ||
-        undefined,
-    })),
+        category:
+          service.category ||
+          undefined,
+      })),
   };
+
+  /* =======================================================
+     RENDER
+  ======================================================== */
 
   return (
     <>
+    <Navbar/>
+
+
       {/* =================================================
-          BREADCRUMB
+          STRUCTURED DATA
+      ================================================= */}
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(
+              locationSchema
+            ),
+        }}
+      />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(
+              webPageSchema
+            ),
+        }}
+      />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(
+              breadcrumbSchema
+            ),
+        }}
+      />
+
+      {/* =================================================
+          SEMANTIC BREADCRUMB
       ================================================= */}
 
       <nav
@@ -317,7 +696,9 @@ export default async function LocationPage({
       >
         <ol>
           <li>
-            <a href="/">Home</a>
+            <a href="/">
+              Home
+            </a>
           </li>
 
           <li>
@@ -336,9 +717,14 @@ export default async function LocationPage({
           LOCATION DETAIL
       ================================================= */}
 
-      <LocationDetailPage
-        location={locationData}
-      />
+      <main>
+        <LocationDetailPage
+          location={
+            locationData
+          }
+        />
+      </main>
+      <Footer/>
     </>
   );
 }

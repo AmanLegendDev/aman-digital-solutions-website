@@ -28,7 +28,7 @@ type FormOutput = z.output<typeof siteSettingsSchema>;
 type ExistingSettings = Partial<FormInput>;
 
 const SITE_URL =
-  "https://amandigitalsolutions.com";
+  "https://www.amandigitalsolutions.com";
 
 const inputClass =
   "w-full rounded-xl border border-[#292929] bg-[#0D0D0D] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-[#FFC400]/60 focus:ring-2 focus:ring-[#FFC400]/10";

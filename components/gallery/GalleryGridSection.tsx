@@ -60,7 +60,7 @@ export default function GalleryGridSection({
         ================================================= */}
 
         {galleries.length > 0 ? (
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid w-full min-w-0 max-w-full gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {galleries.map((gallery) => {
               const cover =
                 gallery.coverImage?.url ||
@@ -79,24 +79,25 @@ export default function GalleryGridSection({
                 ).length;
 
               return (
-                <Link
-                  key={gallery._id}
-                  href={`/gallery/${gallery.slug}`}
-                  className="group block"
-                >
+               <Link
+  key={gallery._id}
+  href={`/gallery/${gallery.slug}`}
+  className="group block w-full min-w-0 max-w-full"
+>
                   {/* =================================================
                       VISUAL
                   ================================================= */}
 
-                  <div className="overflow-hidden rounded-[1.5rem] border border-white/[0.07] bg-[#080808]">
-                    <div className="relative aspect-[4/3] overflow-hidden">
+<div className="w-full min-w-0 max-w-full overflow-hidden rounded-[1.5rem] border border-white/[0.07] bg-[#080808]">
+                    <div className="relative aspect-[4/3] w-full min-w-0 max-w-full overflow-hidden">
                       {cover ? (
-                        <img
-                          src={cover}
-                          alt={alt}
-                          loading="lazy"
-                          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                        />
+                      <img
+  src={cover}
+  alt={alt}
+  loading="lazy"
+  decoding="async"
+  className="block h-full w-full min-w-0 max-w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+/>
                       ) : (
                         <div className="flex h-full w-full items-center justify-center bg-[#090909]">
                           <Images

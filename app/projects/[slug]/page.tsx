@@ -4,6 +4,9 @@ import { Types } from "mongoose";
 
 import { connectDB } from "@/lib/db/connect";
 import Project from "@/models/Project";
+import Service from "@/models/Service";
+
+import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 import ProjectDetailPage, {
   type ProjectDetailData,
@@ -12,7 +15,15 @@ import ProjectDetailPage, {
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
 
-import Service from "@/models/Service";
+import { getWebPageSchema } from "@/lib/seo/schema";
+
+/* =========================================================
+   SITE
+========================================================= */
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "https://www.amandigitalsolutions.com";
 
 /* =========================================================
    PARAMS
@@ -25,7 +36,7 @@ type ProjectPageProps = {
 };
 
 /* =========================================================
-   POPULATED SERVICE TYPE
+   POPULATED SERVICE
 ========================================================= */
 
 type PopulatedProjectService = {
@@ -37,7 +48,7 @@ type PopulatedProjectService = {
 };
 
 /* =========================================================
-   POPULATED PROJECT TYPE
+   PROJECT TYPE
 ========================================================= */
 
 type PopulatedProject = {
@@ -112,16 +123,18 @@ async function getProjectBySlug(
 ): Promise<PopulatedProject | null> {
   await connectDB();
 
-  const project = await Project.findOne({
-    slug: slug.toLowerCase(),
-    published: true,
-  })
-    .populate({
-      path: "services",
-      model: Service,
-      select: "_id title slug shortDescription category",
+  const project =
+    await Project.findOne({
+      slug: slug.toLowerCase(),
+      published: true,
     })
-    .lean();
+      .populate({
+        path: "services",
+        model: Service,
+        select:
+          "_id title slug shortDescription category",
+      })
+      .lean();
 
   if (!project) {
     return null;
@@ -139,45 +152,85 @@ export async function generateMetadata({
 }: ProjectPageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  const project = await getProjectBySlug(slug);
+  const project =
+    await getProjectBySlug(slug);
+
+  /* -------------------------------------------------------
+     NOT FOUND
+  ------------------------------------------------------- */
 
   if (!project) {
     return {
       title:
         "Project Not Found | Aman Digital Solutions",
+
       description:
         "The requested project could not be found.",
+
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
+  /* -------------------------------------------------------
+     SEO TITLE
+  ------------------------------------------------------- */
+
   const title =
-    project.seoTitle ||
+    project.seoTitle?.trim() ||
     `${project.title} | Aman Digital Solutions`;
 
+  /* -------------------------------------------------------
+     SEO DESCRIPTION
+  ------------------------------------------------------- */
+
   const description =
-    project.seoDescription ||
+    project.seoDescription?.trim() ||
     project.shortDescription;
+
+  /* -------------------------------------------------------
+     CANONICAL
+  ------------------------------------------------------- */
+
+  const databaseCanonical =
+    project.canonicalUrl?.trim();
 
   const canonical =
-    project.canonicalUrl ||
-    `https://www.amandigitalsolutions.in/projects/${project.slug}`;
+    databaseCanonical &&
+    !databaseCanonical.includes("localhost")
+      ? databaseCanonical
+      : `${SITE_URL}/projects/${project.slug}`;
+
+  /* -------------------------------------------------------
+     OPEN GRAPH
+  ------------------------------------------------------- */
 
   const ogTitle =
-    project.ogTitle ||
-    project.seoTitle ||
-    project.title;
+    project.ogTitle?.trim() ||
+    title;
 
   const ogDescription =
-    project.ogDescription ||
-    project.seoDescription ||
-    project.shortDescription;
+    project.ogDescription?.trim() ||
+    description;
 
   const ogImage =
     project.ogImage?.url ||
     project.coverImage?.url;
 
+  const ogImageAlt =
+    project.ogImage?.alt ||
+    project.coverImage?.alt ||
+    project.title;
+
+  /* -------------------------------------------------------
+     FINAL METADATA
+  ------------------------------------------------------- */
+
   return {
     title,
+
     description,
 
     alternates: {
@@ -185,20 +238,25 @@ export async function generateMetadata({
     },
 
     openGraph: {
+      type: "website",
+
+      locale: "en_IN",
+
+      siteName:
+        "Aman Digital Solutions",
+
       title: ogTitle,
+
       description: ogDescription,
+
       url: canonical,
-      type: "article",
 
       ...(ogImage
         ? {
             images: [
               {
                 url: ogImage,
-                alt:
-                  project.ogImage?.alt ||
-                  project.coverImage?.alt ||
-                  project.title,
+                alt: ogImageAlt,
               },
             ],
           }
@@ -207,7 +265,9 @@ export async function generateMetadata({
 
     twitter: {
       card: "summary_large_image",
+
       title: ogTitle,
+
       description: ogDescription,
 
       ...(ogImage
@@ -215,6 +275,23 @@ export async function generateMetadata({
             images: [ogImage],
           }
         : {}),
+    },
+
+    robots: {
+      index: true,
+      follow: true,
+
+      googleBot: {
+        index: true,
+        follow: true,
+
+        "max-image-preview":
+          "large",
+
+        "max-snippet": -1,
+
+        "max-video-preview": -1,
+      },
     },
   };
 }
@@ -228,179 +305,367 @@ export default async function ProjectPage({
 }: ProjectPageProps) {
   const { slug } = await params;
 
-  const project = await getProjectBySlug(slug);
+  const project =
+    await getProjectBySlug(slug);
 
   if (!project) {
     notFound();
   }
 
   /* =======================================================
+     URL + SEO VALUES
+  ======================================================== */
+
+  const projectUrl =
+    `${SITE_URL}/projects/${project.slug}`;
+
+  const seoTitle =
+    project.seoTitle?.trim() ||
+    `${project.title} | Aman Digital Solutions`;
+
+  const seoDescription =
+    project.seoDescription?.trim() ||
+    project.shortDescription;
+
+  const image =
+    project.ogImage?.url ||
+    project.coverImage?.url;
+
+  const imageAlt =
+    project.ogImage?.alt ||
+    project.coverImage?.alt ||
+    project.title;
+
+  /* =======================================================
      SERIALIZE PROJECT DATA
-  ======================================================= */
+  ======================================================== */
 
-  const projectData: ProjectDetailData = {
-    title: project.title,
-    slug: project.slug,
+  const projectData:
+    ProjectDetailData = {
+    title:
+      project.title,
 
-    client: project.client || undefined,
-    industry: project.industry || undefined,
+    slug:
+      project.slug,
+
+    client:
+      project.client ||
+      undefined,
+
+    industry:
+      project.industry ||
+      undefined,
 
     shortDescription:
       project.shortDescription,
 
-    overview: project.overview,
+    overview:
+      project.overview,
 
     challenge:
-      project.challenge || undefined,
+      project.challenge ||
+      undefined,
 
     solution:
-      project.solution || undefined,
+      project.solution ||
+      undefined,
 
-    /* =====================================================
-       FEATURES
-    ===================================================== */
+    features:
+      (project.features || []).map(
+        (feature) => ({
+          title:
+            feature.title,
 
-    features: (project.features || []).map(
-      (feature) => ({
-        title: feature.title,
-        description: feature.description,
-        icon: feature.icon || undefined,
-      })
-    ),
+          description:
+            feature.description,
 
-    /* =====================================================
-       TECHNOLOGIES
-    ===================================================== */
+          icon:
+            feature.icon ||
+            undefined,
+        })
+      ),
 
     technologies:
-      project.technologies || [],
+      project.technologies ||
+      [],
 
-    /* =====================================================
-       COVER IMAGE
-    ===================================================== */
+    coverImage:
+      project.coverImage
+        ? {
+            url:
+              project.coverImage.url,
 
-    coverImage: project.coverImage
-      ? {
-          url: project.coverImage.url,
+            publicId:
+              project.coverImage.publicId ||
+              undefined,
+
+            alt:
+              project.coverImage.alt ||
+              project.title,
+          }
+        : undefined,
+
+    gallery:
+      (project.gallery || []).map(
+        (media) => ({
+          type:
+            media.type,
+
+          url:
+            media.url,
+
           publicId:
-            project.coverImage.publicId ||
+            media.publicId ||
             undefined,
-          alt:
-            project.coverImage.alt ||
-            undefined,
-        }
-      : undefined,
 
-    /* =====================================================
-       GALLERY
-    ===================================================== */
-
-    gallery: (project.gallery || []).map(
-      (media) => ({
-        type: media.type,
-        url: media.url,
-        publicId:
-          media.publicId || undefined,
-        title: media.title,
-      })
-    ),
-
-    /* =====================================================
-       LINKS
-    ===================================================== */
+          title:
+            media.title,
+        })
+      ),
 
     liveUrl:
-      project.liveUrl || undefined,
+      project.liveUrl ||
+      undefined,
 
     githubUrl:
-      project.githubUrl || undefined,
+      project.githubUrl ||
+      undefined,
 
-      featured:
-  project.featured,
+    featured:
+      project.featured,
 
-    /* =====================================================
-       RELATED SERVICES
-    ===================================================== */
+    services:
+      (project.services || []).map(
+        (service) => ({
+          _id:
+            String(service._id),
 
-    services: (project.services || []).map(
-      (service) => ({
-        _id: String(service._id),
+          title:
+            service.title,
 
-        title: service.title,
+          slug:
+            service.slug,
 
-        slug: service.slug,
+          shortDescription:
+            service.shortDescription ||
+            undefined,
 
-        shortDescription:
-          service.shortDescription ||
-          undefined,
+          category:
+            service.category ||
+            undefined,
+        })
+      ),
 
-        category:
-          service.category ||
-          undefined,
-      })
-    ),
+    results:
+      (project.results || []).map(
+        (result) => ({
+          label:
+            result.label,
 
-    /* =====================================================
-       RESULTS
-    ===================================================== */
+          value:
+            result.value,
 
-    results: (project.results || []).map(
-      (result) => ({
-        label: result.label,
-
-        value: result.value,
-
-        description:
-          result.description ||
-          undefined,
-      })
-    ),
+          description:
+            result.description ||
+            undefined,
+        })
+      ),
   };
 
   /* =======================================================
+     PROJECT SCHEMA
+  ======================================================== */
+
+  const projectSchema = {
+    "@context":
+      "https://schema.org",
+
+    "@type":
+      "CreativeWork",
+
+    "@id":
+      `${projectUrl}#project`,
+
+    name:
+      project.title,
+
+    headline:
+      project.title,
+
+    description:
+      seoDescription,
+
+    url:
+      projectUrl,
+
+    creator: {
+      "@id":
+        `${SITE_URL}/#organization`,
+    },
+
+    publisher: {
+      "@id":
+        `${SITE_URL}/#organization`,
+    },
+
+    ...(project.client
+      ? {
+          client: {
+            "@type":
+              "Organization",
+
+            name:
+              project.client,
+          },
+        }
+      : {}),
+
+    ...(project.industry
+      ? {
+          genre:
+            project.industry,
+        }
+      : {}),
+
+    ...(project.technologies?.length
+      ? {
+          keywords:
+            project.technologies.join(
+              ", "
+            ),
+        }
+      : {}),
+
+    ...(image
+      ? {
+          image: {
+            "@type":
+              "ImageObject",
+
+            url:
+              image,
+
+            caption:
+              imageAlt,
+          },
+        }
+      : {}),
+  };
+
+  /* =======================================================
+     WEBPAGE SCHEMA
+  ======================================================== */
+
+  const webPageSchema =
+    getWebPageSchema({
+      url:
+        projectUrl,
+
+      name:
+        seoTitle,
+
+      description:
+        seoDescription,
+    });
+
+  /* =======================================================
      RENDER
-  ======================================================= */
+  ======================================================== */
 
   return (
-  <>
-    <Navbar />
+    <>
+      <Navbar />
 
-    {/* =================================================
-        BREADCRUMB
-    ================================================= */}
+      {/* ===================================================
+          BREADCRUMB SCHEMA
+      =================================================== */}
 
-    <nav
-      aria-label="Breadcrumb"
-      className="sr-only"
-    >
-      <ol>
-        <li>
-          <a href="/">Home</a>
-        </li>
+      <BreadcrumbSchema
+        items={[
+          {
+            name: "Home",
+            url: "/",
+          },
 
-        <li>
-          <a href="/projects">
-            Projects
-          </a>
-        </li>
+          {
+            name: "Projects",
+            url: "/projects",
+          },
 
-        <li aria-current="page">
-          {project.title}
-        </li>
-      </ol>
-    </nav>
-
-    {/* =================================================
-        PROJECT DETAIL
-    ================================================= */}
-
-    <main>
-      <ProjectDetailPage
-        project={projectData}
+          {
+            name: project.title,
+            url:
+              `/projects/${project.slug}`,
+          },
+        ]}
       />
-    </main>
 
-    <Footer />
-  </>
-);
+      {/* ===================================================
+          PROJECT SCHEMA
+      =================================================== */}
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(
+              projectSchema
+            ),
+        }}
+      />
+
+      {/* ===================================================
+          WEBPAGE SCHEMA
+      =================================================== */}
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(
+              webPageSchema
+            ),
+        }}
+      />
+
+      {/* ===================================================
+          SEMANTIC BREADCRUMB
+      =================================================== */}
+
+      <nav
+        aria-label="Breadcrumb"
+        className="sr-only"
+      >
+        <ol>
+          <li>
+            <a href="/">
+              Home
+            </a>
+          </li>
+
+          <li>
+            <a href="/projects">
+              Projects
+            </a>
+          </li>
+
+          <li aria-current="page">
+            {project.title}
+          </li>
+        </ol>
+      </nav>
+
+      {/* ===================================================
+          PROJECT DETAIL
+      =================================================== */}
+
+      <main>
+        <ProjectDetailPage
+          project={projectData}
+        />
+      </main>
+
+      <Footer />
+    </>
+  );
 }

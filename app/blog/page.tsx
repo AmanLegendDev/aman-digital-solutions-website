@@ -16,35 +16,56 @@ import Footer from "@/components/agency/footer/Footer";
 ========================================================= */
 
 export const metadata: Metadata = {
-  title: "Blog | Aman Digital Solutions",
+  title:
+    "Blog | Web Development, SEO & Digital Growth | Aman Digital Solutions",
 
   description:
-    "Practical insights on web development, technology, SEO, digital strategy and building better digital experiences.",
+    "Read practical insights on web development, SEO, digital marketing, business systems and building better digital experiences with Aman Digital Solutions.",
 
   alternates: {
-    canonical:
-      "https://www.amandigitalsolutions.in/blog",
+    canonical: "/blog",
   },
 
   openGraph: {
-    title: "Blog | Aman Digital Solutions",
+    title:
+      "Blog | Aman Digital Solutions",
 
     description:
-      "Practical insights on web development, technology, SEO and digital growth.",
+      "Practical insights on web development, SEO, technology and digital growth.",
 
-    url:
-      "https://www.amandigitalsolutions.in/blog",
+    url: "/blog",
 
     type: "website",
+
+    siteName:
+      "Aman Digital Solutions",
+
+    locale:
+      "en_IN",
   },
 
   twitter: {
-    card: "summary_large_image",
+    card:
+      "summary_large_image",
 
-    title: "Blog | Aman Digital Solutions",
+    title:
+      "Blog | Aman Digital Solutions",
 
     description:
-      "Practical insights on web development, technology, SEO and digital growth.",
+      "Practical insights on web development, SEO, technology and digital growth.",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 };
 

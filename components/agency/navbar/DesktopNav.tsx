@@ -23,8 +23,8 @@ export default function DesktopNav({
       className={[
         "mx-auto hidden h-[82px] max-w-7xl items-center",
         "rounded-full border px-5 md:flex",
-        "bg-[#0A0A0A]/90 backdrop-blur-2xl",
-        "transition-all duration-300",
+        "bg-[#0A0A0A]/90 backdrop-blur-md",
+        "transition-[border-color,box-shadow] duration-200",
 
         scrolled
           ? "border-[#FFC400]/20 shadow-[0_16px_50px_rgba(0,0,0,0.45)]"

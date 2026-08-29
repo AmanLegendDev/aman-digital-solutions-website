@@ -3,8 +3,6 @@ import { notFound } from "next/navigation";
 
 import { connectDB } from "@/lib/db/connect";
 import Gallery from "@/models/Gallery";
-import Project from "@/models/Project";
-
 
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
@@ -12,6 +10,16 @@ import Footer from "@/components/agency/footer/Footer";
 import GalleryDetailPage, {
   type GalleryDetailData,
 } from "@/components/gallery/detail/GalleryDetailPage";
+
+import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+
+/* =========================================================
+   SITE
+========================================================= */
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "https://www.amandigitalsolutions.com";
 
 /* =========================================================
    PARAMS
@@ -24,26 +32,30 @@ type GalleryPageProps = {
 };
 
 /* =========================================================
-   POPULATED PROJECT TYPE
+   PROJECT TYPE
 ========================================================= */
 
 type PopulatedGalleryProject = {
   _id: unknown;
+
   title: string;
+
   slug: string;
 };
 
 /* =========================================================
-   POPULATED GALLERY TYPE
+   GALLERY TYPE
 ========================================================= */
 
 type PopulatedGallery = {
   _id: unknown;
 
   title: string;
+
   slug: string;
 
   shortDescription?: string;
+
   description?: string;
 
   coverImage?: {
@@ -55,33 +67,45 @@ type PopulatedGallery = {
   media?: {
     _id: unknown;
 
-    type: "image" | "video";
+    type:
+      | "image"
+      | "video";
 
     url: string;
+
     publicId?: string;
 
     thumbnailUrl?: string;
+
     thumbnailPublicId?: string;
 
     alt?: string;
+
     caption?: string;
 
     displayOrder: number;
   }[];
 
-  project?: PopulatedGalleryProject | null;
+  project?:
+    | PopulatedGalleryProject
+    | null;
 
   category?: string;
 
   featured: boolean;
+
   published: boolean;
+
   displayOrder: number;
 
   seoTitle?: string;
+
   seoDescription?: string;
+
   canonicalUrl?: string;
 
   ogTitle?: string;
+
   ogDescription?: string;
 
   ogImage?: {
@@ -94,6 +118,7 @@ type PopulatedGallery = {
 /* =========================================================
    FETCH GALLERY
 ========================================================= */
+
 async function getGalleryBySlug(
   slug: string
 ): Promise<PopulatedGallery | null> {
@@ -101,9 +126,12 @@ async function getGalleryBySlug(
 
   const gallery =
     await Gallery.findOne({
-      slug: slug.toLowerCase(),
+      slug:
+        slug.toLowerCase(),
+
       published: true,
-    }).lean();
+    })
+      .lean();
 
   if (!gallery) {
     return null;
@@ -111,6 +139,7 @@ async function getGalleryBySlug(
 
   return gallery as unknown as PopulatedGallery;
 }
+
 /* =========================================================
    METADATA
 ========================================================= */
@@ -118,10 +147,17 @@ async function getGalleryBySlug(
 export async function generateMetadata({
   params,
 }: GalleryPageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug } =
+    await params;
 
   const gallery =
-    await getGalleryBySlug(slug);
+    await getGalleryBySlug(
+      slug
+    );
+
+  /* -------------------------------------------------------
+     NOT FOUND
+  ------------------------------------------------------- */
 
   if (!gallery) {
     return {
@@ -130,20 +166,25 @@ export async function generateMetadata({
 
       description:
         "The requested gallery collection could not be found.",
+
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
-  /* =======================================================
+  /* -------------------------------------------------------
      TITLE
-  ======================================================= */
+  ------------------------------------------------------- */
 
   const title =
     gallery.seoTitle ||
     `${gallery.title} | Gallery | Aman Digital Solutions`;
 
-  /* =======================================================
+  /* -------------------------------------------------------
      DESCRIPTION
-  ======================================================= */
+  ------------------------------------------------------- */
 
   const description =
     gallery.seoDescription ||
@@ -151,39 +192,54 @@ export async function generateMetadata({
     gallery.description ||
     `Explore the ${gallery.title} gallery by Aman Digital Solutions.`;
 
-  /* =======================================================
+  /* -------------------------------------------------------
      CANONICAL
-  ======================================================= */
+  ------------------------------------------------------- */
 
   const canonical =
-    gallery.canonicalUrl ||
-    `https://www.amandigitalsolutions.in/gallery/${gallery.slug}`;
+    gallery.canonicalUrl &&
+    !gallery.canonicalUrl.includes(
+      "localhost"
+    )
+      ? gallery.canonicalUrl
+      : `${SITE_URL}/gallery/${gallery.slug}`;
 
-  /* =======================================================
-     OPEN GRAPH
-  ======================================================= */
+  /* -------------------------------------------------------
+     OG
+  ------------------------------------------------------- */
 
   const ogTitle =
     gallery.ogTitle ||
-    gallery.seoTitle ||
-    gallery.title;
+    title;
 
   const ogDescription =
     gallery.ogDescription ||
-    gallery.seoDescription ||
-    gallery.shortDescription ||
-    gallery.description ||
     description;
 
   const ogImage =
     gallery.ogImage?.url ||
     gallery.coverImage?.url ||
-    gallery.media?.[0]?.thumbnailUrl ||
-    gallery.media?.[0]?.url;
+    gallery.media?.find(
+      (media) =>
+        media.type === "image"
+    )?.url ||
+    gallery.media?.[0]
+      ?.thumbnailUrl ||
+    gallery.media?.[0]
+      ?.url;
 
-  /* =======================================================
+  const ogImageAlt =
+    gallery.ogImage?.alt ||
+    gallery.coverImage?.alt ||
+    gallery.media?.find(
+      (media) =>
+        media.type === "image"
+    )?.alt ||
+    gallery.title;
+
+  /* -------------------------------------------------------
      RETURN
-  ======================================================= */
+  ------------------------------------------------------- */
 
   return {
     title,
@@ -195,25 +251,33 @@ export async function generateMetadata({
     },
 
     openGraph: {
-      title: ogTitle,
+      title:
+        ogTitle,
 
-      description: ogDescription,
+      description:
+        ogDescription,
 
-      url: canonical,
+      url:
+        canonical,
 
-      type: "article",
+      type:
+        "website",
+
+      siteName:
+        "Aman Digital Solutions",
+
+      locale:
+        "en_IN",
 
       ...(ogImage
         ? {
             images: [
               {
-                url: ogImage,
+                url:
+                  ogImage,
 
                 alt:
-                  gallery.ogImage?.alt ||
-                  gallery.coverImage?.alt ||
-                  gallery.media?.[0]?.alt ||
-                  gallery.title,
+                  ogImageAlt,
               },
             ],
           }
@@ -221,17 +285,43 @@ export async function generateMetadata({
     },
 
     twitter: {
-      card: "summary_large_image",
+      card:
+        "summary_large_image",
 
-      title: ogTitle,
+      title:
+        ogTitle,
 
-      description: ogDescription,
+      description:
+        ogDescription,
 
       ...(ogImage
         ? {
-            images: [ogImage],
+            images: [
+              ogImage,
+            ],
           }
         : {}),
+    },
+
+    robots: {
+      index: true,
+
+      follow: true,
+
+      googleBot: {
+        index: true,
+
+        follow: true,
+
+        "max-image-preview":
+          "large",
+
+        "max-snippet":
+          -1,
+
+        "max-video-preview":
+          -1,
+      },
     },
   };
 }
@@ -243,22 +333,67 @@ export async function generateMetadata({
 export default async function GallerySlugPage({
   params,
 }: GalleryPageProps) {
-  const { slug } = await params;
+  const { slug } =
+    await params;
 
   const gallery =
-    await getGalleryBySlug(slug);
+    await getGalleryBySlug(
+      slug
+    );
 
   /* =======================================================
      NOT FOUND
-  ======================================================= */
+  ======================================================== */
 
   if (!gallery) {
     notFound();
   }
 
   /* =======================================================
-     SORT + SERIALIZE MEDIA
-  ======================================================= */
+     URL
+  ======================================================== */
+
+  const galleryUrl =
+    `${SITE_URL}/gallery/${gallery.slug}`;
+
+  /* =======================================================
+     SEO VALUES
+  ======================================================== */
+
+  const seoTitle =
+    gallery.seoTitle ||
+    `${gallery.title} | Gallery | Aman Digital Solutions`;
+
+  const seoDescription =
+    gallery.seoDescription ||
+    gallery.shortDescription ||
+    gallery.description ||
+    `Explore the ${gallery.title} gallery by Aman Digital Solutions.`;
+
+  const primaryImage =
+    gallery.ogImage?.url ||
+    gallery.coverImage?.url ||
+    gallery.media?.find(
+      (media) =>
+        media.type === "image"
+    )?.url ||
+    gallery.media?.[0]
+      ?.thumbnailUrl ||
+    gallery.media?.[0]
+      ?.url;
+
+  const primaryImageAlt =
+    gallery.ogImage?.alt ||
+    gallery.coverImage?.alt ||
+    gallery.media?.find(
+      (media) =>
+        media.type === "image"
+    )?.alt ||
+    gallery.title;
+
+  /* =======================================================
+     MEDIA
+  ======================================================== */
 
   const media = [
     ...(gallery.media || []),
@@ -268,47 +403,53 @@ export default async function GallerySlugPage({
         a.displayOrder -
         b.displayOrder
     )
-    .map((item) => ({
-      _id: String(item._id),
+    .map(
+      (item) => ({
+        _id:
+          String(item._id),
 
-      type: item.type,
+        type:
+          item.type,
 
-      url: item.url,
+        url:
+          item.url,
 
-      publicId:
-        item.publicId ||
-        undefined,
+        publicId:
+          item.publicId ||
+          undefined,
 
-      thumbnailUrl:
-        item.thumbnailUrl ||
-        undefined,
+        thumbnailUrl:
+          item.thumbnailUrl ||
+          undefined,
 
-      thumbnailPublicId:
-        item.thumbnailPublicId ||
-        undefined,
+        thumbnailPublicId:
+          item.thumbnailPublicId ||
+          undefined,
 
-      alt:
-        item.alt ||
-        undefined,
+        alt:
+          item.alt ||
+          gallery.title,
 
-      caption:
-        item.caption ||
-        undefined,
+        caption:
+          item.caption ||
+          undefined,
 
-      displayOrder:
-        item.displayOrder,
-    }));
+        displayOrder:
+          item.displayOrder,
+      })
+    );
 
   /* =======================================================
      RELATED PROJECT
-  ======================================================= */
+  ======================================================== */
 
   const project =
     gallery.project
       ? {
-          _id: String(
-            gallery.project._id
-          ),
+          _id:
+            String(
+              gallery.project._id
+            ),
 
           title:
             gallery.project.title,
@@ -319,15 +460,21 @@ export default async function GallerySlugPage({
       : undefined;
 
   /* =======================================================
-     SERIALIZE GALLERY
-  ======================================================= */
+     GALLERY DATA
+  ======================================================== */
 
-  const galleryData: GalleryDetailData = {
-    _id: String(gallery._id),
+  const galleryData:
+    GalleryDetailData = {
+    _id:
+      String(
+        gallery._id
+      ),
 
-    title: gallery.title,
+    title:
+      gallery.title,
 
-    slug: gallery.slug,
+    slug:
+      gallery.slug,
 
     shortDescription:
       gallery.shortDescription ||
@@ -337,49 +484,32 @@ export default async function GallerySlugPage({
       gallery.description ||
       undefined,
 
-    /* =====================================================
-       COVER IMAGE
-    ===================================================== */
+    coverImage:
+      gallery.coverImage
+        ? {
+            url:
+              gallery.coverImage
+                .url,
 
-    coverImage: gallery.coverImage
-      ? {
-          url:
-            gallery.coverImage.url,
+            publicId:
+              gallery.coverImage
+                .publicId ||
+              undefined,
 
-          publicId:
-            gallery.coverImage
-              .publicId ||
-            undefined,
-
-          alt:
-            gallery.coverImage.alt ||
-            undefined,
-        }
-      : undefined,
-
-    /* =====================================================
-       MEDIA
-    ===================================================== */
+            alt:
+              gallery.coverImage
+                .alt ||
+              gallery.title,
+          }
+        : undefined,
 
     media,
 
-    /* =====================================================
-       PROJECT
-    ===================================================== */
-
     project,
-
-    /* =====================================================
-       CATEGORY
-    ===================================================== */
 
     category:
       gallery.category?.trim() ||
       undefined,
-
-    /* =====================================================
-       FLAGS
-    ===================================================== */
 
     featured:
       gallery.featured,
@@ -389,55 +519,293 @@ export default async function GallerySlugPage({
   };
 
   /* =======================================================
+     IMAGE GALLERY SCHEMA
+  ======================================================== */
+
+  const imageGallerySchema = {
+    "@context":
+      "https://schema.org",
+
+    "@type":
+      "ImageGallery",
+
+    "@id":
+      `${galleryUrl}#gallery`,
+
+    name:
+      gallery.title,
+
+    description:
+      seoDescription,
+
+    url:
+      galleryUrl,
+
+    creator: {
+      "@id":
+        `${SITE_URL}/#organization`,
+    },
+
+    publisher: {
+      "@id":
+        `${SITE_URL}/#organization`,
+    },
+
+    ...(primaryImage
+      ? {
+         image: primaryImage,
+        }
+      : {}),
+
+    associatedMedia:
+      media
+        .filter(
+          (item) =>
+            item.type ===
+            "image"
+        )
+        .map(
+          (item) => ({
+            "@type":
+              "ImageObject",
+
+            contentUrl:
+              item.url,
+
+            url:
+              item.url,
+
+           name: item.caption || item.alt || gallery.title,
+
+            ...(item.alt
+              ? {
+                  caption:
+                    item.alt,
+                }
+              : {}),
+
+            ...(item.caption
+              ? {
+                  description:
+                    item.caption,
+                }
+              : {}),
+          })
+        ),
+  };
+
+  /* =======================================================
+     WEBPAGE SCHEMA
+  ======================================================== */
+
+  const webPageSchema = {
+    "@context":
+      "https://schema.org",
+
+    "@type":
+      "WebPage",
+
+    "@id":
+      `${galleryUrl}#webpage`,
+
+    url:
+      galleryUrl,
+
+    name:
+      seoTitle,
+
+    description:
+      seoDescription,
+
+    isPartOf: {
+      "@id":
+        `${SITE_URL}/#website`,
+    },
+
+    about: {
+      "@id":
+        `${galleryUrl}#gallery`,
+    },
+
+    breadcrumb: {
+      "@id":
+        `${galleryUrl}#breadcrumb`,
+    },
+
+    ...(primaryImage
+      ? {
+          primaryImageOfPage: {
+            "@type":
+              "ImageObject",
+
+            url:
+              primaryImage,
+
+            caption:
+              primaryImageAlt,
+          },
+        }
+      : {}),
+  };
+
+  /* =======================================================
+     BREADCRUMB SCHEMA
+  ======================================================== */
+
+  const breadcrumbSchema = {
+    "@context":
+      "https://schema.org",
+
+    "@type":
+      "BreadcrumbList",
+
+    "@id":
+      `${galleryUrl}#breadcrumb`,
+
+    itemListElement: [
+      {
+        "@type":
+          "ListItem",
+
+        position:
+          1,
+
+        name:
+          "Home",
+
+        item:
+          SITE_URL,
+      },
+
+      {
+        "@type":
+          "ListItem",
+
+        position:
+          2,
+
+        name:
+          "Gallery",
+
+        item:
+          `${SITE_URL}/gallery`,
+      },
+
+      {
+        "@type":
+          "ListItem",
+
+        position:
+          3,
+
+        name:
+          gallery.title,
+
+        item:
+          galleryUrl,
+      },
+    ],
+  };
+
+  /* =======================================================
      RENDER
-  ======================================================= */
+  ======================================================== */
 
- return (
-  <>
-    {/* =================================================
-        NAVBAR
-    ================================================= */}
+  return (
+    <>
+      <Navbar />
 
-    <Navbar />
+      <BreadcrumbSchema
+  items={[
+    {
+      name: "Home",
+      url: "/",
+    },
+    {
+      name: "Gallery",
+      url: "/gallery",
+    },
+    {
+      name: gallery.title,
+      url: `/gallery/${gallery.slug}`,
+    },
+  ]}
+/>
 
-    {/* =================================================
-        SEMANTIC BREADCRUMB
-    ================================================= */}
+      {/* =================================================
+          STRUCTURED DATA
+      ================================================= */}
 
-    <nav
-      aria-label="Breadcrumb"
-      className="sr-only"
-    >
-      <ol>
-        <li>
-          <a href="/">Home</a>
-        </li>
-
-        <li>
-          <a href="/gallery">Gallery</a>
-        </li>
-
-        <li aria-current="page">
-          {gallery.title}
-        </li>
-      </ol>
-    </nav>
-
-    {/* =================================================
-        DETAIL PAGE
-    ================================================= */}
-
-    <main>
-      <GalleryDetailPage
-        gallery={galleryData}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(
+              imageGallerySchema
+            ),
+        }}
       />
-    </main>
 
-    {/* =================================================
-        FOOTER
-    ================================================= */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(
+              webPageSchema
+            ),
+        }}
+      />
 
-    <Footer />
-  </>
-);
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(
+              breadcrumbSchema
+            ),
+        }}
+      />
+
+      {/* =================================================
+          SEMANTIC BREADCRUMB
+      ================================================= */}
+
+      <nav
+        aria-label="Breadcrumb"
+        className="sr-only"
+      >
+        <ol>
+          <li>
+            <a href="/">
+              Home
+            </a>
+          </li>
+
+          <li>
+            <a href="/gallery">
+              Gallery
+            </a>
+          </li>
+
+          <li aria-current="page">
+            {gallery.title}
+          </li>
+        </ol>
+      </nav>
+
+      {/* =================================================
+          DETAIL PAGE
+      ================================================= */}
+
+      <main>
+        <GalleryDetailPage
+          gallery={
+            galleryData
+          }
+        />
+      </main>
+
+      <Footer />
+    </>
+  );
 }

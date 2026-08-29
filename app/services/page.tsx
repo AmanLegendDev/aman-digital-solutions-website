@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import { connectDB } from "@/lib/db/connect";
 import Service from "@/models/Service";
 
@@ -5,10 +7,43 @@ import ServicesPageClient from "@/components/services/ServicesPageClient";
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
 
-export const metadata = {
-  title: "Services | Aman Digital Solutions",
+export const metadata: Metadata = {
+  title:
+    "Web Development & Digital Solutions Services | Aman Digital Solutions",
+
   description:
-    "Explore website development, business systems, growth and ongoing digital support services from Aman Digital Solutions.",
+    "Explore website development, e-commerce, web applications, SEO, digital marketing, business automation and ongoing digital support services for businesses worldwide.",
+
+  alternates: {
+    canonical: "/services",
+  },
+
+  openGraph: {
+    title:
+      "Web Development & Digital Solutions Services | Aman Digital Solutions",
+
+    description:
+      "Explore modern web development, e-commerce, SEO, digital marketing and business solutions from Aman Digital Solutions.",
+
+    url: "/services",
+
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+
+    title:
+      "Web Development & Digital Solutions Services | Aman Digital Solutions",
+
+    description:
+      "Modern websites, web applications, e-commerce, SEO and business solutions for businesses worldwide.",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default async function ServicesPage() {
@@ -24,13 +59,23 @@ export default async function ServicesPage() {
     })
     .lean();
 
-  const mapService = (service: (typeof services)[number]) => ({
+  const mapService = (
+    service: (typeof services)[number]
+  ) => ({
     id: String(service._id),
+
     title: service.title,
+
     slug: service.slug,
-    heroEyebrow: service.heroEyebrow,
-    shortDescription: service.shortDescription,
-    category: service.category,
+
+    heroEyebrow:
+      service.heroEyebrow,
+
+    shortDescription:
+      service.shortDescription,
+
+    category:
+      service.category,
 
     image: service.image
       ? {
@@ -39,24 +84,45 @@ export default async function ServicesPage() {
         }
       : undefined,
 
-    startingPrice: service.startingPrice,
-    priceLabel: service.priceLabel,
-    ctaLabel: service.ctaLabel,
+    startingPrice:
+      service.startingPrice,
 
-    features: service.features.map((feature) => ({
-      title: feature.title,
-      description: feature.description,
-      icon: feature.icon,
-    })),
+    priceLabel:
+      service.priceLabel,
+
+    ctaLabel:
+      service.ctaLabel,
+
+    features:
+      service.features.map(
+        (feature) => ({
+          title:
+            feature.title,
+
+          description:
+            feature.description,
+
+          icon:
+            feature.icon,
+        })
+      ),
   });
 
-  const featuredServices = services
-    .filter((service) => service.featured)
-    .map(mapService);
+  const featuredServices =
+    services
+      .filter(
+        (service) =>
+          service.featured
+      )
+      .map(mapService);
 
-  const allServices = services
-    .filter((service) => !service.featured)
-    .map(mapService);
+  const allServices =
+    services
+      .filter(
+        (service) =>
+          !service.featured
+      )
+      .map(mapService);
 
   return (
     <>
@@ -64,9 +130,15 @@ export default async function ServicesPage() {
 
       <main>
         <ServicesPageClient
-          servicesCount={services.length}
-          featuredServices={featuredServices}
-          allServices={allServices}
+          servicesCount={
+            services.length
+          }
+          featuredServices={
+            featuredServices
+          }
+          allServices={
+            allServices
+          }
         />
       </main>
 

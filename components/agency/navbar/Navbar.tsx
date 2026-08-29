@@ -18,26 +18,30 @@ export default function Navbar() {
      SCROLL STATE
   ========================================================= */
 
-  useEffect(() => {
-    const handleScroll = () => {
+ useEffect(() => {
+  let ticking = false;
+
+  const handleScroll = () => {
+    if (ticking) return;
+
+    ticking = true;
+
+    window.requestAnimationFrame(() => {
       setScrolled(window.scrollY > 24);
-    };
+      ticking = false;
+    });
+  };
 
-    handleScroll();
+  handleScroll();
 
-    window.addEventListener(
-      "scroll",
-      handleScroll,
-      { passive: true }
-    );
+  window.addEventListener("scroll", handleScroll, {
+    passive: true,
+  });
 
-    return () => {
-      window.removeEventListener(
-        "scroll",
-        handleScroll
-      );
-    };
-  }, []);
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+  };
+}, []);
 
   /* =========================================================
      LOCK BODY WHEN MOBILE MENU IS OPEN

@@ -3,14 +3,32 @@ import { notFound } from "next/navigation";
 
 import { connectDB } from "@/lib/db/connect";
 import type { IService } from "@/models/Service";
+
 import FAQ from "@/models/FAQ";
 import Project from "@/models/Project";
 import Service from "@/models/Service";
 
 import ServiceDetailPage from "@/components/services/detail/ServiceDetailPage";
+import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
+
+import {
+  getWebPageSchema,
+} from "@/lib/seo/schema";
+
+/* =========================================================
+   SITE
+========================================================= */
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "https://www.amandigitalsolutions.com";
+
+/* =========================================================
+   PARAMS
+========================================================= */
 
 type PageProps = {
   params: Promise<{
@@ -18,9 +36,22 @@ type PageProps = {
   }>;
 };
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  "http://localhost:3000";
+/* =========================================================
+   GET SERVICE
+========================================================= */
+
+async function getServiceBySlug(
+  slug: string
+): Promise<IService | null> {
+  await connectDB();
+
+  const service = await Service.findOne({
+    slug: slug.toLowerCase(),
+    published: true,
+  }).lean<IService>();
+
+  return service;
+}
 
 /* =========================================================
    METADATA
@@ -31,47 +62,79 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  await connectDB();
+  const service = await getServiceBySlug(slug);
 
-  const service = await Service.findOne({
-    slug,
-    published: true,
-  })
-    .select(
-      "title seoTitle seoDescription canonicalUrl ogTitle ogDescription ogImage image shortDescription"
-    )
-    .lean();
+  /* -------------------------------------------------------
+     NOT FOUND
+  ------------------------------------------------------- */
 
   if (!service) {
     return {
-      title: "Service Not Found | Aman Digital Solutions",
+      title:
+        "Service Not Found | Aman Digital Solutions",
+
       description:
         "The requested service could not be found.",
+
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
+  /* -------------------------------------------------------
+     SEO TITLE
+  ------------------------------------------------------- */
+
   const title =
-    service.seoTitle ||
+    service.seoTitle?.trim() ||
     `${service.title} | Aman Digital Solutions`;
 
+  /* -------------------------------------------------------
+     SEO DESCRIPTION
+  ------------------------------------------------------- */
+
   const description =
-    service.seoDescription ||
+    service.seoDescription?.trim() ||
     service.shortDescription;
 
+  /* -------------------------------------------------------
+     CANONICAL
+  ------------------------------------------------------- */
+
+  const databaseCanonical =
+    service.canonicalUrl?.trim();
+
   const canonical =
-    service.canonicalUrl &&
-    !service.canonicalUrl.includes(
-      "localhost:3000"
-    )
-      ? service.canonicalUrl
+    databaseCanonical &&
+    !databaseCanonical.includes("localhost")
+      ? databaseCanonical
       : `${SITE_URL}/services/${service.slug}`;
+
+  /* -------------------------------------------------------
+     OPEN GRAPH
+  ------------------------------------------------------- */
+
+  const ogTitle =
+    service.ogTitle?.trim() ||
+    title;
+
+  const ogDescription =
+    service.ogDescription?.trim() ||
+    description;
 
   const ogImage =
     service.ogImage?.url ||
     service.image?.url;
 
+  /* -------------------------------------------------------
+     METADATA
+  ------------------------------------------------------- */
+
   return {
     title,
+
     description,
 
     alternates: {
@@ -79,26 +142,28 @@ export async function generateMetadata({
     },
 
     openGraph: {
-      title:
-        service.ogTitle || title,
-
-      description:
-        service.ogDescription ||
-        description,
-
-      url: canonical,
-
       type: "website",
+
+      locale: "en_IN",
 
       siteName:
         "Aman Digital Solutions",
+
+      title: ogTitle,
+
+      description: ogDescription,
+
+      url: canonical,
 
       ...(ogImage
         ? {
             images: [
               {
                 url: ogImage,
+
                 alt:
+                  service.ogImage?.alt ||
+                  service.image?.alt ||
                   service.title,
               },
             ],
@@ -109,12 +174,9 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
 
-      title:
-        service.ogTitle || title,
+      title: ogTitle,
 
-      description:
-        service.ogDescription ||
-        description,
+      description: ogDescription,
 
       ...(ogImage
         ? {
@@ -126,6 +188,18 @@ export async function generateMetadata({
     robots: {
       index: true,
       follow: true,
+
+      googleBot: {
+        index: true,
+        follow: true,
+
+        "max-image-preview":
+          "large",
+
+        "max-snippet": -1,
+
+        "max-video-preview": -1,
+      },
     },
   };
 }
@@ -139,20 +213,19 @@ export default async function ServicePage({
 }: PageProps) {
   const { slug } = await params;
 
-  await connectDB();
-
   const service =
-  await Service.findOne({
-    slug,
-    published: true,
-  }).lean<IService>();
+    await getServiceBySlug(slug);
+
+  /* -------------------------------------------------------
+     NOT FOUND
+  ------------------------------------------------------- */
 
   if (!service) {
     notFound();
   }
 
   /* =======================================================
-     RELATED FAQS
+     RELATED CONTENT
   ======================================================== */
 
   const faqIds =
@@ -170,6 +243,7 @@ export default async function ServicePage({
           _id: {
             $in: faqIds,
           },
+
           published: true,
         })
           .select(
@@ -186,6 +260,7 @@ export default async function ServicePage({
           _id: {
             $in: projectIds,
           },
+
           published: true,
         })
           .select(
@@ -199,7 +274,7 @@ export default async function ServicePage({
   ]);
 
   /* =======================================================
-     MAP FAQ DATA
+     RELATED FAQS
   ======================================================== */
 
   const relatedFaqs =
@@ -214,7 +289,7 @@ export default async function ServicePage({
     }));
 
   /* =======================================================
-     MAP PROJECT DATA
+     RELATED PROJECTS
   ======================================================== */
 
   const relatedProjects =
@@ -236,37 +311,52 @@ export default async function ServicePage({
           project.coverImage
             ? {
                 url:
-                  project.coverImage
-                    .url,
+                  project.coverImage.url,
 
                 alt:
-                  project.coverImage
-                    .alt,
+                  project.coverImage.alt,
               }
             : undefined,
       })
     );
 
   /* =======================================================
-     STRUCTURED DATA
+     SEO URL
   ======================================================== */
 
   const serviceUrl =
     `${SITE_URL}/services/${service.slug}`;
 
-  const jsonLd = {
+  const serviceTitle =
+    service.seoTitle?.trim() ||
+    `${service.title} | Aman Digital Solutions`;
+
+  const serviceDescription =
+    service.seoDescription?.trim() ||
+    service.shortDescription;
+
+  /* =======================================================
+     SERVICE SCHEMA
+  ======================================================== */
+
+  const serviceSchema: Record<
+    string,
+    unknown
+  > = {
     "@context":
       "https://schema.org",
 
     "@type":
       "Service",
 
+    "@id":
+      `${serviceUrl}#service`,
+
     name:
       service.title,
 
     description:
-      service.seoDescription ||
-      service.shortDescription,
+      serviceDescription,
 
     url:
       serviceUrl,
@@ -275,6 +365,9 @@ export default async function ServicePage({
       "@type":
         "Organization",
 
+      "@id":
+        `${SITE_URL}/#organization`,
+
       name:
         "Aman Digital Solutions",
 
@@ -282,23 +375,27 @@ export default async function ServicePage({
         SITE_URL,
     },
 
-    areaServed: [
-      {
-        "@type":
-          "Place",
+    areaServed: {
+      "@type":
+        "Place",
 
-        name:
-          "Shimla",
-      },
+      name:
+        "Worldwide",
+    },
 
-      {
-        "@type":
-          "AdministrativeArea",
+    ...(service.category
+      ? {
+          serviceType:
+            service.category,
+        }
+      : {}),
 
-        name:
-          "Himachal Pradesh",
-      },
-    ],
+    ...(service.image?.url
+      ? {
+          image:
+            service.image.url,
+        }
+      : {}),
 
     ...(typeof service.startingPrice ===
       "number"
@@ -320,30 +417,130 @@ export default async function ServicePage({
       : {}),
   };
 
+  /* =======================================================
+     WEBPAGE SCHEMA
+  ======================================================== */
+
+  const webPageSchema =
+    getWebPageSchema({
+      url:
+        serviceUrl,
+
+      name:
+        serviceTitle,
+
+      description:
+        serviceDescription,
+
+      image:
+        service.ogImage?.url ||
+        service.image?.url,
+    });
+
+  /* =======================================================
+     RENDER
+  ======================================================== */
+
   return (
-  <>
-    {/* NAVBAR */}
-    <Navbar />
+    <>
+      <Navbar />
 
-    {/* SERVICE STRUCTURED DATA */}
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify(jsonLd),
-      }}
-    />
+      {/* ===================================================
+          BREADCRUMB STRUCTURED DATA
+      =================================================== */}
 
-    {/* SERVICE PAGE */}
-    <main>
-      <ServiceDetailPage
-        service={service}
-        relatedProjects={relatedProjects}
-        relatedFaqs={relatedFaqs}
+      <BreadcrumbSchema
+        items={[
+          {
+            name: "Home",
+            url: "/",
+          },
+
+          {
+            name: "Services",
+            url: "/services",
+          },
+
+          {
+            name: service.title,
+            url:
+              `/services/${service.slug}`,
+          },
+        ]}
       />
-    </main>
 
-    {/* FOOTER */}
-    <Footer />
-  </>
-);
+      {/* ===================================================
+          SERVICE SCHEMA
+      =================================================== */}
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(
+              serviceSchema
+            ),
+        }}
+      />
+
+      {/* ===================================================
+          WEBPAGE SCHEMA
+      =================================================== */}
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(
+              webPageSchema
+            ),
+        }}
+      />
+
+      {/* ===================================================
+          SEMANTIC BREADCRUMB
+      =================================================== */}
+
+      <nav
+        aria-label="Breadcrumb"
+        className="sr-only"
+      >
+        <ol>
+          <li>
+            <a href="/">
+              Home
+            </a>
+          </li>
+
+          <li>
+            <a href="/services">
+              Services
+            </a>
+          </li>
+
+          <li aria-current="page">
+            {service.title}
+          </li>
+        </ol>
+      </nav>
+
+      {/* ===================================================
+          MAIN CONTENT
+      =================================================== */}
+
+      <main>
+        <ServiceDetailPage
+          service={service}
+          relatedProjects={
+            relatedProjects
+          }
+          relatedFaqs={
+            relatedFaqs
+          }
+        />
+      </main>
+
+      <Footer />
+    </>
+  );
 }

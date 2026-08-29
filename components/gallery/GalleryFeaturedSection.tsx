@@ -63,7 +63,7 @@ export default function GalleryFeaturedSection({
             FEATURED GRID
         ================================================= */}
 
-        <div className="mt-10 grid gap-5 md:grid-cols-2 lg:gap-6">
+        <div className="mt-10 grid w-full min-w-0 max-w-full gap-5 md:grid-cols-2 lg:gap-6">
           {galleries.map((gallery) => {
             const cover =
               gallery.coverImage?.url ||
@@ -82,40 +82,40 @@ export default function GalleryFeaturedSection({
               ).length;
 
             return (
-              <Link
-                key={gallery._id}
-                href={`/gallery/${gallery.slug}`}
-                className="group block"
-              >
+          <Link
+  key={gallery._id}
+  href={`/gallery/${gallery.slug}`}
+  className="group block min-w-0 w-full max-w-full"
+>
                 {/* =================================================
                     IMAGE
                 ================================================= */}
 
-                <div className="overflow-hidden rounded-[1.75rem] border border-white/[0.07] bg-[#080808]">
-                  <div className="relative aspect-[16/10] overflow-hidden">
-                    {cover ? (
-                      <img
-                        src={cover}
-                        alt={imageAlt}
-                        className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035]"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-[#090909]">
-                        <Images
-                          size={38}
-                          strokeWidth={1}
-                          className="text-neutral-800"
-                        />
-                      </div>
-                    )}
+                <div className="w-full min-w-0 max-w-full overflow-hidden rounded-[1.75rem] border border-white/[0.07] bg-[#080808]">
+          <div className="relative w-full min-w-0 max-w-full aspect-[16/10] overflow-hidden bg-[#080808]">
+  {cover ? (
+ <img
+  src={cover}
+  alt={imageAlt}
+  loading="lazy"
+  decoding="async"
+  className="block h-full w-full min-w-0 max-w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.025]"
+/>
+  ) : (
+    <div className="flex h-full w-full items-center justify-center bg-[#090909]">
+      <Images
+        size={38}
+        strokeWidth={1}
+        className="text-neutral-800"
+      />
+    </div>
+  )}
 
-                    {/* subtle image treatment */}
-
-                    <div
-                      aria-hidden="true"
-                      className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"
-                    />
-                  </div>
+  <div
+    aria-hidden="true"
+    className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"
+  />
+</div>
 
                   {/* =================================================
                       CARD CONTENT

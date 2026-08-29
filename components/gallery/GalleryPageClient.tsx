@@ -86,7 +86,7 @@ export default function GalleryPageClient({
     );
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <div  className="min-h-screen bg-[#050505] text-white">
       {/* ===================================================
           HERO
       =================================================== */}
@@ -119,6 +119,6 @@ export default function GalleryPageClient({
       =================================================== */}
 
       <GalleryFinalCtaSection />
-    </main>
+    </div>
   );
 }
