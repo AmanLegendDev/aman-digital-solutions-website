@@ -527,8 +527,7 @@ export default async function ServicePage({
       {/* ===================================================
           MAIN CONTENT
       =================================================== */}
-
-      <main>
+<main className="w-full max-w-full overflow-x-clip">
         <ServiceDetailPage
           service={service}
           relatedProjects={

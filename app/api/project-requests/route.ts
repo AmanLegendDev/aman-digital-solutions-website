@@ -2,27 +2,11 @@ import { NextResponse } from "next/server";
 
 import { connectDB } from "@/lib/db/connect";
 import ProjectRequest from "@/models/ProjectRequest";
+import Counter from "@/models/Counter";
 
 import {
   projectRequestSchema,
 } from "@/schemas/projectRequest.schema";
-
-/* =========================================================
-   REQUEST ID
-========================================================= */
-
-function generateRequestId() {
-  const timestamp =
-    Date.now().toString(36).toUpperCase();
-
-  const random =
-    Math.random()
-      .toString(36)
-      .substring(2, 7)
-      .toUpperCase();
-
-  return `ADS-${timestamp}-${random}`;
-}
 
 /* =========================================================
    POST
@@ -46,8 +30,10 @@ export async function POST(
       return NextResponse.json(
         {
           success: false,
+
           error:
             "Please check the submitted information.",
+
           fields:
             parsed.error.flatten()
               .fieldErrors,
@@ -64,28 +50,46 @@ export async function POST(
 
     await connectDB();
 
-    let requestId =
-      generateRequestId();
+    /* =====================================================
+       ATOMIC REQUEST COUNTER
+    ===================================================== */
 
-    /* Avoid theoretical collision */
-    while (
-      await ProjectRequest.exists({
-        requestId,
-      })
-    ) {
-      requestId =
-        generateRequestId();
-    }
+    const counter =
+      await Counter.findOneAndUpdate(
+        {
+          _id: "project-request",
+        },
+        {
+          $inc: {
+            sequence: 1,
+          },
+        },
+        {
+          new: true,
+          upsert: true,
+          setDefaultsOnInsert: true,
+        },
+      );
 
     /* =====================================================
-       SAVE
+       REQUEST ID
+    ===================================================== */
+
+    const requestId =
+      `ADS-${counter.sequence}`;
+
+    /* =====================================================
+       SAVE REQUEST
     ===================================================== */
 
     const projectRequest =
       await ProjectRequest.create({
         requestId,
 
-        /* Client */
+        /* =================================================
+           CLIENT
+        ================================================= */
+
         fullName:
           parsed.data.fullName,
 
@@ -110,7 +114,10 @@ export async function POST(
           parsed.data
             .preferredContactMethod,
 
-        /* Project */
+        /* =================================================
+           PROJECT
+        ================================================= */
+
         serviceIds:
           parsed.data.serviceIds,
 
@@ -134,11 +141,17 @@ export async function POST(
         budgetRange:
           parsed.data.budgetRange,
 
-        /* Consent */
+        /* =================================================
+           CONSENT
+        ================================================= */
+
         privacyConsent:
           parsed.data.privacyConsent,
 
-        /* Admin */
+        /* =================================================
+           ADMIN
+        ================================================= */
+
         status: "NEW",
       });
 
@@ -157,6 +170,7 @@ export async function POST(
         status: 201,
       },
     );
+
   } catch (error) {
     console.error(
       "PROJECT REQUEST ERROR:",
@@ -166,6 +180,7 @@ export async function POST(
     return NextResponse.json(
       {
         success: false,
+
         error:
           "Something went wrong while submitting your request.",
       },

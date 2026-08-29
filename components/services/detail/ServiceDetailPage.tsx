@@ -61,7 +61,7 @@ export default function ServiceDetailPage({
   );
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+   <main className="min-h-screen w-full max-w-full overflow-x-clip bg-[#050505] text-white">
       {/* =====================================================
           BREADCRUMB
       ====================================================== */}
