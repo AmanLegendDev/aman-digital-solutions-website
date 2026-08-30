@@ -675,91 +675,124 @@ export async function POST(
        ADMIN EMAIL NOTIFICATION
     ===================================================== */
 
-    try {
-      await resend.emails.send(
+  /* =====================================================
+   ADMIN EMAIL NOTIFICATION
+===================================================== */
+
+console.log(
+  "PROJECT_REQUEST_EMAIL_ATTEMPT:",
+  {
+    requestId: projectRequest.requestId,
+    from: EMAIL_FROM,
+    to: ADMIN_EMAIL,
+  },
+);
+
+const { data: emailData, error: emailError } =
+  await resend.emails.send(
+    {
+      from: EMAIL_FROM,
+
+      to: [ADMIN_EMAIL],
+
+      subject:
+        `🚀 New Project Request — ${projectRequest.requestId}`,
+
+      html: projectRequestEmail({
+        requestId:
+          projectRequest.requestId,
+
+        fullName:
+          projectRequest.fullName,
+
+        companyName:
+          projectRequest.companyName,
+
+        email:
+          projectRequest.email,
+
+        phone:
+          projectRequest.phone,
+
+        location:
+          projectRequest.location,
+
+        currentWebsite:
+          projectRequest.currentWebsite,
+
+        preferredContactMethod:
+          projectRequest.preferredContactMethod,
+
+        projectType:
+          projectRequest.projectType,
+
+        projectDescription:
+          projectRequest.projectDescription,
+
+        serviceNames,
+
+        requiredPages:
+          projectRequest.requiredPages,
+
+        requiredFeatures:
+          projectRequest.requiredFeatures,
+
+        timeline:
+          projectRequest.timeline,
+
+        budgetRange:
+          projectRequest.budgetRange,
+
+        createdAt:
+          projectRequest.createdAt,
+      }),
+
+      replyTo:
+        projectRequest.email,
+
+      tags: [
         {
-          from: EMAIL_FROM,
-          to: [ADMIN_EMAIL],
-
-          subject:
-            `🚀 New Project Request — ${projectRequest.requestId}`,
-
-          html: projectRequestEmail({
-            requestId:
-              projectRequest.requestId,
-
-            fullName:
-              projectRequest.fullName,
-
-            companyName:
-              projectRequest.companyName,
-
-            email:
-              projectRequest.email,
-
-            phone:
-              projectRequest.phone,
-
-            location:
-              projectRequest.location,
-
-            currentWebsite:
-              projectRequest.currentWebsite,
-
-            preferredContactMethod:
-              projectRequest.preferredContactMethod,
-
-            projectType:
-              projectRequest.projectType,
-
-            projectDescription:
-              projectRequest.projectDescription,
-
-            serviceNames,
-
-            requiredPages:
-              projectRequest.requiredPages,
-
-            requiredFeatures:
-              projectRequest.requiredFeatures,
-
-            timeline:
-              projectRequest.timeline,
-
-            budgetRange:
-              projectRequest.budgetRange,
-
-            createdAt:
-              projectRequest.createdAt,
-          }),
-
-          replyTo:
-            projectRequest.email,
-
-          tags: [
-            {
-              name: "event",
-              value:
-                "project-request-created",
-            },
-            {
-              name: "request_id",
-              value:
-                projectRequest.requestId,
-            },
-          ],
+          name: "event",
+          value:
+            "project-request-created",
         },
+
         {
-          idempotencyKey:
-            `project-request-admin/${projectRequest._id}`,
+          name: "request_id",
+          value:
+            projectRequest.requestId,
         },
-      );
-    } catch (emailError) {
-      console.error(
-        "PROJECT_REQUEST_EMAIL_NOTIFICATION_FAILED:",
+      ],
+    },
+    {
+      idempotencyKey:
+        `project-request-admin/${projectRequest._id}`,
+    },
+  );
+
+if (emailError) {
+  console.error(
+    "PROJECT_REQUEST_EMAIL_NOTIFICATION_FAILED:",
+    {
+      requestId:
+        projectRequest.requestId,
+
+      error:
         emailError,
-      );
-    }
+    },
+  );
+} else {
+  console.log(
+    "PROJECT_REQUEST_EMAIL_SENT_SUCCESSFULLY:",
+    {
+      requestId:
+        projectRequest.requestId,
+
+      emailId:
+        emailData?.id,
+    },
+  );
+}
 
     /* =====================================================
        RESPONSE
