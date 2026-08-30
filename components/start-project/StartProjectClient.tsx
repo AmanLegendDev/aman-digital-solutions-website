@@ -8,7 +8,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import PersonalStep from "./steps/PersonalStep";
 import ProjectStep from "./steps/ProjectStep";
@@ -34,6 +34,8 @@ export default function StartProjectClient({
 }: Props) {
   const [step, setStep] =
     useState<FormStep>(1);
+
+    const formTopRef = useRef<HTMLDivElement>(null);
 
   const [data, setData] =
     useState<FormData>({
@@ -153,23 +155,38 @@ export default function StartProjectClient({
   }
 
   function handleNext() {
-    if (step === 1) {
-      if (!validateStepOne()) {
-        return;
-      }
-
-      setStep(2);
+  if (step === 1) {
+    if (!validateStepOne()) {
       return;
     }
 
-    if (step === 2) {
-      if (!validateStepTwo()) {
-        return;
-      }
+    setStep(2);
 
-      setStep(3);
-    }
+    window.setTimeout(() => {
+      formTopRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 50);
+
+    return;
   }
+
+  if (step === 2) {
+    if (!validateStepTwo()) {
+      return;
+    }
+
+    setStep(3);
+
+    window.setTimeout(() => {
+      formTopRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 50);
+  }
+}
 
   async function handleSubmit() {
     setSubmitError("");
@@ -331,7 +348,10 @@ export default function StartProjectClient({
 
         {/* FORM */}
 
-        <div className="overflow-hidden rounded-3xl border border-white/[0.08] bg-[#090909]">
+        <div
+  ref={formTopRef}
+  className="overflow-hidden rounded-3xl border border-white/[0.08] bg-[#090909]"
+>
           {step === 1 && (
             <PersonalStep
               data={data}
