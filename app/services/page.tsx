@@ -3,9 +3,18 @@ import type { Metadata } from "next";
 import { connectDB } from "@/lib/db/connect";
 import Service from "@/models/Service";
 
+import {
+  getCollectionPageSchema,
+  getItemListSchema,
+} from "@/lib/seo/schema";
+
 import ServicesPageClient from "@/components/services/ServicesPageClient";
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "https://www.amandigitalsolutions.com";
 
 export const metadata: Metadata = {
   title:
@@ -124,9 +133,52 @@ export default async function ServicesPage() {
       )
       .map(mapService);
 
+
+      const servicesUrl = `${SITE_URL}/services`;
+
+const serviceItems = services.map((service) => ({
+  name: service.title,
+  url: `${servicesUrl}/${service.slug}`,
+  ...(service.image?.url
+    ? {
+        image: service.image.url,
+      }
+    : {}),
+  description: service.shortDescription,
+}));
+
+const servicesItemList = getItemListSchema({
+  id: `${servicesUrl}#itemlist`,
+  name: "Aman Digital Solutions Services",
+  url: servicesUrl,
+  items: serviceItems,
+});
+
+const servicesCollection = getCollectionPageSchema({
+  url: servicesUrl,
+  name:
+    "Web Development & Digital Solutions Services | Aman Digital Solutions",
+  description:
+    "Explore website development, e-commerce, web applications, SEO, digital marketing and business automation services.",
+  itemListId: `${servicesUrl}#itemlist`,
+});
+
   return (
     <>
       <Navbar />
+
+      <script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        servicesCollection,
+        servicesItemList,
+      ],
+    }),
+  }}
+/>
 
       <main>
         <ServicesPageClient

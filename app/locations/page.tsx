@@ -8,6 +8,12 @@ import LocationsPageClient from "@/components/locations/LocationsPageClient";
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
 
+
+import {
+  getCollectionPageSchema,
+  getItemListSchema,
+} from "@/lib/seo/schema";
+
 /* =========================================================
    SITE CONFIG
 ========================================================= */
@@ -320,9 +326,53 @@ export default async function LocationsPage() {
   const breadcrumbSchema =
     createBreadcrumbSchema();
 
+
+    const locationsUrl = `${SITE_URL}/locations`;
+
+const locationItems = locations.map((location) => ({
+  name: location.name,
+  url: `${locationsUrl}/${location.slug}`,
+
+  ...(location.image?.url
+    ? {
+        image: location.image.url,
+      }
+    : {}),
+
+  description: location.shortDescription,
+}));
+
+const locationsItemList = getItemListSchema({
+  id: `${locationsUrl}#itemlist`,
+  name: "Aman Digital Solutions Locations",
+  url: locationsUrl,
+  items: locationItems,
+});
+
+const locationsCollection = getCollectionPageSchema({
+  url: locationsUrl,
+  name: "Locations | Aman Digital Solutions",
+  description:
+    "Explore the locations where Aman Digital Solutions provides professional website development and digital solutions.",
+  itemListId: `${locationsUrl}#itemlist`,
+});
+
   return (
     <>
-    <Navbar/>
+    <Navbar />
+
+<script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        locationsCollection,
+        locationsItemList,
+      ],
+    }),
+  }}
+/>
       {/* =================================================
           STRUCTURED DATA
       ================================================= */}

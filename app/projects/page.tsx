@@ -7,6 +7,15 @@ import ProjectsPageClient from "@/components/projects/ProjectsPageClient";
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
 
+import {
+  getCollectionPageSchema,
+  getItemListSchema,
+} from "@/lib/seo/schema";
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "https://www.amandigitalsolutions.com";
+
 export const metadata: Metadata = {
   title:
     "Our Projects | Websites, E-commerce & Digital Solutions | Aman Digital Solutions",
@@ -121,9 +130,50 @@ export default async function ProjectsPage() {
         !project.featured
     );
 
+    const projectsUrl = `${SITE_URL}/projects`;
+
+const projectItems = serializedProjects.map((project) => ({
+  name: project.title,
+  url: `${projectsUrl}/${project.slug}`,
+  ...(project.coverImage?.url
+    ? {
+        image: project.coverImage.url,
+      }
+    : {}),
+  description: project.shortDescription,
+}));
+
+const projectsItemList = getItemListSchema({
+  id: `${projectsUrl}#itemlist`,
+  name: "Aman Digital Solutions Projects",
+  url: projectsUrl,
+  items: projectItems,
+});
+
+const projectsCollection = getCollectionPageSchema({
+  url: projectsUrl,
+  name: "Our Projects | Aman Digital Solutions",
+  description:
+    "Explore websites, e-commerce platforms, web applications and digital solutions built by Aman Digital Solutions.",
+  itemListId: `${projectsUrl}#itemlist`,
+});
+
   return (
     <>
       <Navbar />
+
+      <script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        projectsCollection,
+        projectsItemList,
+      ],
+    }),
+  }}
+/>
 
       <main>
         <ProjectsPageClient

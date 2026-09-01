@@ -11,6 +11,17 @@ import BlogPageClient, {
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
 
+import {
+  getBlogSchema,
+  getItemListSchema,
+  getCollectionPageSchema,
+} from "@/lib/seo/schema";
+import { blogSchema } from "@/schemas/blog.schema";
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "https://www.amandigitalsolutions.com";
+
 /* =========================================================
    METADATA
 ========================================================= */
@@ -133,6 +144,9 @@ async function getPublishedBlogs(): Promise<
   }));
 }
 
+
+
+
 /* =========================================================
    PAGE
 ========================================================= */
@@ -140,14 +154,56 @@ async function getPublishedBlogs(): Promise<
 export default async function BlogPage() {
   const blogs = await getPublishedBlogs();
 
+  const blogUrl = `${SITE_URL}/blog`;
+
+  const blogItems = blogs.map((blog) => ({
+    name: blog.title,
+    url: `${blogUrl}/${blog.slug}`,
+
+    ...(blog.coverImage?.url
+      ? {
+          image: blog.coverImage.url,
+        }
+      : {}),
+
+    description: blog.excerpt,
+  }));
+
+  const blogItemList = getItemListSchema({
+    id: `${blogUrl}#itemlist`,
+    name: "Aman Digital Solutions Blog Articles",
+    url: blogUrl,
+    items: blogItems,
+  });
+
+  const blogSchema = getBlogSchema({
+    url: blogUrl,
+    name:
+      "Blog | Web Development, SEO & Digital Growth | Aman Digital Solutions",
+    description:
+      "Practical insights on web development, SEO, digital marketing, technology and digital growth.",
+    itemListId: `${blogUrl}#itemlist`,
+  });
+
   return (
     <>
       <Navbar />
 
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              blogSchema,
+              blogItemList,
+            ],
+          }),
+        }}
+      />
+
       <main>
-        <BlogPageClient
-          blogs={blogs}
-        />
+        <BlogPageClient blogs={blogs} />
       </main>
 
       <Footer />

@@ -10,6 +10,15 @@ import GalleryPageClient, {
   type GalleryCardData,
 } from "@/components/gallery/GalleryPageClient";
 
+import {
+  getCollectionPageSchema,
+  getItemListSchema,
+} from "@/lib/seo/schema";
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "https://www.amandigitalsolutions.com";
+
 /* =========================================================
    METADATA
 ========================================================= */
@@ -196,9 +205,56 @@ export default async function GalleryPage() {
   const galleries =
     await getPublishedGalleries();
 
+
+    const galleryUrl = `${SITE_URL}/gallery`;
+
+const galleryItems = galleries.map((gallery) => ({
+  name: gallery.title,
+  url: `${galleryUrl}/${gallery.slug}`,
+
+  ...(gallery.coverImage?.url
+    ? {
+        image: gallery.coverImage.url,
+      }
+    : {}),
+
+  description:
+    gallery.shortDescription ||
+    gallery.description,
+}));
+
+const galleryItemList = getItemListSchema({
+  id: `${galleryUrl}#itemlist`,
+  name: "Aman Digital Solutions Gallery",
+  url: galleryUrl,
+  items: galleryItems,
+});
+
+const galleryCollection = getCollectionPageSchema({
+  url: galleryUrl,
+  name:
+    "Gallery | Websites, Digital Experiences & Creative Work | Aman Digital Solutions",
+  description:
+    "Explore website designs, digital experiences, project visuals and creative work built by Aman Digital Solutions.",
+  itemListId: `${galleryUrl}#itemlist`,
+});
+
   return (
     <>
       <Navbar />
+
+<script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        galleryCollection,
+        galleryItemList,
+      ],
+    }),
+  }}
+/>
 
       <main>
         <GalleryPageClient

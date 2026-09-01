@@ -234,3 +234,146 @@ export function getBreadcrumbSchema(
     ),
   };
 }
+
+/* =========================================================
+   COLLECTION PAGE
+========================================================= */
+
+export function getCollectionPageSchema({
+  url,
+  name,
+  description,
+  itemListId,
+}: {
+  url: string;
+  name: string;
+  description: string;
+  itemListId: string;
+}) {
+  return {
+    "@type": "CollectionPage",
+
+    "@id": `${url}#collection`,
+
+    url,
+
+    name,
+
+    description,
+
+    isPartOf: {
+      "@id": WEBSITE_ID,
+    },
+
+    about: {
+      "@id": ORGANIZATION_ID,
+    },
+
+    publisher: {
+      "@id": ORGANIZATION_ID,
+    },
+
+    mainEntity: {
+      "@id": itemListId,
+    },
+
+    inLanguage: "en-IN",
+  };
+}
+
+/* =========================================================
+   ITEM LIST
+========================================================= */
+
+export function getItemListSchema({
+  id,
+  name,
+  url,
+  items,
+}: {
+  id: string;
+  name: string;
+  url: string;
+  items: {
+    name: string;
+    url: string;
+    image?: string;
+    description?: string;
+  }[];
+}) {
+  return {
+    "@type": "ItemList",
+
+    "@id": id,
+
+    name,
+
+    url,
+
+    numberOfItems: items.length,
+
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+
+      position: index + 1,
+
+      name: item.name,
+
+      url: item.url,
+
+      ...(item.image
+        ? {
+            image: item.image,
+          }
+        : {}),
+
+      ...(item.description
+        ? {
+            description: item.description,
+          }
+        : {}),
+    })),
+  };
+}
+
+/* =========================================================
+   BLOG
+========================================================= */
+
+export function getBlogSchema({
+  url,
+  name,
+  description,
+  itemListId,
+}: {
+  url: string;
+  name: string;
+  description: string;
+  itemListId: string;
+}) {
+  return {
+    "@type": "Blog",
+
+    "@id": `${url}#blog`,
+
+    name,
+
+    description,
+
+    url,
+
+    publisher: {
+      "@id": ORGANIZATION_ID,
+    },
+
+    mainEntity: {
+      "@id": itemListId,
+    },
+
+    isPartOf: {
+      "@id": WEBSITE_ID,
+    },
+
+    inLanguage: "en-IN",
+  };
+}
