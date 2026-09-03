@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-
+export const dynamic = "force-dynamic";
 import { connectDB } from "@/lib/db/connect";
 import Blog from "@/models/Blog";
 
