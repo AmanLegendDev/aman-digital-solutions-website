@@ -14,31 +14,17 @@ import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
 
-import {
-  getWebPageSchema,
-} from "@/lib/seo/schema";
-
-/* =========================================================
-   SITE
-========================================================= */
+import { getWebPageSchema } from "@/lib/seo/schema";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.amandigitalsolutions.com";
-
-/* =========================================================
-   PARAMS
-========================================================= */
 
 type PageProps = {
   params: Promise<{
     slug: string;
   }>;
 };
-
-/* =========================================================
-   GET SERVICE
-========================================================= */
 
 async function getServiceBySlug(
   slug: string
@@ -53,10 +39,6 @@ async function getServiceBySlug(
   return service;
 }
 
-/* =========================================================
-   METADATA
-========================================================= */
-
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
@@ -64,18 +46,11 @@ export async function generateMetadata({
 
   const service = await getServiceBySlug(slug);
 
-  /* -------------------------------------------------------
-     NOT FOUND
-  ------------------------------------------------------- */
-
   if (!service) {
     return {
-      title:
-        "Service Not Found | Aman Digital Solutions",
-
+      title: "Service Not Found",
       description:
         "The requested service could not be found.",
-
       robots: {
         index: false,
         follow: false,
@@ -83,38 +58,16 @@ export async function generateMetadata({
     };
   }
 
-  /* -------------------------------------------------------
-     SEO TITLE
-  ------------------------------------------------------- */
-
   const title =
     service.seoTitle?.trim() ||
-    `${service.title} | Aman Digital Solutions`;
-
-  /* -------------------------------------------------------
-     SEO DESCRIPTION
-  ------------------------------------------------------- */
+    service.title;
 
   const description =
     service.seoDescription?.trim() ||
     service.shortDescription;
 
-  /* -------------------------------------------------------
-     CANONICAL
-  ------------------------------------------------------- */
-
-  const databaseCanonical =
-    service.canonicalUrl?.trim();
-
   const canonical =
-    databaseCanonical &&
-    !databaseCanonical.includes("localhost")
-      ? databaseCanonical
-      : `${SITE_URL}/services/${service.slug}`;
-
-  /* -------------------------------------------------------
-     OPEN GRAPH
-  ------------------------------------------------------- */
+    `${SITE_URL}/services/${service.slug}`;
 
   const ogTitle =
     service.ogTitle?.trim() ||
@@ -128,10 +81,6 @@ export async function generateMetadata({
     service.ogImage?.url ||
     service.image?.url;
 
-  /* -------------------------------------------------------
-     METADATA
-  ------------------------------------------------------- */
-
   return {
     title,
 
@@ -143,16 +92,10 @@ export async function generateMetadata({
 
     openGraph: {
       type: "website",
-
       locale: "en_IN",
-
-      siteName:
-        "Aman Digital Solutions",
-
+      siteName: "Aman Digital Solutions",
       title: ogTitle,
-
       description: ogDescription,
-
       url: canonical,
 
       ...(ogImage
@@ -160,7 +103,6 @@ export async function generateMetadata({
             images: [
               {
                 url: ogImage,
-
                 alt:
                   service.ogImage?.alt ||
                   service.image?.alt ||
@@ -173,9 +115,7 @@ export async function generateMetadata({
 
     twitter: {
       card: "summary_large_image",
-
       title: ogTitle,
-
       description: ogDescription,
 
       ...(ogImage
@@ -192,21 +132,13 @@ export async function generateMetadata({
       googleBot: {
         index: true,
         follow: true,
-
-        "max-image-preview":
-          "large",
-
+        "max-image-preview": "large",
         "max-snippet": -1,
-
         "max-video-preview": -1,
       },
     },
   };
 }
-
-/* =========================================================
-   PAGE
-========================================================= */
 
 export default async function ServicePage({
   params,
@@ -216,23 +148,57 @@ export default async function ServicePage({
   const service =
     await getServiceBySlug(slug);
 
-  /* -------------------------------------------------------
-     NOT FOUND
-  ------------------------------------------------------- */
-
   if (!service) {
     notFound();
   }
 
-  /* =======================================================
-     RELATED CONTENT
-  ======================================================== */
+  /*
+   * =========================================================
+   * RELATED CONTENT IDS
+   * =========================================================
+   */
 
   const faqIds =
     service.faqIds ?? [];
 
   const projectIds =
     service.projectIds ?? [];
+
+  /*
+   * =========================================================
+   * RELATED SERVICES
+   * =========================================================
+   *
+   * Prefer services from the same category while:
+   * - excluding the current service
+   * - showing published services only
+   * - keeping the section lightweight
+   */
+
+  const relatedServiceDocuments =
+    await Service.find({
+      published: true,
+      slug: {
+        $ne: service.slug,
+      },
+      category: service.category,
+    })
+      .sort({
+        featured: -1,
+        displayOrder: 1,
+        createdAt: -1,
+      })
+      .limit(3)
+      .select(
+        "_id title slug shortDescription category image"
+      )
+      .lean();
+
+  /*
+   * =========================================================
+   * RELATED FAQS + PROJECTS
+   * =========================================================
+   */
 
   const [
     faqDocuments,
@@ -243,7 +209,6 @@ export default async function ServicePage({
           _id: {
             $in: faqIds,
           },
-
           published: true,
         })
           .select(
@@ -260,7 +225,6 @@ export default async function ServicePage({
           _id: {
             $in: projectIds,
           },
-
           published: true,
         })
           .select(
@@ -273,33 +237,80 @@ export default async function ServicePage({
       : [],
   ]);
 
-  /* =======================================================
-     RELATED FAQS
-  ======================================================== */
+  /*
+   * =========================================================
+   * RELATED SERVICES DATA
+   * =========================================================
+   */
+
+  const relatedServices =
+    relatedServiceDocuments.map(
+      (relatedService) => ({
+        id: String(
+          relatedService._id
+        ),
+
+        title:
+          relatedService.title,
+
+        slug:
+          relatedService.slug,
+
+        shortDescription:
+          relatedService.shortDescription,
+
+        category:
+          relatedService.category,
+
+        image:
+          relatedService.image
+            ? {
+                url:
+                  relatedService.image.url,
+
+                alt:
+                  relatedService.image.alt,
+              }
+            : undefined,
+      })
+    );
+
+  /*
+   * =========================================================
+   * RELATED FAQS DATA
+   * =========================================================
+   */
 
   const relatedFaqs =
     faqDocuments.map((faq) => ({
       id: String(faq._id),
 
-      question: faq.question,
+      question:
+        faq.question,
 
-      slug: faq.slug,
+      slug:
+        faq.slug,
 
-      answer: faq.answer,
+      answer:
+        faq.answer,
     }));
 
-  /* =======================================================
-     RELATED PROJECTS
-  ======================================================== */
+  /*
+   * =========================================================
+   * RELATED PROJECTS DATA
+   * =========================================================
+   */
 
   const relatedProjects =
     projectDocuments.map(
       (project) => ({
         id: String(project._id),
 
-        title: project.title,
+        title:
+          project.title,
 
-        slug: project.slug,
+        slug:
+          project.slug,
 
         shortDescription:
           project.shortDescription,
@@ -320,24 +331,28 @@ export default async function ServicePage({
       })
     );
 
-  /* =======================================================
-     SEO URL
-  ======================================================== */
+  /*
+   * =========================================================
+   * SEO URL
+   * =========================================================
+   */
 
   const serviceUrl =
     `${SITE_URL}/services/${service.slug}`;
 
   const serviceTitle =
     service.seoTitle?.trim() ||
-    `${service.title} | Aman Digital Solutions`;
+    service.title;
 
   const serviceDescription =
     service.seoDescription?.trim() ||
     service.shortDescription;
 
-  /* =======================================================
-     SERVICE SCHEMA
-  ======================================================== */
+  /*
+   * =========================================================
+   * SERVICE SCHEMA
+   * =========================================================
+   */
 
   const serviceSchema: Record<
     string,
@@ -398,7 +413,7 @@ export default async function ServicePage({
       : {}),
 
     ...(typeof service.startingPrice ===
-      "number"
+    "number"
       ? {
           offers: {
             "@type":
@@ -417,9 +432,11 @@ export default async function ServicePage({
       : {}),
   };
 
-  /* =======================================================
-     WEBPAGE SCHEMA
-  ======================================================== */
+  /*
+   * =========================================================
+   * WEBPAGE SCHEMA
+   * =========================================================
+   */
 
   const webPageSchema =
     getWebPageSchema({
@@ -437,17 +454,11 @@ export default async function ServicePage({
         service.image?.url,
     });
 
-  /* =======================================================
-     RENDER
-  ======================================================== */
-
   return (
     <>
       <Navbar />
 
-      {/* ===================================================
-          BREADCRUMB STRUCTURED DATA
-      =================================================== */}
+      {/* BREADCRUMB STRUCTURED DATA */}
 
       <BreadcrumbSchema
         items={[
@@ -469,9 +480,7 @@ export default async function ServicePage({
         ]}
       />
 
-      {/* ===================================================
-          SERVICE SCHEMA
-      =================================================== */}
+      {/* SERVICE SCHEMA */}
 
       <script
         type="application/ld+json"
@@ -483,9 +492,7 @@ export default async function ServicePage({
         }}
       />
 
-      {/* ===================================================
-          WEBPAGE SCHEMA
-      =================================================== */}
+      {/* WEBPAGE SCHEMA */}
 
       <script
         type="application/ld+json"
@@ -497,9 +504,7 @@ export default async function ServicePage({
         }}
       />
 
-      {/* ===================================================
-          SEMANTIC BREADCRUMB
-      =================================================== */}
+      {/* SEMANTIC BREADCRUMB */}
 
       <nav
         aria-label="Breadcrumb"
@@ -524,12 +529,14 @@ export default async function ServicePage({
         </ol>
       </nav>
 
-      {/* ===================================================
-          MAIN CONTENT
-      =================================================== */}
-<main className="w-full max-w-full overflow-x-clip">
+      {/* MAIN CONTENT */}
+
+      <main className="w-full max-w-full overflow-x-clip">
         <ServiceDetailPage
           service={service}
+          relatedServices={
+            relatedServices
+          }
           relatedProjects={
             relatedProjects
           }

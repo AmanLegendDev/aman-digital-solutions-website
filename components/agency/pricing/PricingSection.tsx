@@ -36,7 +36,6 @@ async function getPricingPlans() {
         "ctaLink",
         "isFeatured",
         "featuredLabel",
-        "displayOrder",
       ].join(" ")
     )
     .lean();
@@ -81,7 +80,7 @@ export default async function PricingSection() {
       aria-labelledby="pricing-heading"
       className="relative w-full max-w-full scroll-mt-28 overflow-x-clip border-t border-[#1A1A1A] bg-[#080808] py-24 sm:py-28 lg:py-32"
     >
-      {/* Ambient glow */}
+      {/* Ambient visual effect */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute left-1/2 top-20 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-[#FFC400]/[0.025] blur-[150px]"
@@ -93,7 +92,7 @@ export default async function PricingSection() {
           <PricingIntro />
         </div>
 
-        {/* PLANS */}
+        {/* FEATURED PRICING PLANS */}
         <div className="mx-auto mt-14 grid w-full max-w-6xl min-w-0 gap-5 md:grid-cols-2 xl:grid-cols-3">
           {plans.map((plan, index) => (
             <PricingCard
@@ -104,7 +103,7 @@ export default async function PricingSection() {
           ))}
         </div>
 
-        {/* VIEW ALL */}
+        {/* FULL PRICING PAGE */}
         <div className="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Link
             href="/pricing"
@@ -113,6 +112,7 @@ export default async function PricingSection() {
             View all pricing
 
             <ArrowUpRight
+              aria-hidden="true"
               size={14}
               className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
             />
@@ -125,13 +125,14 @@ export default async function PricingSection() {
             Talk about your project
 
             <ArrowUpRight
+              aria-hidden="true"
               size={14}
               className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
             />
           </Link>
         </div>
 
-        {/* BOTTOM NOTE */}
+        {/* SUPPORTING NOTE */}
         <div className="mx-auto mt-8 flex max-w-6xl items-center justify-center gap-2 text-center">
           <span
             aria-hidden="true"

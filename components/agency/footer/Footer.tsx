@@ -5,63 +5,54 @@ import {
   Linkedin,
   Mail,
   MapPin,
-  MessageCircle,
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 
 /* =========================================================
-   BUSINESS LINKS
-   ========================================================= */
+   BUSINESS INFORMATION
+========================================================= */
 
 const BUSINESS = {
   email: "hello@amandigitalsolutions.com",
-
-  /*
-   IMPORTANT:
-   Add your WhatsApp number here with country code.
-   Example for India:
-   "919876543210"
-  */
   whatsapp: "918219174058",
-
-  instagram: "https://www.instagram.com/amandigital.solutions/",
-  linkedin: "https://www.linkedin.com/in/amancodes60/",
-};
+  instagram:
+    "https://www.instagram.com/amandigital.solutions/",
+  linkedin:
+    "https://www.linkedin.com/in/amancodes60/",
+} as const;
 
 /* =========================================================
-   NAVIGATION
-   ========================================================= */
+   FOOTER NAVIGATION
+========================================================= */
 
 const NAVIGATION = [
-  { label: "Home", href: "#top" },
+  { label: "Home", href: "/" },
   { label: "Services", href: "/services" },
   { label: "Work", href: "/projects" },
   { label: "Pricing", href: "/pricing" },
   { label: "Gallery", href: "/gallery" },
   { label: "Blog", href: "/blog" },
   { label: "FAQ", href: "/faq" },
-];
+  { label: "Contact", href: "/contact" },
+] as const;
 
 /* =========================================================
    SERVICES
-   ========================================================= */
+========================================================= */
 
 const SERVICES = [
   "Web Development",
   "UI / UX Design",
   "SEO & Performance",
   "Business Solutions",
-];
+] as const;
 
 /* =========================================================
    FOOTER
-   ========================================================= */
+========================================================= */
 
 export default function Footer() {
-  const whatsappHref =
-    BUSINESS.whatsapp !== "8219174058"
-      ? `https://wa.me/${BUSINESS.whatsapp}`
-      : "/start-a-project";
+  const whatsappHref = `https://wa.me/${BUSINESS.whatsapp}`;
 
   return (
     <footer className="relative w-full max-w-full overflow-hidden border-t border-[#1A1A1A] bg-[#030303]">
@@ -91,13 +82,44 @@ export default function Footer() {
 
             <Link
               href="/start-a-project"
-              className="group inline-flex min-h-12 shrink-0 items-center justify-center gap-2 self-start rounded-full bg-[#FFC400] px-6 text-sm font-semibold text-black transition-all duration-200 hover:bg-[#FFD43B] hover:shadow-[0_0_35px_rgba(255,196,0,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] lg:self-auto"
+              className="
+                group
+                inline-flex
+                min-h-12
+                shrink-0
+                items-center
+                justify-center
+                gap-2
+                self-start
+                rounded-full
+                bg-[#FFC400]
+                px-6
+                text-sm
+                font-semibold
+                text-black
+                transition-all
+                duration-200
+                hover:bg-[#FFD43B]
+                hover:shadow-[0_0_35px_rgba(255,196,0,0.14)]
+                focus-visible:outline-none
+                focus-visible:ring-2
+                focus-visible:ring-[#FFC400]
+                focus-visible:ring-offset-2
+                focus-visible:ring-offset-[#030303]
+                lg:self-auto
+              "
             >
               Start a project
 
               <ArrowUpRight
+                aria-hidden="true"
                 size={16}
-                className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                className="
+                  transition-transform
+                  duration-200
+                  group-hover:-translate-y-0.5
+                  group-hover:translate-x-0.5
+                "
               />
             </Link>
           </div>
@@ -116,11 +138,22 @@ export default function Footer() {
 
           <div className="max-w-sm">
             <Link
-              href="#top"
-              className="inline-flex items-center gap-3"
+              href="/"
               aria-label="Aman Digital Solutions home"
+              className="
+                inline-flex
+                items-center
+                gap-3
+                rounded-2xl
+                outline-none
+                focus-visible:ring-2
+                focus-visible:ring-[#FFC400]
+              "
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#292929] bg-[#0D0D0D]">
+              <div
+                aria-hidden="true"
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#292929] bg-[#0D0D0D]"
+              >
                 <span className="text-sm font-bold text-[#FFC400]">
                   A
                 </span>
@@ -132,7 +165,7 @@ export default function Footer() {
                 </p>
 
                 <p className="mt-0.5 text-[9px] uppercase tracking-[0.16em] text-[#4F4F4F]">
-                  Digital experiences
+                  Digital solutions
                 </p>
               </div>
             </Link>
@@ -152,10 +185,32 @@ export default function Footer() {
                 href={BUSINESS.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-[#252525] bg-[#0A0A0A] text-[#666] transition-all duration-200 hover:border-[#FFC400]/30 hover:bg-[#FFC400]/[0.06] hover:text-[#FFC400]"
+                aria-label="Follow Aman Digital Solutions on Instagram"
+                className="
+                  flex
+                  h-9
+                  w-9
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-[#252525]
+                  bg-[#0A0A0A]
+                  text-[#666]
+                  transition-all
+                  duration-200
+                  hover:border-[#FFC400]/30
+                  hover:bg-[#FFC400]/[0.06]
+                  hover:text-[#FFC400]
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-[#FFC400]
+                "
               >
-                <Instagram size={15} />
+                <Instagram
+                  aria-hidden="true"
+                  size={15}
+                />
               </a>
 
               {/* LINKEDIN */}
@@ -164,40 +219,98 @@ export default function Footer() {
                 href={BUSINESS.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-[#252525] bg-[#0A0A0A] text-[#666] transition-all duration-200 hover:border-[#FFC400]/30 hover:bg-[#FFC400]/[0.06] hover:text-[#FFC400]"
+                aria-label="Connect with Aman Digital Solutions on LinkedIn"
+                className="
+                  flex
+                  h-9
+                  w-9
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-[#252525]
+                  bg-[#0A0A0A]
+                  text-[#666]
+                  transition-all
+                  duration-200
+                  hover:border-[#FFC400]/30
+                  hover:bg-[#FFC400]/[0.06]
+                  hover:text-[#FFC400]
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-[#FFC400]
+                "
               >
-                <Linkedin size={15} />
+                <Linkedin
+                  aria-hidden="true"
+                  size={15}
+                />
               </a>
 
               {/* WHATSAPP */}
 
               <a
                 href={whatsappHref}
-                target={
-                  BUSINESS.whatsapp !== "YOUR_WHATSAPP_NUMBER"
-                    ? "_blank"
-                    : undefined
-                }
-                rel={
-                  BUSINESS.whatsapp !== "YOUR_WHATSAPP_NUMBER"
-                    ? "noopener noreferrer"
-                    : undefined
-                }
-                aria-label="WhatsApp"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-[#252525] bg-[#0A0A0A] text-[#666] transition-all duration-200 hover:border-[#FFC400]/30 hover:bg-[#FFC400]/[0.06] hover:text-[#FFC400]"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Chat with Aman Digital Solutions on WhatsApp"
+                className="
+                  flex
+                  h-9
+                  w-9
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-[#252525]
+                  bg-[#0A0A0A]
+                  text-[#666]
+                  transition-all
+                  duration-200
+                  hover:border-[#FFC400]/30
+                  hover:bg-[#FFC400]/[0.06]
+                  hover:text-[#FFC400]
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-[#FFC400]
+                "
               >
-               <FaWhatsapp size={15} />
+                <FaWhatsapp
+                  aria-hidden="true"
+                  size={15}
+                />
               </a>
 
               {/* EMAIL */}
 
               <a
                 href={`mailto:${BUSINESS.email}`}
-                aria-label="Email"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-[#252525] bg-[#0A0A0A] text-[#666] transition-all duration-200 hover:border-[#FFC400]/30 hover:bg-[#FFC400]/[0.06] hover:text-[#FFC400]"
+                aria-label="Email Aman Digital Solutions"
+                className="
+                  flex
+                  h-9
+                  w-9
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-[#252525]
+                  bg-[#0A0A0A]
+                  text-[#666]
+                  transition-all
+                  duration-200
+                  hover:border-[#FFC400]/30
+                  hover:bg-[#FFC400]/[0.06]
+                  hover:text-[#FFC400]
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-[#FFC400]
+                "
               >
-                <Mail size={15} />
+                <Mail
+                  aria-hidden="true"
+                  size={15}
+                />
               </a>
             </div>
           </div>
@@ -211,12 +324,25 @@ export default function Footer() {
               Explore
             </p>
 
-            <nav className="mt-5 flex flex-col items-start gap-3">
+            <nav
+              aria-label="Footer navigation"
+              className="mt-5 flex flex-col items-start gap-3"
+            >
               {NAVIGATION.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-sm text-[#777] transition-colors duration-200 hover:text-[#FFC400]"
+                  className="
+                    rounded-sm
+                    text-sm
+                    text-[#777]
+                    transition-colors
+                    duration-200
+                    hover:text-[#FFC400]
+                    focus-visible:outline-none
+                    focus-visible:ring-2
+                    focus-visible:ring-[#FFC400]
+                  "
                 >
                   {item.label}
                 </Link>
@@ -235,24 +361,46 @@ export default function Footer() {
 
             <div className="mt-5 flex flex-col gap-3">
               {SERVICES.map((service) => (
-                <Link
+                <span
                   key={service}
-                  href="/services"
-                  className="text-sm text-[#777] transition-colors duration-200 hover:text-[#FFC400]"
+                  className="text-sm text-[#777]"
                 >
                   {service}
-                </Link>
+                </span>
               ))}
 
               <Link
                 href="/services"
-                className="group mt-1 inline-flex items-center gap-1.5 text-xs font-medium text-[#555] transition-colors duration-200 hover:text-[#FFC400]"
+                className="
+                  group
+                  mt-1
+                  inline-flex
+                  min-h-10
+                  items-center
+                  gap-1.5
+                  rounded-sm
+                  text-xs
+                  font-medium
+                  text-[#555]
+                  transition-colors
+                  duration-200
+                  hover:text-[#FFC400]
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-[#FFC400]
+                "
               >
                 View all services
 
                 <ArrowUpRight
+                  aria-hidden="true"
                   size={12}
-                  className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  className="
+                    transition-transform
+                    duration-200
+                    group-hover:-translate-y-0.5
+                    group-hover:translate-x-0.5
+                  "
                 />
               </Link>
             </div>
@@ -272,11 +420,32 @@ export default function Footer() {
 
               <a
                 href={`mailto:${BUSINESS.email}`}
-                className="group flex items-start gap-3 text-sm text-[#777] transition-colors duration-200 hover:text-[#FFC400]"
+                className="
+                  group
+                  flex
+                  items-start
+                  gap-3
+                  rounded-sm
+                  text-sm
+                  text-[#777]
+                  transition-colors
+                  duration-200
+                  hover:text-[#FFC400]
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-[#FFC400]
+                "
               >
                 <Mail
+                  aria-hidden="true"
                   size={15}
-                  className="mt-0.5 shrink-0 text-[#555] transition-colors group-hover:text-[#FFC400]"
+                  className="
+                    mt-0.5
+                    shrink-0
+                    text-[#555]
+                    transition-colors
+                    group-hover:text-[#FFC400]
+                  "
                 />
 
                 <span className="break-all">
@@ -288,32 +457,71 @@ export default function Footer() {
 
               <a
                 href={whatsappHref}
-                target={
-                  BUSINESS.whatsapp !== "8219174058"
-                    ? "_blank"
-                    : undefined
-                }
-                rel={
-                  BUSINESS.whatsapp !== "8219174058"
-                    ? "noopener noreferrer"
-                    : undefined
-                }
-                className="group flex items-start gap-3 text-sm text-[#777] transition-colors duration-200 hover:text-[#FFC400]"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Chat with Aman Digital Solutions on WhatsApp"
+                className="
+                  group
+                  flex
+                  items-start
+                  gap-3
+                  rounded-sm
+                  text-sm
+                  text-[#777]
+                  transition-colors
+                  duration-200
+                  hover:text-[#FFC400]
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-[#FFC400]
+                "
               >
-               
+                <FaWhatsapp
+                  aria-hidden="true"
+                  size={17}
+                  className="
+                    mt-0.5
+                    shrink-0
+                    text-[#555]
+                    transition-colors
+                    group-hover:text-[#FFC400]
+                  "
+                />
 
-               <span className="flex items-center gap-2">
-  <FaWhatsapp size={17} />
-  WhatsApp us
-</span>
+                <span>WhatsApp us</span>
               </a>
 
               {/* LOCATION */}
 
-              <div className="flex items-start gap-3 text-sm text-[#777]">
+              <Link
+                href="/locations/shimla"
+                aria-label="Aman Digital Solutions in Shimla, Himachal Pradesh"
+                className="
+                  group
+                  flex
+                  items-start
+                  gap-3
+                  rounded-sm
+                  text-sm
+                  text-[#777]
+                  transition-colors
+                  duration-200
+                  hover:text-[#FFC400]
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-[#FFC400]
+                "
+              >
                 <MapPin
+                  aria-hidden="true"
                   size={15}
-                  className="mt-0.5 shrink-0 text-[#555]"
+                  className="
+                    mt-0.5
+                    shrink-0
+                    text-[#555]
+                    transition-colors
+                    group-hover:text-[#FFC400]
+                  "
                 />
 
                 <span>
@@ -321,23 +529,44 @@ export default function Footer() {
                   <br />
                   India
                 </span>
-              </div>
+              </Link>
 
               {/* PROJECT CTA */}
 
               <Link
                 href="/start-a-project"
-                className="group inline-flex items-center gap-2 pt-1 text-xs font-medium text-[#8A8A8A] transition-colors duration-200 hover:text-[#FFC400]"
+                className="
+                  group
+                  inline-flex
+                  min-h-10
+                  items-center
+                  gap-2
+                  rounded-sm
+                  pt-1
+                  text-xs
+                  font-medium
+                  text-[#8A8A8A]
+                  transition-colors
+                  duration-200
+                  hover:text-[#FFC400]
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-[#FFC400]
+                "
               >
                 Start a conversation
 
                 <ArrowUpRight
+                  aria-hidden="true"
                   size={13}
-                  className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  className="
+                    transition-transform
+                    duration-200
+                    group-hover:-translate-y-0.5
+                    group-hover:translate-x-0.5
+                  "
                 />
               </Link>
-
-              
             </div>
           </div>
         </div>
@@ -355,14 +584,28 @@ export default function Footer() {
           <div className="flex flex-wrap items-center gap-5 text-[10px] text-[#444]">
             <Link
               href="/privacy"
-              className="transition-colors hover:text-[#777]"
+              className="
+                rounded-sm
+                transition-colors
+                hover:text-[#777]
+                focus-visible:outline-none
+                focus-visible:ring-2
+                focus-visible:ring-[#FFC400]
+              "
             >
               Privacy
             </Link>
 
             <Link
               href="/terms"
-              className="transition-colors hover:text-[#777]"
+              className="
+                rounded-sm
+                transition-colors
+                hover:text-[#777]
+                focus-visible:outline-none
+                focus-visible:ring-2
+                focus-visible:ring-[#FFC400]
+              "
             >
               Terms
             </Link>

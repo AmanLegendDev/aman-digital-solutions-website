@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, Images } from "lucide-react";
+import {
+  ArrowUpRight,
+  Images,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function GalleryIntro() {
@@ -27,8 +30,14 @@ export default function GalleryIntro() {
     >
       {/* EYEBROW */}
       <div className="flex items-center gap-3">
-        <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] bg-[#0D0D0D] text-[#FFC400]">
-          <Images size={13} />
+        <span
+          aria-hidden="true"
+          className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] bg-[#0D0D0D] text-[#FFC400]"
+        >
+          <Images
+            aria-hidden="true"
+            size={13}
+          />
         </span>
 
         <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#FFC400]">
@@ -49,20 +58,35 @@ export default function GalleryIntro() {
 
       {/* DESCRIPTION */}
       <p className="mt-6 max-w-md text-sm leading-7 text-[#858585] sm:text-base sm:leading-7">
-        A closer look at the digital experiences,
-        interfaces and creative work we build for
-        businesses that want to stand out.
+        Explore selected digital experiences, interfaces
+        and creative work built by Aman Digital Solutions
+        for businesses, brands and growing ideas.
       </p>
 
       {/* SIGNAL */}
       <div className="mt-9 border-y border-[#202020] py-4">
         <p className="text-[10px] uppercase tracking-[0.16em] text-[#555]">
           Design
-          <span className="mx-2 text-[#333]">/</span>
+          <span
+            aria-hidden="true"
+            className="mx-2 text-[#333]"
+          >
+            /
+          </span>
           Interface
-          <span className="mx-2 text-[#333]">/</span>
+          <span
+            aria-hidden="true"
+            className="mx-2 text-[#333]"
+          >
+            /
+          </span>
           Experience
-          <span className="mx-2 text-[#333]">/</span>
+          <span
+            aria-hidden="true"
+            className="mx-2 text-[#333]"
+          >
+            /
+          </span>
           Detail
         </p>
       </div>
@@ -76,6 +100,7 @@ export default function GalleryIntro() {
 
         <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] transition-all duration-200 group-hover:border-[#FFC400]/40 group-hover:bg-[#FFC400]/10">
           <ArrowUpRight
+            aria-hidden="true"
             size={14}
             className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
           />

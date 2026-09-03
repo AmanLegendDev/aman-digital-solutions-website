@@ -17,10 +17,13 @@ export default function TrustIntro() {
     >
       {/* EYEBROW */}
       <div className="flex items-center gap-3">
-        <span className="h-px w-8 bg-[#FFC400]" />
+        <span
+          aria-hidden="true"
+          className="h-px w-8 bg-[#FFC400]"
+        />
 
         <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#FFC400]">
-          Built with purpose
+          Built for growing businesses
         </span>
       </div>
 
@@ -36,10 +39,10 @@ export default function TrustIntro() {
 
       {/* DESCRIPTION */}
       <p className="mt-6 max-w-lg text-sm leading-7 text-[#888] sm:text-base">
-        It should make your business easier to discover, easier
-        to trust and easier to choose. We combine thoughtful
-        design, modern technology and business strategy to build
-        digital experiences with a purpose.
+        It should help your business get discovered, build trust and turn
+        visitors into enquiries. Aman Digital Solutions combines thoughtful
+        design, modern web development and SEO-ready technology to create
+        digital experiences built around real business goals.
       </p>
 
       {/* SMALL LINK */}
@@ -47,10 +50,11 @@ export default function TrustIntro() {
         href="#services"
         className="group mt-7 inline-flex items-center gap-2 text-sm font-medium text-[#D8D8D8] transition-colors duration-200 hover:text-[#FFC400]"
       >
-        See what we build
+        Explore our services
 
         <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] transition-all duration-200 group-hover:border-[#FFC400]/40 group-hover:bg-[#FFC400]/10">
           <ArrowUpRight
+            aria-hidden="true"
             size={14}
             className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
           />

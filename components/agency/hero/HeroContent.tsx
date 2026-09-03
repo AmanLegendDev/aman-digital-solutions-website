@@ -22,7 +22,7 @@ export default function HeroContent() {
         </span>
 
         <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-[#A1A1A1] sm:text-[11px]">
-          Digital solutions for ambitious businesses
+          Web Development & Digital Solutions · Shimla
         </span>
       </motion.div>
 
@@ -40,11 +40,11 @@ export default function HeroContent() {
       >
         We build
         <span className="block text-[#FFC400]">
-          digital experiences
+          modern websites
         </span>
-        that move
+        and digital
         <span className="block">
-          businesses forward.
+          solutions that grow.
         </span>
       </motion.h1>
 
@@ -57,11 +57,12 @@ export default function HeroContent() {
           delay: 0.18,
           ease: "easeOut",
         }}
-        className="mt-6 max-w-xl text-sm leading-7 text-[#A1A1A1] sm:mt-7 sm:text-base lg:mt-5 lg:max-w-[500px] lg:leading-6"
+        className="mt-6 max-w-xl text-sm leading-7 text-[#A1A1A1] sm:mt-7 sm:text-base lg:mt-5 lg:max-w-[520px] lg:leading-6"
       >
-        Aman Digital Solutions creates fast, modern and
-        business-focused websites that help brands look
-        credible, connect with customers and grow online.
+        Aman Digital Solutions is a Shimla-based web development and digital
+        solutions company building fast, modern and SEO-ready websites,
+        e-commerce stores and custom web applications for businesses across
+        Himachal Pradesh, India and beyond.
       </motion.p>
 
       {/* ACTIONS */}
@@ -117,7 +118,14 @@ export default function HeroContent() {
           className="h-1 w-1 rounded-full bg-[#444]"
         />
 
-        <span>Performance</span>
+        <span>E-commerce</span>
+
+        <span
+          aria-hidden="true"
+          className="h-1 w-1 rounded-full bg-[#444]"
+        />
+
+        <span>Custom Web Apps</span>
 
         <span
           aria-hidden="true"
@@ -125,14 +133,6 @@ export default function HeroContent() {
         />
 
         <span>SEO</span>
-
-        <span
-          aria-hidden="true"
-          className="h-1 w-1 rounded-full bg-[#444]"
-        />
-
-        <span>Business Growth</span>
-       
       </motion.div>
     </div>
   );

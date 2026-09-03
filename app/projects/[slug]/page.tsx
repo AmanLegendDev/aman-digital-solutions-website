@@ -178,9 +178,8 @@ export async function generateMetadata({
      SEO TITLE
   ------------------------------------------------------- */
 
-  const title =
-    project.seoTitle?.trim() ||
-    `${project.title} | Aman Digital Solutions`;
+ const title =
+  project.seoTitle?.trim() || project.title;
 
   /* -------------------------------------------------------
      SEO DESCRIPTION
@@ -194,14 +193,8 @@ export async function generateMetadata({
      CANONICAL
   ------------------------------------------------------- */
 
-  const databaseCanonical =
-    project.canonicalUrl?.trim();
-
-  const canonical =
-    databaseCanonical &&
-    !databaseCanonical.includes("localhost")
-      ? databaseCanonical
-      : `${SITE_URL}/projects/${project.slug}`;
+const canonical =
+  `${SITE_URL}/projects/${project.slug}`;
 
   /* -------------------------------------------------------
      OPEN GRAPH
@@ -320,8 +313,7 @@ export default async function ProjectPage({
     `${SITE_URL}/projects/${project.slug}`;
 
   const seoTitle =
-    project.seoTitle?.trim() ||
-    `${project.title} | Aman Digital Solutions`;
+  project.seoTitle?.trim() || project.title;
 
   const seoDescription =
     project.seoDescription?.trim() ||

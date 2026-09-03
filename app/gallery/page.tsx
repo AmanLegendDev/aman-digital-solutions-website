@@ -25,7 +25,7 @@ const SITE_URL =
 
 export const metadata: Metadata = {
   title:
-    "Gallery | Websites, Digital Experiences & Creative Work | Aman Digital Solutions",
+    "Gallery | Websites, Digital Experiences & Creative Work",
 
   description:
     "Explore website designs, digital experiences, project visuals and creative work built by Aman Digital Solutions for businesses and brands.",
@@ -233,7 +233,7 @@ const galleryItemList = getItemListSchema({
 const galleryCollection = getCollectionPageSchema({
   url: galleryUrl,
   name:
-    "Gallery | Websites, Digital Experiences & Creative Work | Aman Digital Solutions",
+    "Gallery | Websites, Digital Experiences & Creative Work",
   description:
     "Explore website designs, digital experiences, project visuals and creative work built by Aman Digital Solutions.",
   itemListId: `${galleryUrl}#itemlist`,

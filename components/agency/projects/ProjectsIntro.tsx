@@ -36,7 +36,7 @@ export default function ProjectsIntro() {
         />
 
         <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#FFC400]">
-          Selected work
+          Selected web projects
         </span>
       </div>
 
@@ -54,15 +54,19 @@ export default function ProjectsIntro() {
 
       {/* DESCRIPTION */}
       <p className="mt-6 max-w-md text-sm leading-7 text-[#858585] sm:text-base sm:leading-7">
-        A look at the digital products and experiences
-        we have built for businesses, brands and ideas
-        worth putting online.
+        Explore selected websites, digital products and web experiences
+        built for businesses, brands and ideas — combining thoughtful
+        design, modern development and practical digital solutions.
       </p>
 
       {/* PORTFOLIO SIGNAL */}
       <div className="mt-9 flex items-center gap-4 border-y border-[#202020] py-4">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#292929] bg-[#0D0D0D]">
+        <div
+          aria-hidden="true"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#292929] bg-[#0D0D0D]"
+        >
           <MoveUpRight
+            aria-hidden="true"
             size={15}
             className="text-[#FFC400]"
           />
@@ -74,7 +78,7 @@ export default function ProjectsIntro() {
           </p>
 
           <p className="mt-0.5 text-xs text-[#888]">
-            Selected digital work
+            Websites, digital products & web experiences
           </p>
         </div>
       </div>
@@ -89,6 +93,7 @@ export default function ProjectsIntro() {
 
           <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] transition-all duration-200 group-hover:border-[#FFC400]/40 group-hover:bg-[#FFC400]/10">
             <ArrowUpRight
+              aria-hidden="true"
               size={14}
               className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
             />

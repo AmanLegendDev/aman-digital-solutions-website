@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   ArrowUpRight,
   Check,
@@ -110,6 +111,26 @@ export default function PricingCard({
   const isExternalLink =
     /^https?:\/\//i.test(plan.ctaLink);
 
+  const ctaClassName = [
+    "group/cta flex min-h-12 w-full items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition-all duration-200",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] focus-visible:ring-offset-2 focus-visible:ring-offset-[#080808]",
+    plan.isFeatured
+      ? "bg-[#FFC400] text-black hover:bg-[#FFD43B] hover:shadow-[0_0_30px_rgba(255,196,0,0.14)]"
+      : "border border-[#292929] bg-[#111111] text-[#E5E5E5] hover:border-[#FFC400]/30 hover:bg-[#151515] hover:text-white",
+  ].join(" ");
+
+  const ctaContent = (
+    <>
+      <span>{plan.ctaText}</span>
+
+      <ArrowUpRight
+        aria-hidden="true"
+        size={16}
+        className="transition-transform duration-200 group-hover/cta:-translate-y-0.5 group-hover/cta:translate-x-0.5"
+      />
+    </>
+  );
+
   return (
     <motion.article
       initial={{
@@ -150,17 +171,20 @@ export default function PricingCard({
           <div className="flex items-center justify-between gap-3">
             <div className="flex min-w-0 items-center gap-2">
               <Sparkles
+                aria-hidden="true"
                 size={13}
                 className="shrink-0 text-[#FFC400]"
               />
 
               <span className="truncate text-[9px] font-semibold uppercase tracking-[0.17em] text-[#FFC400]">
-                {plan.featuredLabel ||
-                  "Most popular"}
+                {plan.featuredLabel || "Most popular"}
               </span>
             </div>
 
-            <span className="text-[9px] uppercase tracking-[0.14em] text-[#5D5D5D]">
+            <span
+              aria-hidden="true"
+              className="text-[9px] uppercase tracking-[0.14em] text-[#5D5D5D]"
+            >
               Recommended
             </span>
           </div>
@@ -210,31 +234,37 @@ export default function PricingCard({
         </div>
 
         {/* FEATURES */}
-        <div className="mt-7 flex-1">
-          <p className="mb-4 text-[9px] font-medium uppercase tracking-[0.17em] text-[#4F4F4F]">
-            What's included
-          </p>
+        {plan.features.length > 0 && (
+          <div className="mt-7 flex-1">
+            <p className="mb-4 text-[9px] font-medium uppercase tracking-[0.17em] text-[#4F4F4F]">
+              What&apos;s included
+            </p>
 
-          <ul className="space-y-3.5">
-            {plan.features.map((feature, featureIndex) => (
-              <li
-                key={`${plan.id}-${featureIndex}`}
-                className="flex min-w-0 items-start gap-3"
-              >
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#2A2A2A] bg-[#111111] text-[#FFC400]">
-                  <Check
-                    size={11}
-                    strokeWidth={2.2}
-                  />
-                </span>
+            <ul className="space-y-3.5">
+              {plan.features.map((feature, featureIndex) => (
+                <li
+                  key={`${plan.id}-${featureIndex}`}
+                  className="flex min-w-0 items-start gap-3"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#2A2A2A] bg-[#111111] text-[#FFC400]"
+                  >
+                    <Check
+                      aria-hidden="true"
+                      size={11}
+                      strokeWidth={2.2}
+                    />
+                  </span>
 
-                <span className="min-w-0 break-words text-sm leading-5 text-[#8A8A8A]">
-                  {feature}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
+                  <span className="min-w-0 break-words text-sm leading-5 text-[#8A8A8A]">
+                    {feature}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* CTA */}
         <div className="mt-8">
@@ -243,37 +273,17 @@ export default function PricingCard({
               href={plan.ctaLink}
               target="_blank"
               rel="noopener noreferrer"
-              className={[
-                "group/cta flex min-h-12 w-full items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition-all duration-200",
-                plan.isFeatured
-                  ? "bg-[#FFC400] text-black hover:bg-[#FFD43B] hover:shadow-[0_0_30px_rgba(255,196,0,0.14)]"
-                  : "border border-[#292929] bg-[#111111] text-[#E5E5E5] hover:border-[#FFC400]/30 hover:bg-[#151515] hover:text-white",
-              ].join(" ")}
+              className={ctaClassName}
             >
-              <span>{plan.ctaText}</span>
-
-              <ArrowUpRight
-                size={16}
-                className="transition-transform duration-200 group-hover/cta:-translate-y-0.5 group-hover/cta:translate-x-0.5"
-              />
+              {ctaContent}
             </a>
           ) : (
-            <a
+            <Link
               href={plan.ctaLink}
-              className={[
-                "group/cta flex min-h-12 w-full items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition-all duration-200",
-                plan.isFeatured
-                  ? "bg-[#FFC400] text-black hover:bg-[#FFD43B] hover:shadow-[0_0_30px_rgba(255,196,0,0.14)]"
-                  : "border border-[#292929] bg-[#111111] text-[#E5E5E5] hover:border-[#FFC400]/30 hover:bg-[#151515] hover:text-white",
-              ].join(" ")}
+              className={ctaClassName}
             >
-              <span>{plan.ctaText}</span>
-
-              <ArrowUpRight
-                size={16}
-                className="transition-transform duration-200 group-hover/cta:-translate-y-0.5 group-hover/cta:translate-x-0.5"
-              />
-            </a>
+              {ctaContent}
+            </Link>
           )}
         </div>
       </div>

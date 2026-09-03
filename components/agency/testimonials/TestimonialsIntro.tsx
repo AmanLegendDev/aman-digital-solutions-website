@@ -21,10 +21,13 @@ export default function TestimonialsIntro() {
     >
       {/* EYEBROW */}
       <div className="flex items-center gap-3">
-        <span className="h-px w-8 bg-[#FFC400]" />
+        <span
+          aria-hidden="true"
+          className="h-px w-8 bg-[#FFC400]"
+        />
 
         <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#FFC400]">
-          Client perspective
+          Client experiences
         </span>
       </div>
 
@@ -41,14 +44,18 @@ export default function TestimonialsIntro() {
 
       {/* DESCRIPTION */}
       <p className="mt-6 max-w-md text-sm leading-7 text-[#858585] sm:text-base sm:leading-7">
-        The work matters, but so does the experience of
-        building it. Here is what people have to say about
-        working with Aman Digital Solutions.
+        The work matters, but so does the experience of building it. Here is
+        what clients and collaborators have to say about working with Aman
+        Digital Solutions.
       </p>
 
       {/* QUOTE MARK */}
-      <div className="mt-9 flex h-11 w-11 items-center justify-center rounded-full border border-[#292929] bg-[#0D0D0D]">
+      <div
+        aria-hidden="true"
+        className="mt-9 flex h-11 w-11 items-center justify-center rounded-full border border-[#292929] bg-[#0D0D0D]"
+      >
         <Quote
+          aria-hidden="true"
           size={17}
           strokeWidth={1.6}
           className="text-[#FFC400]"
@@ -64,6 +71,7 @@ export default function TestimonialsIntro() {
 
         <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] transition-all duration-200 group-hover:border-[#FFC400]/40 group-hover:bg-[#FFC400]/10">
           <ArrowUpRight
+            aria-hidden="true"
             size={14}
             className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
           />

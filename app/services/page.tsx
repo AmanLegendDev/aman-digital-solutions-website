@@ -17,11 +17,11 @@ const SITE_URL =
   "https://www.amandigitalsolutions.com";
 
 export const metadata: Metadata = {
-  title:
-    "Web Development & Digital Solutions Services | Aman Digital Solutions",
+ title:
+  "Web Development & Digital Solutions Services",
 
-  description:
-    "Explore website development, e-commerce, web applications, SEO, digital marketing, business automation and ongoing digital support services for businesses worldwide.",
+ description:
+  "Explore web development, e-commerce, web applications, SEO and digital solutions from Aman Digital Solutions, serving businesses in Shimla, Himachal Pradesh, across India and beyond.",
 
   alternates: {
     canonical: "/services",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     description:
       "Explore modern web development, e-commerce, SEO, digital marketing and business solutions from Aman Digital Solutions.",
 
-    url: "/services",
+   url: `${SITE_URL}/services`,
 
     type: "website",
   },
@@ -159,7 +159,7 @@ const servicesCollection = getCollectionPageSchema({
   name:
     "Web Development & Digital Solutions Services | Aman Digital Solutions",
   description:
-    "Explore website development, e-commerce, web applications, SEO, digital marketing and business automation services.",
+  "Explore web development, e-commerce, web applications, SEO and digital solutions from Aman Digital Solutions for businesses in Shimla, Himachal Pradesh, across India and beyond.",
   itemListId: `${servicesUrl}#itemlist`,
 });
 

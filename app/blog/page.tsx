@@ -7,16 +7,13 @@ import BlogPageClient, {
   type BlogCardData,
 } from "@/components/blog/BlogPageClient";
 
-
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
 
 import {
   getBlogSchema,
   getItemListSchema,
-  getCollectionPageSchema,
 } from "@/lib/seo/schema";
-import { blogSchema } from "@/schemas/blog.schema";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -28,23 +25,23 @@ const SITE_URL =
 
 export const metadata: Metadata = {
   title:
-    "Blog | Web Development, SEO & Digital Growth | Aman Digital Solutions",
+    "Blog | Web Development, SEO & Digital Growth",
 
   description:
-    "Read practical insights on web development, SEO, digital marketing, business systems and building better digital experiences with Aman Digital Solutions.",
+    "Read practical insights on web development, SEO, digital marketing, business systems and digital growth from Aman Digital Solutions, serving businesses in Shimla, Himachal Pradesh, across India and beyond.",
 
   alternates: {
-    canonical: "/blog",
+    canonical: `${SITE_URL}/blog`,
   },
 
   openGraph: {
     title:
-      "Blog | Aman Digital Solutions",
+      "Blog | Web Development, SEO & Digital Growth",
 
     description:
-      "Practical insights on web development, SEO, technology and digital growth.",
+      "Practical insights on web development, SEO, technology and digital growth for businesses in Shimla, Himachal Pradesh, across India and beyond.",
 
-    url: "/blog",
+    url: `${SITE_URL}/blog`,
 
     type: "website",
 
@@ -60,10 +57,10 @@ export const metadata: Metadata = {
       "summary_large_image",
 
     title:
-      "Blog | Aman Digital Solutions",
+      "Blog | Web Development, SEO & Digital Growth",
 
     description:
-      "Practical insights on web development, SEO, technology and digital growth.",
+      "Practical insights on web development, SEO, technology and digital growth for businesses in Shimla, Himachal Pradesh, across India and beyond.",
   },
 
   robots: {
@@ -84,9 +81,7 @@ export const metadata: Metadata = {
    FETCH BLOGS
 ========================================================= */
 
-async function getPublishedBlogs(): Promise<
-  BlogCardData[]
-> {
+async function getPublishedBlogs(): Promise<BlogCardData[]> {
   await connectDB();
 
   const blogs = await Blog.find({
@@ -140,12 +135,10 @@ async function getPublishedBlogs(): Promise<
       ? blog.publishedAt.toISOString()
       : undefined,
 
-    displayOrder: blog.displayOrder,
+    displayOrder:
+      blog.displayOrder,
   }));
 }
-
-
-
 
 /* =========================================================
    PAGE
@@ -154,36 +147,67 @@ async function getPublishedBlogs(): Promise<
 export default async function BlogPage() {
   const blogs = await getPublishedBlogs();
 
-  const blogUrl = `${SITE_URL}/blog`;
+  const blogUrl =
+    `${SITE_URL}/blog`;
+
+  /* =======================================================
+     BLOG ITEM LIST
+  ======================================================== */
 
   const blogItems = blogs.map((blog) => ({
     name: blog.title,
-    url: `${blogUrl}/${blog.slug}`,
+
+    url:
+      `${blogUrl}/${blog.slug}`,
 
     ...(blog.coverImage?.url
       ? {
-          image: blog.coverImage.url,
+          image:
+            blog.coverImage.url,
         }
       : {}),
 
-    description: blog.excerpt,
+    description:
+      blog.excerpt,
   }));
 
-  const blogItemList = getItemListSchema({
-    id: `${blogUrl}#itemlist`,
-    name: "Aman Digital Solutions Blog Articles",
-    url: blogUrl,
-    items: blogItems,
-  });
+  const blogItemList =
+    getItemListSchema({
+      id:
+        `${blogUrl}#itemlist`,
 
-  const blogSchema = getBlogSchema({
-    url: blogUrl,
-    name:
-      "Blog | Web Development, SEO & Digital Growth | Aman Digital Solutions",
-    description:
-      "Practical insights on web development, SEO, digital marketing, technology and digital growth.",
-    itemListId: `${blogUrl}#itemlist`,
-  });
+      name:
+        "Aman Digital Solutions Blog Articles",
+
+      url:
+        blogUrl,
+
+      items:
+        blogItems,
+    });
+
+  /* =======================================================
+     BLOG COLLECTION SCHEMA
+  ======================================================== */
+
+  const blogCollectionSchema =
+    getBlogSchema({
+      url:
+        blogUrl,
+
+      name:
+        "Blog | Web Development, SEO & Digital Growth",
+
+      description:
+        "Practical insights on web development, SEO, digital marketing, technology and digital growth for businesses in Shimla, Himachal Pradesh, across India and beyond.",
+
+      itemListId:
+        `${blogUrl}#itemlist`,
+    });
+
+  /* =======================================================
+     RENDER
+  ======================================================== */
 
   return (
     <>
@@ -192,18 +216,23 @@ export default async function BlogPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@graph": [
-              blogSchema,
-              blogItemList,
-            ],
-          }),
+          __html:
+            JSON.stringify({
+              "@context":
+                "https://schema.org",
+
+              "@graph": [
+                blogCollectionSchema,
+                blogItemList,
+              ],
+            }),
         }}
       />
 
       <main>
-        <BlogPageClient blogs={blogs} />
+        <BlogPageClient
+          blogs={blogs}
+        />
       </main>
 
       <Footer />

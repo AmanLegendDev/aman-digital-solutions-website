@@ -39,6 +39,7 @@ export default function FAQAccordion({
       <div className="overflow-hidden rounded-[26px] border border-[#202020] bg-[#090909]">
         {allFAQs.map((faq, index) => {
           const isOpen = openId === faq.id;
+          const answerId = `faq-answer-${faq.id}`;
 
           return (
             <div
@@ -48,11 +49,13 @@ export default function FAQAccordion({
                 index !== 0 ? "border-t" : "",
               ].join(" ")}
             >
+              {/* QUESTION */}
+
               <button
                 type="button"
                 onClick={() => toggleFAQ(faq.id)}
                 aria-expanded={isOpen}
-                aria-controls={`faq-answer-${faq.id}`}
+                aria-controls={answerId}
                 className={[
                   "group flex w-full min-w-0 items-center gap-4 px-5 py-5 text-left transition-colors duration-200 sm:px-7 sm:py-6",
                   isOpen
@@ -61,7 +64,9 @@ export default function FAQAccordion({
                 ].join(" ")}
               >
                 {/* NUMBER */}
+
                 <span
+                  aria-hidden="true"
                   className={[
                     "hidden shrink-0 text-[9px] font-medium tabular-nums tracking-[0.14em] sm:block",
                     isOpen
@@ -73,6 +78,7 @@ export default function FAQAccordion({
                 </span>
 
                 {/* QUESTION */}
+
                 <span
                   className={[
                     "min-w-0 flex-1 break-words pr-2 text-sm font-medium leading-6 transition-colors duration-200 sm:text-[15px]",
@@ -84,8 +90,10 @@ export default function FAQAccordion({
                   {faq.question}
                 </span>
 
-                {/* ICON */}
+                {/* TOGGLE ICON */}
+
                 <span
+                  aria-hidden="true"
                   className={[
                     "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all duration-300",
                     isOpen
@@ -98,10 +106,13 @@ export default function FAQAccordion({
               </button>
 
               {/* ANSWER */}
+
               <AnimatePresence initial={false}>
                 {isOpen && (
                   <motion.div
-                    id={`faq-answer-${faq.id}`}
+                    id={answerId}
+                    role="region"
+                    aria-labelledby={`faq-question-${faq.id}`}
                     initial={{
                       height: 0,
                       opacity: 0,
@@ -127,6 +138,8 @@ export default function FAQAccordion({
                   >
                     <div className="px-5 pb-6 sm:px-7 sm:pb-7">
                       <div className="flex gap-4">
+                        {/* DECORATIVE LINE */}
+
                         <div
                           aria-hidden="true"
                           className="mt-1 h-auto w-px shrink-0 bg-gradient-to-b from-[#FFC400]/60 to-transparent"
@@ -154,6 +167,7 @@ export default function FAQAccordion({
       </div>
 
       {/* BOTTOM CTA */}
+
       <div className="mt-5 flex items-center justify-between gap-4 rounded-[20px] border border-[#1D1D1D] bg-[#090909] px-5 py-4 sm:px-6">
         <p className="min-w-0 text-[10px] uppercase tracking-[0.12em] text-[#4F4F4F]">
           Have a project in mind?
@@ -161,13 +175,36 @@ export default function FAQAccordion({
 
         <a
           href="#contact"
-          className="group inline-flex shrink-0 items-center gap-1.5 text-xs font-medium text-[#999] transition-colors duration-200 hover:text-[#FFC400]"
+          className="
+            group
+            inline-flex
+            min-h-11
+            shrink-0
+            items-center
+            gap-1.5
+            rounded-sm
+            text-xs
+            font-medium
+            text-[#999]
+            transition-colors
+            duration-200
+            hover:text-[#FFC400]
+            focus-visible:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-[#FFC400]
+          "
         >
           Let's talk
 
           <ArrowUpRight
+            aria-hidden="true"
             size={13}
-            className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            className="
+              transition-transform
+              duration-200
+              group-hover:-translate-y-0.5
+              group-hover:translate-x-0.5
+            "
           />
         </a>
       </div>

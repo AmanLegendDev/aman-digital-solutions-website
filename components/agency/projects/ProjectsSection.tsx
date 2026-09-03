@@ -111,6 +111,7 @@ export default async function ProjectsSection() {
                 View all projects
 
                 <ArrowUpRight
+                  aria-hidden="true"
                   size={14}
                   className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                 />

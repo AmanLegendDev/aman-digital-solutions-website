@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -47,6 +48,8 @@ export default function BlogCard({
   featured = false,
   index = 0,
 }: BlogCardProps) {
+  const blogHref = `/blog/${post.slug}`;
+
   return (
     <motion.article
       initial={{
@@ -67,7 +70,7 @@ export default function BlogCard({
         ease: [0.22, 1, 0.36, 1],
       }}
       className={[
-        "group relative min-w-0 w-full max-w-full overflow-hidden rounded-[26px] border transition-all duration-300",
+        "group relative w-full min-w-0 max-w-full overflow-hidden rounded-[26px] border transition-all duration-300",
         featured
           ? "border-[#292929] bg-[#0C0C0C] hover:border-[#383838]"
           : "border-[#202020] bg-[#0A0A0A] hover:border-[#303030]",
@@ -75,9 +78,9 @@ export default function BlogCard({
     >
       {/* IMAGE */}
       <Link
-        href={`/blog/${post.slug}`}
+        href={blogHref}
         aria-label={`Read ${post.title}`}
-        className="block"
+        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FFC400]"
       >
         <div
           className={[
@@ -88,11 +91,22 @@ export default function BlogCard({
           ].join(" ")}
         >
           {post.coverImage ? (
-            <img
+            <Image
               src={post.coverImage.url}
-              alt={post.coverImage.alt}
-              loading={featured ? "eager" : "lazy"}
-              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035]"
+              alt={post.coverImage.alt || post.title}
+              fill
+              sizes={
+                featured
+                  ? "(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 70vw"
+                  : "(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 60vw"
+              }
+              priority={featured && index === 0}
+              loading={
+                featured && index === 0
+                  ? undefined
+                  : "lazy"
+              }
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035]"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
@@ -109,14 +123,17 @@ export default function BlogCard({
           />
 
           {/* CATEGORY */}
-          <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/45 px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.15em] text-white/75 backdrop-blur-md">
-            <Tag
-              size={10}
-              className="text-[#FFC400]"
-            />
+          {post.category && (
+            <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/45 px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.15em] text-white/75 backdrop-blur-md">
+              <Tag
+                aria-hidden="true"
+                size={10}
+                className="text-[#FFC400]"
+              />
 
-            {post.category}
-          </span>
+              {post.category}
+            </span>
+          )}
 
           {/* FEATURED */}
           {featured && (
@@ -129,14 +146,20 @@ export default function BlogCard({
           <div className="absolute bottom-5 left-5 right-5 flex min-w-0 items-end justify-between gap-4">
             <div className="min-w-0">
               {post.publishedAt && (
-                <p className="text-[10px] text-white/50">
+                <time
+                  dateTime={post.publishedAt}
+                  className="block text-[10px] text-white/50"
+                >
                   {formatDate(post.publishedAt)}
-                </p>
+                </time>
               )}
 
-              {post.readingTime && (
+              {post.readingTime && post.readingTime > 0 && (
                 <div className="mt-1 flex items-center gap-1.5 text-[10px] text-white/55">
-                  <Clock3 size={11} />
+                  <Clock3
+                    aria-hidden="true"
+                    size={11}
+                  />
 
                   <span>
                     {post.readingTime} min read
@@ -145,7 +168,10 @@ export default function BlogCard({
               )}
             </div>
 
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white opacity-0 backdrop-blur-md transition-all duration-300 group-hover:opacity-100">
+            <span
+              aria-hidden="true"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white opacity-0 backdrop-blur-md transition-all duration-300 group-hover:opacity-100"
+            >
               <ArrowUpRight
                 size={16}
                 className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
@@ -165,8 +191,8 @@ export default function BlogCard({
       >
         {/* TITLE */}
         <Link
-          href={`/blog/${post.slug}`}
-          className="block"
+          href={blogHref}
+          className="block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
         >
           <h3
             className={[
@@ -221,12 +247,14 @@ export default function BlogCard({
 
           {/* READ */}
           <Link
-            href={`/blog/${post.slug}`}
-            className="group/read ml-auto inline-flex shrink-0 items-center gap-2 text-xs font-medium text-[#999] transition-colors duration-200 hover:text-[#FFC400]"
+            href={blogHref}
+            aria-label={`Read ${post.title}`}
+            className="group/read ml-auto inline-flex min-h-11 shrink-0 items-center gap-2 rounded-sm text-xs font-medium text-[#999] transition-colors duration-200 hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
           >
             Read
 
             <ArrowUpRight
+              aria-hidden="true"
               size={14}
               className="transition-transform duration-200 group-hover/read:-translate-y-0.5 group-hover/read:translate-x-0.5"
             />

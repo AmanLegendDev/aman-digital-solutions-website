@@ -20,14 +20,14 @@ export const NAV_ITEMS = [
     href: "/pricing",
   },
   {
-    label: "Blogs",
+    label: "Blog",
     href: "/blog",
   },
   {
     label: "FAQ",
     href: "/faq",
   },
-    {
+  {
     label: "Contact",
     href: "/contact",
   },
@@ -44,8 +44,3 @@ export const NAV_CTA = {
 
 export const NAV_WHATSAPP =
   "https://wa.me/918219174058";
-
-export const NAV_START_PROJECT = {
-  label: "Start a Project",
-  href: "/start-a-project",
-} as const;

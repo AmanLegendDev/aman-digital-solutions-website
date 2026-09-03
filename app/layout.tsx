@@ -9,7 +9,15 @@ import GlobalStructuredData from "@/components/seo/GlobalStructuredData";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
-  "https://amandigitalsolutions.com";
+  "https://www.amandigitalsolutions.com";
+
+const SITE_NAME = "Aman Digital Solutions";
+
+const DEFAULT_TITLE =
+  "Aman Digital Solutions | Web Development & Digital Solutions";
+
+const DEFAULT_DESCRIPTION =
+  "Aman Digital Solutions is a Shimla-based web development and digital solutions company building modern business websites, e-commerce stores, custom web applications and SEO-ready digital experiences for businesses across Himachal Pradesh, India and beyond.";
 
 /* =========================================================
    GLOBAL METADATA
@@ -23,74 +31,40 @@ export const metadata: Metadata = {
   ======================================================= */
 
   title: {
-    default:
-      "Aman Digital Solutions | Web Development & Digital Solutions",
-
-    template:
-      "%s | Aman Digital Solutions",
+    default: DEFAULT_TITLE,
+    template: "%s | Aman Digital Solutions",
   },
 
   /* =======================================================
      DESCRIPTION
   ======================================================= */
 
-  description:
-    "Aman Digital Solutions builds fast, modern websites, web applications, e-commerce platforms, SEO solutions and business systems for businesses in Shimla, across India and worldwide.",
+  description: DEFAULT_DESCRIPTION,
 
   /* =======================================================
      APPLICATION / BRAND
   ======================================================= */
 
-  applicationName:
-    "Aman Digital Solutions",
+  applicationName: SITE_NAME,
 
   authors: [
     {
-      name:
-        "Aman Digital Solutions",
-
-      url:
-        SITE_URL,
+      name: SITE_NAME,
+      url: SITE_URL,
     },
   ],
 
-  creator:
-    "Aman Digital Solutions",
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
 
-  publisher:
-    "Aman Digital Solutions",
-
-  category:
-    "Technology",
-
-  /* =======================================================
-     KEYWORDS
-  ======================================================= */
-
-  keywords: [
-    "Aman Digital Solutions",
-    "web development",
-    "website development",
-    "web design",
-    "web application development",
-    "ecommerce website development",
-    "business website development",
-    "custom web development",
-    "SEO services",
-    "digital solutions",
-    "business systems",
-    "website developer Shimla",
-    "web development Shimla",
-    "web development India",
-  ],
+  category: "technology",
 
   /* =======================================================
      CANONICAL
   ======================================================= */
 
   alternates: {
-    canonical:
-      SITE_URL,
+    canonical: SITE_URL,
   },
 
   /* =======================================================
@@ -104,15 +78,9 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-
-      "max-image-preview":
-        "large",
-
-      "max-snippet":
-        -1,
-
-      "max-video-preview":
-        -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
     },
   },
 
@@ -123,30 +91,19 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url:
-          "/icon.png",
-
-        type:
-          "image/png",
-
-        sizes:
-          "512x512",
+        url: "/icon.png",
+        type: "image/png",
+        sizes: "512x512",
       },
     ],
 
-    shortcut:
-      "/icon.png",
+    shortcut: "/icon.png",
 
     apple: [
       {
-        url:
-          "/apple-icon.png",
-
-        sizes:
-          "512x512",
-
-        type:
-          "image/png",
+        url: "/apple-icon.png",
+        type: "image/png",
+        sizes: "512x512",
       },
     ],
   },
@@ -156,35 +113,21 @@ export const metadata: Metadata = {
   ======================================================= */
 
   openGraph: {
-    type:
-      "website",
+    type: "website",
+    locale: "en_IN",
+    url: SITE_URL,
+    siteName: SITE_NAME,
 
-    locale:
-      "en_IN",
-
-    url:
-      SITE_URL,
-
-    siteName:
-      "Aman Digital Solutions",
-
-    title:
-      "Aman Digital Solutions | Web Development & Digital Solutions",
+    title: DEFAULT_TITLE,
 
     description:
-      "Fast, modern websites, web applications, e-commerce platforms, SEO and business systems built for businesses in Shimla, India and worldwide.",
+      "Modern websites, e-commerce stores, custom web applications and digital solutions for businesses in Shimla, across Himachal Pradesh, India and beyond.",
 
     images: [
       {
-        url:
-          "/og-image.png",
-
-        width:
-          1200,
-
-        height:
-          630,
-
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
         alt:
           "Aman Digital Solutions — Web Development & Digital Solutions",
       },
@@ -196,18 +139,14 @@ export const metadata: Metadata = {
   ======================================================= */
 
   twitter: {
-    card:
-      "summary_large_image",
+    card: "summary_large_image",
 
-    title:
-      "Aman Digital Solutions | Web Development & Digital Solutions",
+    title: DEFAULT_TITLE,
 
     description:
-      "Modern websites, web applications, e-commerce, SEO and business systems for businesses in India and worldwide.",
+      "Modern websites, e-commerce stores, custom web applications and digital solutions for businesses in Shimla, Himachal Pradesh, India and beyond.",
 
-    images: [
-      "/og-image.png",
-    ],
+    images: ["/og-image.png"],
   },
 
   /* =======================================================
@@ -215,15 +154,16 @@ export const metadata: Metadata = {
   ======================================================= */
 
   formatDetection: {
-    telephone:
-      true,
-
-    email:
-      true,
-
-    address:
-      true,
+    telephone: true,
+    email: true,
+    address: true,
   },
+
+  /* =======================================================
+     REFERRER
+  ======================================================= */
+
+  referrer: "strict-origin-when-cross-origin",
 };
 
 /* =========================================================
@@ -231,17 +171,12 @@ export const metadata: Metadata = {
 ========================================================= */
 
 export const viewport: Viewport = {
-  width:
-    "device-width",
+  width: "device-width",
+  initialScale: 1,
 
-  initialScale:
-    1,
+  themeColor: "#050505",
 
-  themeColor:
-    "#050505",
-
-  colorScheme:
-    "dark",
+  colorScheme: "dark",
 };
 
 /* =========================================================
@@ -251,8 +186,7 @@ export const viewport: Viewport = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children:
-    React.ReactNode;
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en">

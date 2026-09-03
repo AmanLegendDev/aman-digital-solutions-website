@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -33,6 +34,8 @@ export default function LocationCard({
   location,
   index,
 }: LocationCardProps) {
+  const locationHref = `/locations/${location.slug}`;
+
   return (
     <motion.article
       initial={{
@@ -56,21 +59,27 @@ export default function LocationCard({
     >
       {/* IMAGE */}
       <Link
-        href={`/locations/${location.slug}`}
+        href={locationHref}
         aria-label={`View ${location.name} location`}
-        className="block"
+        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FFC400]"
       >
         <div className="relative aspect-[16/10] overflow-hidden bg-[#0E0E0E]">
           {location.image ? (
-            <img
+            <Image
               src={location.image.url}
-              alt={location.image.alt}
-              loading={index === 0 ? "eager" : "lazy"}
-              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035]"
+              alt={location.image.alt || location.name}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 40vw"
+              loading="lazy"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035]"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center">
+            <div
+              aria-hidden="true"
+              className="flex h-full w-full items-center justify-center"
+            >
               <MapPin
+                aria-hidden="true"
                 size={30}
                 strokeWidth={1.2}
                 className="text-[#303030]"
@@ -78,7 +87,7 @@ export default function LocationCard({
             </div>
           )}
 
-          {/* OVERLAY */}
+          {/* IMAGE OVERLAY */}
           <div
             aria-hidden="true"
             className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"
@@ -87,15 +96,24 @@ export default function LocationCard({
           {/* FEATURED */}
           {location.featured && (
             <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full border border-[#FFC400]/25 bg-black/55 px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.16em] text-[#FFC400] backdrop-blur-md">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#FFC400]" />
+              <span
+                aria-hidden="true"
+                className="h-1.5 w-1.5 rounded-full bg-[#FFC400]"
+              />
               Featured
             </span>
           )}
 
           {/* LOCATION OVER IMAGE */}
           <div className="absolute bottom-4 left-4 flex min-w-0 items-center gap-2">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/15 bg-black/45 text-[#FFC400] backdrop-blur-md">
-              <MapPin size={14} />
+            <span
+              aria-hidden="true"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/15 bg-black/45 text-[#FFC400] backdrop-blur-md"
+            >
+              <MapPin
+                aria-hidden="true"
+                size={14}
+              />
             </span>
 
             <div className="min-w-0">
@@ -112,8 +130,14 @@ export default function LocationCard({
           </div>
 
           {/* ARROW */}
-          <span className="absolute bottom-4 right-4 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white opacity-0 backdrop-blur-md transition-all duration-300 group-hover:opacity-100">
-            <ArrowUpRight size={15} />
+          <span
+            aria-hidden="true"
+            className="absolute bottom-4 right-4 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white opacity-0 backdrop-blur-md transition-all duration-300 group-hover:opacity-100"
+          >
+            <ArrowUpRight
+              aria-hidden="true"
+              size={15}
+            />
           </span>
         </div>
       </Link>
@@ -128,8 +152,8 @@ export default function LocationCard({
             </p>
 
             <Link
-              href={`/locations/${location.slug}`}
-              className="group/title mt-2 block"
+              href={locationHref}
+              className="group/title mt-2 block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
             >
               <h3 className="truncate text-xl font-semibold tracking-[-0.025em] text-[#E8E8E8] transition-colors duration-200 group-hover/title:text-[#FFC400]">
                 {location.name}
@@ -137,7 +161,10 @@ export default function LocationCard({
             </Link>
           </div>
 
-          <span className="shrink-0 text-[10px] uppercase tracking-[0.12em] text-[#444]">
+          <span
+            aria-hidden="true"
+            className="shrink-0 text-[10px] uppercase tracking-[0.12em] text-[#444]"
+          >
             {location.country}
           </span>
         </div>
@@ -150,32 +177,34 @@ export default function LocationCard({
         {/* SERVICES */}
         {location.services.length > 0 && (
           <div className="mt-5 flex min-w-0 flex-wrap gap-2">
-            {location.services
-              .slice(0, 3)
-              .map((service) => (
-                <span
-                  key={service}
-                  className="max-w-full truncate rounded-full border border-[#222] bg-[#0D0D0D] px-2.5 py-1 text-[9px] text-[#666]"
-                >
-                  {service}
-                </span>
-              ))}
+            {location.services.slice(0, 3).map((service) => (
+              <span
+                key={service}
+                className="max-w-full truncate rounded-full border border-[#222] bg-[#0D0D0D] px-2.5 py-1 text-[9px] text-[#666]"
+              >
+                {service}
+              </span>
+            ))}
           </div>
         )}
 
         {/* FOOTER */}
         <div className="mt-6 flex items-center justify-between border-t border-[#1D1D1D] pt-4">
-          <span className="text-[9px] font-medium uppercase tracking-[0.16em] text-[#444]">
+          <span
+            aria-hidden="true"
+            className="text-[9px] font-medium uppercase tracking-[0.16em] text-[#444]"
+          >
             Explore location
           </span>
 
           <Link
-            href={`/locations/${location.slug}`}
-            className="group/cta inline-flex items-center gap-2 text-xs font-medium text-[#A8A8A8] transition-colors duration-200 hover:text-[#FFC400]"
+            href={locationHref}
+            className="group/cta inline-flex items-center gap-2 rounded-sm text-xs font-medium text-[#A8A8A8] transition-colors duration-200 hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
           >
             View details
 
             <ArrowUpRight
+              aria-hidden="true"
               size={14}
               className="transition-transform duration-200 group-hover/cta:-translate-y-0.5 group-hover/cta:translate-x-0.5"
             />

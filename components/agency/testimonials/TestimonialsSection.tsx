@@ -87,7 +87,7 @@ export default async function TestimonialsSection() {
           </div>
 
           {/* TESTIMONIALS */}
-          <div className="min-w-0 w-full max-w-full space-y-5">
+          <div className="w-full min-w-0 max-w-full space-y-5">
             <TestimonialCard
               testimonial={featuredTestimonial}
               featured

@@ -8,76 +8,76 @@ async function getLocations() {
   await connectDB();
 
   const locations = await Location.find({
-  published: true,
-})
-  .populate({
-    path: "services",
-    select: "title slug",
-    match: {
-      published: true,
-    },
+    published: true,
   })
-  .sort({
-    featured: -1,
-    displayOrder: 1,
-    createdAt: -1,
-  })
-  .limit(3)
-  .select(
-    [
-      "name",
-      "slug",
-      "shortDescription",
-      "image",
-      "city",
-      "state",
-      "country",
-      "services",
-      "featured",
-    ].join(" ")
-  )
-  .lean();
+    .populate({
+      path: "services",
+      select: "title slug",
+      match: {
+        published: true,
+      },
+    })
+    .sort({
+      featured: -1,
+      displayOrder: 1,
+      createdAt: -1,
+    })
+    .limit(3)
+    .select(
+      [
+        "name",
+        "slug",
+        "shortDescription",
+        "image",
+        "city",
+        "state",
+        "country",
+        "services",
+        "featured",
+      ].join(" ")
+    )
+    .lean();
 
-return locations.map((location) => {
-  const populatedServices = Array.isArray(location.services)
-    ? (location.services as Array<{
-        title?: unknown;
-      }>)
-    : [];
+  return locations.map((location) => {
+    const populatedServices = Array.isArray(location.services)
+      ? (location.services as Array<{
+          title?: unknown;
+        }>)
+      : [];
 
-  return {
-    id: location._id.toString(),
+    return {
+      id: location._id.toString(),
 
-    name: location.name,
-    slug: location.slug,
-    shortDescription: location.shortDescription,
+      name: location.name,
+      slug: location.slug,
+      shortDescription: location.shortDescription,
 
-    image: location.image
-      ? {
-          url: location.image.url,
-          publicId: location.image.publicId ?? null,
-          alt: location.image.alt ?? location.name,
-        }
-      : null,
+      image: location.image
+        ? {
+            url: location.image.url,
+            publicId: location.image.publicId ?? null,
+            alt: location.image.alt ?? location.name,
+          }
+        : null,
 
-    city: location.city,
-    state: location.state ?? null,
-    country: location.country,
+      city: location.city,
+      state: location.state ?? null,
+      country: location.country,
 
-    services: populatedServices
-      .map((service) =>
-        typeof service.title === "string"
-          ? service.title
-          : null
-      )
-      .filter(
-        (title): title is string =>
-          title !== null
-      ),
+      services: populatedServices
+        .map((service) =>
+          typeof service.title === "string"
+            ? service.title
+            : null
+        )
+        .filter(
+          (title): title is string =>
+            title !== null
+        ),
 
-    featured: location.featured,
-  };
-});
+      featured: location.featured,
+    };
+  });
 }
 
 export default async function LocationsSection() {
@@ -93,7 +93,7 @@ export default async function LocationsSection() {
       aria-labelledby="locations-heading"
       className="relative w-full max-w-full scroll-mt-28 overflow-x-clip border-t border-[#1A1A1A] bg-[#050505] py-24 sm:py-28 lg:py-32"
     >
-      {/* Ambient glow */}
+      {/* Ambient visual effect */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -left-40 top-1/3 h-[420px] w-[420px] rounded-full bg-[#FFC400]/[0.02] blur-[140px]"
@@ -106,7 +106,7 @@ export default async function LocationsSection() {
             <LocationsIntro />
           </aside>
 
-          {/* RIGHT — LOCATIONS */}
+          {/* RIGHT — LOCATION CARDS */}
           <div
             className={
               locations.length === 1

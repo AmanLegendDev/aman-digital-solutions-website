@@ -36,7 +36,7 @@ export default function ServicesIntro() {
         />
 
         <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#FFC400]">
-          What we do
+          Web development & digital solutions
         </span>
       </div>
 
@@ -53,14 +53,17 @@ export default function ServicesIntro() {
 
       {/* DESCRIPTION */}
       <p className="mt-6 max-w-md text-sm leading-7 text-[#858585] sm:text-base sm:leading-7">
-        From high-performance websites to custom digital
-        experiences, we build what your business actually
-        needs — with clarity, purpose and room to grow.
+        From business websites and e-commerce stores to custom web
+        applications and SEO-ready digital experiences, we build practical
+        solutions around your goals — with clarity, purpose and room to grow.
       </p>
 
       {/* SIGNAL */}
       <div className="mt-9 flex items-center gap-4 border-y border-[#202020] py-4">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#292929] bg-[#0D0D0D]">
+        <div
+          aria-hidden="true"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#292929] bg-[#0D0D0D]"
+        >
           <MoveUpRight
             size={15}
             className="text-[#FFC400]"
@@ -73,7 +76,7 @@ export default function ServicesIntro() {
           </p>
 
           <p className="mt-0.5 text-xs text-[#888]">
-            Strategy, design, development & growth
+            Strategy, design, development & SEO
           </p>
         </div>
       </div>
@@ -88,6 +91,7 @@ export default function ServicesIntro() {
 
           <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] transition-all duration-200 group-hover:border-[#FFC400]/40 group-hover:bg-[#FFC400]/10">
             <ArrowUpRight
+              aria-hidden="true"
               size={14}
               className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
             />

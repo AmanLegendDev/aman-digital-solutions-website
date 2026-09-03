@@ -36,7 +36,7 @@ export default function HeroVisual() {
         <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[5/6] lg:aspect-[4/5]">
           <Image
             src="/hero.jpg"
-            alt="Aman Digital Solutions digital experience"
+            alt="Aman Digital Solutions web development and digital solutions for businesses in Shimla"
             fill
             priority
             sizes="(max-width: 1024px) 90vw, 52vw"
@@ -81,15 +81,19 @@ export default function HeroVisual() {
           <div className="flex items-end justify-between gap-4 rounded-2xl border border-white/10 bg-black/45 p-4 backdrop-blur-xl sm:p-5">
             <div>
               <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#FFC400]">
-                Aman Digital Solutions
+                Aman Digital Solutions · Shimla
               </p>
 
               <p className="mt-1.5 max-w-xs text-sm font-medium leading-5 text-white sm:text-base">
-                Digital experiences built with purpose.
+                Web development and digital solutions built for growing
+                businesses.
               </p>
             </div>
 
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white">
+            <span
+              aria-hidden="true"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white"
+            >
               <ArrowUpRight size={16} />
             </span>
           </div>
@@ -137,11 +141,11 @@ export default function HeroVisual() {
       >
         <div className="flex h-full flex-col justify-center px-4">
           <span className="text-[9px] uppercase tracking-[0.16em] text-[#666]">
-            Build
+            Digital
           </span>
 
           <span className="mt-1 text-sm font-semibold text-[#F5F5F5]">
-            Better.
+            Built Better.
           </span>
         </div>
       </motion.div>

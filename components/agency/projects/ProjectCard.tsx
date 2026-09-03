@@ -1,7 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, ExternalLink } from "lucide-react";
+import {
+  ArrowUpRight,
+  ExternalLink,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 type ProjectCardData = {
@@ -58,11 +62,13 @@ export default function ProjectCard({
       >
         <div className="relative aspect-[16/10] overflow-hidden bg-[#0D0D0D]">
           {project.coverImage ? (
-            <img
+            <Image
               src={project.coverImage.url}
               alt={`${project.title} project`}
-              loading={index === 0 ? "eager" : "lazy"}
-              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035]"
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 60vw"
+              loading="lazy"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035]"
             />
           ) : (
             <div className="flex h-full items-center justify-center bg-[#101010]">
@@ -86,7 +92,10 @@ export default function ProjectCard({
           )}
 
           {/* VIEW BUTTON */}
-          <span className="absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white opacity-0 backdrop-blur-md transition-all duration-300 group-hover:opacity-100">
+          <span
+            aria-hidden="true"
+            className="absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white opacity-0 backdrop-blur-md transition-all duration-300 group-hover:opacity-100"
+          >
             <ArrowUpRight size={17} />
           </span>
         </div>
@@ -96,26 +105,28 @@ export default function ProjectCard({
       <div className="p-5 sm:p-6">
         {/* META */}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-[10px] uppercase tracking-[0.14em] text-[#555]">
-          <span>{project.industry}</span>
+          {project.industry && <span>{project.industry}</span>}
 
-          <span
-            aria-hidden="true"
-            className="h-1 w-1 rounded-full bg-[#3A3A3A]"
-          />
+          {project.industry && project.client && (
+            <span
+              aria-hidden="true"
+              className="h-1 w-1 rounded-full bg-[#3A3A3A]"
+            />
+          )}
 
-          <span>{project.client}</span>
+          {project.client && <span>{project.client}</span>}
         </div>
 
         {/* TITLE */}
         <div className="mt-3 flex items-start justify-between gap-5">
-          <Link
-            href={`/projects/${project.slug}`}
-            className="group/title"
-          >
-            <h3 className="text-2xl font-semibold tracking-[-0.035em] text-[#F0F0F0] transition-colors duration-200 group-hover/title:text-[#FFC400] sm:text-3xl">
+          <h3 className="text-2xl font-semibold tracking-[-0.035em] text-[#F0F0F0] transition-colors duration-200 group-hover:text-[#FFC400] sm:text-3xl">
+            <Link
+              href={`/projects/${project.slug}`}
+              className="group/title focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
+            >
               {project.title}
-            </h3>
-          </Link>
+            </Link>
+          </h3>
 
           {project.liveUrl && (
             <a
@@ -123,9 +134,12 @@ export default function ProjectCard({
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Open ${project.title} live website`}
-              className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#292929] text-[#666] transition-all duration-200 hover:border-[#FFC400]/30 hover:bg-[#FFC400]/[0.06] hover:text-[#FFC400]"
+              className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#292929] text-[#666] transition-all duration-200 hover:border-[#FFC400]/30 hover:bg-[#FFC400]/[0.06] hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
             >
-              <ExternalLink size={14} />
+              <ExternalLink
+                aria-hidden="true"
+                size={14}
+              />
             </a>
           )}
         </div>
@@ -157,11 +171,12 @@ export default function ProjectCard({
 
           <Link
             href={`/projects/${project.slug}`}
-            className="group/cta inline-flex items-center gap-2 text-xs font-medium text-[#BDBDBD] transition-colors duration-200 hover:text-[#FFC400]"
+            className="group/cta inline-flex items-center gap-2 text-xs font-medium text-[#BDBDBD] transition-colors duration-200 hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
           >
             View project
 
             <ArrowUpRight
+              aria-hidden="true"
               size={14}
               className="transition-transform duration-200 group-hover/cta:-translate-y-0.5 group-hover/cta:translate-x-0.5"
             />

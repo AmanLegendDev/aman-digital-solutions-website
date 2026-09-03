@@ -72,13 +72,19 @@ export default function ServiceCard({
         <div className="grid gap-6 sm:grid-cols-[auto_1fr_auto] sm:items-start sm:gap-7">
           {/* NUMBER */}
           <div className="flex items-center gap-3 sm:block">
-            <span className="text-[10px] font-medium tabular-nums tracking-[0.14em] text-[#555] transition-colors duration-200 group-hover:text-[#FFC400]">
+            <span
+              aria-hidden="true"
+              className="text-[10px] font-medium tabular-nums tracking-[0.14em] text-[#555] transition-colors duration-200 group-hover:text-[#FFC400]"
+            >
               {String(index + 1).padStart(2, "0")}
             </span>
 
             {service.featured && (
               <span className="inline-flex items-center gap-1.5 rounded-full border border-[#FFC400]/20 bg-[#FFC400]/[0.06] px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.14em] text-[#FFC400] sm:mt-4 sm:flex">
-                <Sparkles size={10} />
+                <Sparkles
+                  aria-hidden="true"
+                  size={10}
+                />
                 Featured
               </span>
             )}
@@ -89,7 +95,10 @@ export default function ServiceCard({
             <div className="flex items-start gap-3">
               {/* OPTIONAL ICON */}
               {service.icon && (
-                <div className="mt-0.5 hidden h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[#252525] bg-[#101010] text-[#FFC400] sm:flex">
+                <div
+                  aria-hidden="true"
+                  className="mt-0.5 hidden h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[#252525] bg-[#101010] text-[#FFC400] sm:flex"
+                >
                   <span className="text-xs font-semibold">
                     {service.icon.slice(0, 1).toUpperCase()}
                   </span>
@@ -97,17 +106,20 @@ export default function ServiceCard({
               )}
 
               <div>
-                <Link
-                  href={`/services/${service.slug}`}
-                  className="group/title inline-flex items-center gap-2 text-xl font-semibold tracking-tight text-[#EAEAEA] transition-colors duration-200 hover:text-white sm:text-2xl"
-                >
-                  {service.title}
+                <h3 className="text-xl font-semibold tracking-tight text-[#EAEAEA] sm:text-2xl">
+                  <Link
+                    href={`/services/${service.slug}`}
+                    className="group/title inline-flex items-center gap-2 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
+                  >
+                    {service.title}
 
-                  <ArrowUpRight
-                    size={17}
-                    className="translate-y-0.5 text-[#444] opacity-0 transition-all duration-200 group-hover/title:-translate-y-0.5 group-hover/title:translate-x-0.5 group-hover/title:text-[#FFC400] group-hover/title:opacity-100"
-                  />
-                </Link>
+                    <ArrowUpRight
+                      aria-hidden="true"
+                      size={17}
+                      className="translate-y-0.5 text-[#444] opacity-0 transition-all duration-200 group-hover/title:-translate-y-0.5 group-hover/title:translate-x-0.5 group-hover/title:text-[#FFC400] group-hover/title:opacity-100"
+                    />
+                  </Link>
+                </h3>
 
                 <p className="mt-2 max-w-xl text-sm leading-6 text-[#777]">
                   {service.shortDescription}
@@ -121,8 +133,9 @@ export default function ServiceCard({
                 <div className="relative aspect-[16/7] overflow-hidden">
                   <img
                     src={service.image.url}
-                    alt={service.image.alt}
+                    alt={service.image.alt || service.title}
                     loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.025]"
                   />
 
@@ -134,10 +147,11 @@ export default function ServiceCard({
               </div>
             )}
 
-            {/* BENEFIT / POSITIONING LINE */}
+            {/* BENEFITS */}
             <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2">
               <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.12em] text-[#555]">
                 <Check
+                  aria-hidden="true"
                   size={12}
                   className="text-[#FFC400]"
                 />
@@ -146,6 +160,7 @@ export default function ServiceCard({
 
               <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.12em] text-[#555]">
                 <Check
+                  aria-hidden="true"
                   size={12}
                   className="text-[#FFC400]"
                 />
@@ -175,6 +190,7 @@ export default function ServiceCard({
               {service.ctaLabel}
 
               <ArrowUpRight
+                aria-hidden="true"
                 size={13}
                 className="transition-transform duration-200 group-hover/cta:-translate-y-0.5 group-hover/cta:translate-x-0.5"
               />

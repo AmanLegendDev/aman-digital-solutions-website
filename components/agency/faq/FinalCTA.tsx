@@ -74,7 +74,10 @@ export default function FinalCTA() {
         >
           {/* EYEBROW */}
           <div className="inline-flex items-center gap-2 rounded-full border border-[#292929] bg-[#0D0D0D]/80 px-3.5 py-2 backdrop-blur-sm">
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#FFC400]/10 text-[#FFC400]">
+            <span
+              aria-hidden="true"
+              className="flex h-5 w-5 items-center justify-center rounded-full bg-[#FFC400]/10 text-[#FFC400]"
+            >
               <Sparkles size={12} />
             </span>
 
@@ -106,24 +109,87 @@ export default function FinalCTA() {
             {/* PRIMARY CTA */}
             <Link
               href="/start-a-project"
-              className="group inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full bg-[#FFC400] px-7 text-sm font-semibold text-black transition-all duration-200 hover:bg-[#FFD43B] hover:shadow-[0_0_40px_rgba(255,196,0,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505] sm:w-auto"
+              className="
+                group
+                inline-flex
+                min-h-13
+                w-full
+                items-center
+                justify-center
+                gap-2
+                rounded-full
+                bg-[#FFC400]
+                px-7
+                text-sm
+                font-semibold
+                text-black
+                transition-all
+                duration-200
+                hover:bg-[#FFD43B]
+                hover:shadow-[0_0_40px_rgba(255,196,0,0.16)]
+                focus-visible:outline-none
+                focus-visible:ring-2
+                focus-visible:ring-[#FFC400]
+                focus-visible:ring-offset-2
+                focus-visible:ring-offset-[#050505]
+                sm:w-auto
+              "
             >
               Start a project
 
               <ArrowUpRight
+                aria-hidden="true"
                 size={17}
-                className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                className="
+                  transition-transform
+                  duration-200
+                  group-hover:-translate-y-0.5
+                  group-hover:translate-x-0.5
+                "
               />
             </Link>
 
             {/* SECONDARY CTA */}
             <a
               href="mailto:hello@amandigitalsolutions.com"
-              className="group inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full border border-[#292929] bg-[#0C0C0C]/80 px-7 text-sm font-medium text-[#D5D5D5] backdrop-blur-sm transition-all duration-200 hover:border-[#FFC400]/30 hover:bg-[#111111] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] sm:w-auto"
+              aria-label="Email Aman Digital Solutions"
+              className="
+                group
+                inline-flex
+                min-h-13
+                w-full
+                items-center
+                justify-center
+                gap-2
+                rounded-full
+                border
+                border-[#292929]
+                bg-[#0C0C0C]/80
+                px-7
+                text-sm
+                font-medium
+                text-[#D5D5D5]
+                backdrop-blur-sm
+                transition-all
+                duration-200
+                hover:border-[#FFC400]/30
+                hover:bg-[#111111]
+                hover:text-white
+                focus-visible:outline-none
+                focus-visible:ring-2
+                focus-visible:ring-[#FFC400]
+                sm:w-auto
+              "
             >
               <MessageCircle
+                aria-hidden="true"
                 size={16}
-                className="text-[#777] transition-colors duration-200 group-hover:text-[#FFC400]"
+                className="
+                  text-[#777]
+                  transition-colors
+                  duration-200
+                  group-hover:text-[#FFC400]
+                "
               />
 
               Talk to us
@@ -156,7 +222,7 @@ export default function FinalCTA() {
             <span>Growth</span>
           </div>
 
-          {/* SMALL REASSURANCE */}
+          {/* REASSURANCE */}
           <p className="mt-7 text-[10px] leading-5 text-[#3F3F3F]">
             Clear requirements. Honest communication. A digital
             experience built around your business.

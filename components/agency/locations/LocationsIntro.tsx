@@ -27,8 +27,14 @@ export default function LocationsIntro() {
     >
       {/* EYEBROW */}
       <div className="flex items-center gap-3">
-        <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] bg-[#0D0D0D] text-[#FFC400]">
-          <MapPin size={13} />
+        <span
+          aria-hidden="true"
+          className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] bg-[#0D0D0D] text-[#FFC400]"
+        >
+          <MapPin
+            aria-hidden="true"
+            size={13}
+          />
         </span>
 
         <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#FFC400]">
@@ -41,17 +47,19 @@ export default function LocationsIntro() {
         id="locations-heading"
         className="mt-6 text-[clamp(2.5rem,5vw,4.7rem)] font-semibold leading-[0.94] tracking-[-0.055em] text-[#F5F5F5]"
       >
-        Local understanding.
+        Web development
         <span className="block text-[#FFC400]">
-          Digital reach.
+          from Shimla. Beyond.
         </span>
       </h2>
 
       {/* DESCRIPTION */}
       <p className="mt-6 max-w-md text-sm leading-7 text-[#858585] sm:text-base sm:leading-7">
-        Based in Shimla and available to businesses beyond
-        our local market, we build digital experiences that
-        work wherever your customers are.
+        Aman Digital Solutions is based in Shimla, Himachal
+        Pradesh, and works with businesses across the region,
+        throughout India and remotely beyond. We build modern
+        websites and digital solutions around where your
+        business and customers are.
       </p>
 
       {/* LOCATION SIGNAL */}
@@ -63,7 +71,7 @@ export default function LocationsIntro() {
           />
 
           <p className="text-[10px] uppercase tracking-[0.16em] text-[#555]">
-            Based in Shimla · Working beyond Shimla
+            Shimla · Himachal Pradesh · India · Remote
           </p>
         </div>
       </div>
@@ -77,6 +85,7 @@ export default function LocationsIntro() {
 
         <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] transition-all duration-200 group-hover:border-[#FFC400]/40 group-hover:bg-[#FFC400]/10">
           <ArrowUpRight
+            aria-hidden="true"
             size={14}
             className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
           />

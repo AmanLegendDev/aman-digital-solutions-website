@@ -4,15 +4,16 @@ import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
 
 export const metadata: Metadata = {
-  title: "Page Not Found | Aman Digital Solutions",
+  title: "Page Not Found",
+
   description:
     "The page you're looking for could not be found. Explore Aman Digital Solutions for websites, web applications, SEO and digital solutions.",
+
   robots: {
     index: false,
     follow: true,
   },
 };
-
 export default function NotFound() {
   return (
     <>

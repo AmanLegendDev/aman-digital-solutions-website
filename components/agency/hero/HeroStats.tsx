@@ -5,16 +5,16 @@ import { ArrowUpRight } from "lucide-react";
 
 const STATS = [
   {
-    value: "01",
-    label: "Digital Partner",
+    value: "Shimla",
+    label: "Based in Himachal Pradesh",
   },
   {
-    value: "100%",
-    label: "Business Focused",
+    value: "India",
+    label: "Serving Businesses Nationwide",
   },
   {
-    value: "24/7",
-    label: "Digital Presence",
+    value: "Beyond",
+    label: "Remote International Projects",
   },
 ];
 
@@ -53,6 +53,7 @@ export default function HeroStats() {
 
           <ArrowUpRight
             size={16}
+            aria-hidden="true"
             className="text-[#444] transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#FFC400]"
           />
         </div>

@@ -12,7 +12,6 @@ import {
 import {
   NAV_CTA,
   NAV_ITEMS,
-  NAV_START_PROJECT,
   NAV_WHATSAPP,
 } from "./NavItems";
 
@@ -40,13 +39,18 @@ export default function MobileNav({
     <AnimatePresence>
       {open && (
         <>
-          {/* BACKDROP */}
+          {/* =================================================
+              BACKDROP
+          ================================================= */}
+
           <motion.button
             type="button"
             aria-label="Close navigation"
             onClick={onClose}
             className="
-              fixed inset-0 z-[60]
+              fixed
+              inset-0
+              z-[60]
               bg-black/70
               md:hidden
             "
@@ -56,7 +60,10 @@ export default function MobileNav({
             transition={{ duration: 0.12 }}
           />
 
-          {/* DRAWER */}
+          {/* =================================================
+              DRAWER
+          ================================================= */}
+
           <motion.aside
             id="mobile-navigation"
             aria-label="Mobile navigation"
@@ -69,11 +76,15 @@ export default function MobileNav({
               ease: "easeOut",
             }}
             className="
-              fixed inset-x-2 top-2 bottom-2
+              fixed
+              inset-x-2
+              top-2
+              bottom-2
               z-[70]
               overflow-hidden
               rounded-[26px]
-              border border-[#252525]
+              border
+              border-[#252525]
               bg-[#080808]
               shadow-[0_25px_70px_rgba(0,0,0,0.65)]
               md:hidden
@@ -81,15 +92,21 @@ export default function MobileNav({
           >
             <div className="flex h-full min-h-0 flex-col px-4 py-4">
 
-              {/* TOP BAR */}
+              {/* =================================================
+                  TOP BAR
+              ================================================= */}
+
               <div className="flex shrink-0 items-center justify-between border-b border-[#202020] pb-4">
+                {/* BRAND */}
 
                 <Link
                   href="/"
                   onClick={onClose}
                   aria-label="Aman Digital Solutions home"
                   className="
-                    flex min-w-0 items-center
+                    flex
+                    min-w-0
+                    items-center
                     rounded-2xl
                     outline-none
                     focus-visible:ring-2
@@ -102,7 +119,13 @@ export default function MobileNav({
                     width={145}
                     height={42}
                     priority
-                    className="h-9 w-auto shrink-0 object-contain"
+                    sizes="145px"
+                    className="
+                      h-9
+                      w-auto
+                      shrink-0
+                      object-contain
+                    "
                   />
 
                   <div className="ml-2.5 min-w-0">
@@ -117,18 +140,25 @@ export default function MobileNav({
                 </Link>
 
                 {/* CLOSE */}
+
                 <button
                   type="button"
                   onClick={onClose}
                   aria-label="Close navigation menu"
                   className="
-                    flex h-10 w-10 shrink-0
-                    items-center justify-center
+                    flex
+                    h-10
+                    w-10
+                    shrink-0
+                    items-center
+                    justify-center
                     rounded-full
-                    border border-[#292929]
+                    border
+                    border-[#292929]
                     bg-[#111111]
                     text-[#A1A1A1]
-                    transition-colors duration-150
+                    transition-colors
+                    duration-150
                     hover:border-[#FFC400]/40
                     hover:text-[#FFC400]
                     focus-visible:outline-none
@@ -136,19 +166,25 @@ export default function MobileNav({
                     focus-visible:ring-[#FFC400]
                   "
                 >
-                  <X size={18} />
+                  <X
+                    aria-hidden="true"
+                    size={18}
+                  />
                 </button>
               </div>
 
-              {/* NAVIGATION */}
+              {/* =================================================
+                  NAVIGATION
+              ================================================= */}
+
               <nav
                 aria-label="Mobile navigation"
                 className="
                   min-h-0
                   flex-1
                   overflow-y-auto
-                  py-4
                   overscroll-contain
+                  py-4
                 "
               >
                 <div className="space-y-0.5">
@@ -158,14 +194,16 @@ export default function MobileNav({
                       href={item.href}
                       onClick={onClose}
                       className="
-                        group flex
+                        group
+                        flex
                         min-h-[48px]
                         items-center
                         justify-between
                         rounded-xl
                         px-3
                         py-2.5
-                        transition-colors duration-150
+                        transition-colors
+                        duration-150
                         hover:bg-[#111111]
                         focus-visible:outline-none
                         focus-visible:ring-2
@@ -174,8 +212,10 @@ export default function MobileNav({
                     >
                       <div className="flex min-w-0 items-center gap-3.5">
                         <span
+                          aria-hidden="true"
                           className="
-                            w-5 shrink-0
+                            w-5
+                            shrink-0
                             text-[9px]
                             font-medium
                             tabular-nums
@@ -203,11 +243,13 @@ export default function MobileNav({
                       </div>
 
                       <ArrowUpRight
+                        aria-hidden="true"
                         size={16}
                         className="
                           shrink-0
                           text-[#3F3F3F]
-                          transition-colors duration-150
+                          transition-colors
+                          duration-150
                           group-hover:text-[#FFC400]
                         "
                       />
@@ -216,73 +258,105 @@ export default function MobileNav({
                 </div>
               </nav>
 
-              {/* BOTTOM ACTIONS */}
-              <div className="shrink-0 border-t border-[#202020] pt-3">
+              {/* =================================================
+                  BOTTOM ACTIONS
+              ================================================= */}
 
+              <div className="shrink-0 border-t border-[#202020] pt-3">
                 <div className="grid grid-cols-2 gap-2">
 
                   {/* WHATSAPP */}
+
                   <a
                     href={NAV_WHATSAPP}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={onClose}
+                    aria-label="Chat with Aman Digital Solutions on WhatsApp"
                     className="
-                      flex h-11 items-center
-                      justify-center gap-2
+                      flex
+                      h-11
+                      items-center
+                      justify-center
+                      gap-2
                       rounded-xl
-                      border border-[#292929]
+                      border
+                      border-[#292929]
                       bg-[#111111]
                       px-3
-                      text-[11px] font-semibold
+                      text-[11px]
+                      font-semibold
                       text-neutral-300
-                      transition-colors duration-150
+                      transition-colors
+                      duration-150
                       hover:border-[#FFC400]/40
                       hover:text-[#FFC400]
+                      focus-visible:outline-none
+                      focus-visible:ring-2
+                      focus-visible:ring-[#FFC400]
                     "
                   >
-                    <MessageCircle size={15} />
-                    WhatsApp
+                    <MessageCircle
+                      aria-hidden="true"
+                      size={15}
+                    />
+
+                    <span>WhatsApp</span>
                   </a>
 
-                  {/* START PROJECT */}
+                  {/* START A PROJECT */}
+
                   <Link
-                    href={NAV_START_PROJECT.href}
+                    href={NAV_CTA.href}
                     onClick={onClose}
                     className="
-                      flex h-11 items-center
-                      justify-center gap-2
+                      flex
+                      h-11
+                      items-center
+                      justify-center
+                      gap-2
                       rounded-xl
                       bg-[#FFC400]
                       px-3
-                      text-[11px] font-semibold
+                      text-[11px]
+                      font-semibold
                       text-black
-                      transition-colors duration-150
+                      transition-colors
+                      duration-150
                       hover:bg-[#FFD43B]
+                      focus-visible:outline-none
+                      focus-visible:ring-2
+                      focus-visible:ring-[#FFC400]
                     "
                   >
-                    {NAV_START_PROJECT.label}
+                    Start a Project
 
-                    <ArrowUpRight size={14} />
+                    <ArrowUpRight
+                      aria-hidden="true"
+                      size={14}
+                    />
                   </Link>
-
                 </div>
 
-                {/* LET'S TALK */}
+                {/* PRIMARY CTA */}
+
                 <Link
                   href={NAV_CTA.href}
                   onClick={onClose}
                   className="
                     mt-2
-                    flex h-12
+                    flex
+                    h-12
                     items-center
                     justify-between
                     rounded-xl
                     bg-[#FFC400]
                     px-4
-                    text-xs font-semibold
+                    text-xs
+                    font-semibold
                     text-black
-                    transition-colors duration-150
+                    transition-colors
+                    duration-150
                     hover:bg-[#FFD43B]
                     focus-visible:outline-none
                     focus-visible:ring-2
@@ -291,7 +365,18 @@ export default function MobileNav({
                 >
                   <span>{NAV_CTA.label}</span>
 
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-black/10">
+                  <span
+                    aria-hidden="true"
+                    className="
+                      flex
+                      h-8
+                      w-8
+                      items-center
+                      justify-center
+                      rounded-full
+                      bg-black/10
+                    "
+                  >
                     <ArrowUpRight size={16} />
                   </span>
                 </Link>

@@ -16,10 +16,10 @@ export default function TrustSection() {
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
         <div className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:items-start lg:gap-20">
-          {/* INTRO */}
+          {/* Trust introduction */}
           <TrustIntro />
 
-          {/* POINTS */}
+          {/* Reasons to choose Aman Digital Solutions */}
           <TrustPoints />
         </div>
       </div>

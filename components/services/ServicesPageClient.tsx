@@ -29,7 +29,7 @@ export default function ServicesPageClient({
     useState<ServiceCategory>("all");
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <div className="min-h-screen bg-[#050505] text-white">
       {/* 01 — HERO */}
       <ServicesHero servicesCount={servicesCount} />
 
@@ -52,6 +52,6 @@ export default function ServicesPageClient({
 
       {/* 05 — FINAL CTA */}
       <ServicesBottomCta />
-    </main>
+    </div>
   );
 }

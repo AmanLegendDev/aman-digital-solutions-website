@@ -29,8 +29,13 @@ import RelatedFaqsSection, {
 } from "./RelatedFaqsSection";
 import ServiceFinalCtaSection from "./ServiceFinalCtaSection";
 
+import RelatedServicesSection, {
+  type RelatedServiceData,
+} from "./RelatedServicesSection";
+
 type ServiceDetailPageProps = {
   service: IService;
+  relatedServices?: RelatedServiceData[];
   relatedProjects?: RelatedProjectData[];
   relatedFaqs?: RelatedFaqData[];
 };
@@ -53,6 +58,7 @@ function getCategoryLabel(
 
 export default function ServiceDetailPage({
   service,
+  relatedServices = [],
   relatedProjects = [],
   relatedFaqs = [],
 }: ServiceDetailPageProps) {
@@ -61,7 +67,7 @@ export default function ServiceDetailPage({
   );
 
   return (
-   <main className="min-h-screen w-full max-w-full overflow-x-clip bg-[#050505] text-white">
+   <div className="min-h-screen w-full max-w-full overflow-x-clip bg-[#050505] text-white">
       {/* =====================================================
           BREADCRUMB
       ====================================================== */}
@@ -145,7 +151,7 @@ export default function ServiceDetailPage({
                 <Link
                   href={
                     service.ctaLink ||
-                    "/booking"
+                    "/start/a-project"
                   }
                   className="group inline-flex items-center justify-center gap-3 rounded-full bg-[#FFC400] px-6 py-3.5 text-sm font-semibold text-black transition-all duration-300 hover:bg-[#FFD43B] hover:shadow-[0_14px_40px_rgba(255,196,0,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
                 >
@@ -308,6 +314,11 @@ export default function ServiceDetailPage({
         ctaLink={service.ctaLink}
       />
 
+
+<RelatedServicesSection
+  services={relatedServices}
+/>
+
       {/* =====================================================
           RELATED PROJECTS
       ====================================================== */}
@@ -330,6 +341,6 @@ export default function ServiceDetailPage({
         ctaLabel={service.ctaLabel}
         ctaLink={service.ctaLink}
       />
-    </main>
+    </div>
   );
 }

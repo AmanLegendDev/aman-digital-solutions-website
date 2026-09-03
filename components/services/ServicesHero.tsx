@@ -80,17 +80,17 @@ export default function ServicesHero({
             support — connected under one system.
           </p>
 
-          <Link
-            href="#contact"
-            className="group inline-flex items-center gap-2 text-xs font-medium text-neutral-400 transition-colors hover:text-white"
-          >
-            Start a conversation
+         <Link
+  href="/start-a-project"
+  className="group inline-flex items-center gap-2 text-xs font-medium text-neutral-400 transition-colors hover:text-white"
+>
+  Start a conversation
 
-            <ArrowUpRight
-              size={14}
-              className="text-[#FFC400] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-            />
-          </Link>
+  <ArrowUpRight
+    size={14}
+    className="text-[#FFC400] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+  />
+</Link>
         </div>
       </div>
     </section>

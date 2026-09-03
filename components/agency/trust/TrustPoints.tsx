@@ -12,30 +12,30 @@ const TRUST_POINTS = [
   {
     number: "01",
     icon: Sparkles,
-    title: "Made for your business",
+    title: "Built around your business",
     description:
-      "Every experience starts with your business goals, audience and positioning — not a recycled template.",
+      "Every website starts with your business goals, audience and positioning — not a recycled template or one-size-fits-all approach.",
   },
   {
     number: "02",
     icon: Gauge,
-    title: "Fast by design",
+    title: "Fast and performance-focused",
     description:
-      "Clean architecture and performance-focused development keep your website responsive and enjoyable to use.",
+      "Clean architecture and modern web development help keep your website fast, responsive and reliable across devices.",
   },
   {
     number: "03",
     icon: Search,
-    title: "Built to be discovered",
+    title: "Ready to be discovered",
     description:
-      "SEO-friendly structure gives search engines a solid foundation while keeping the experience useful for real people.",
+      "SEO-friendly structure gives search engines a strong technical foundation while keeping your content useful and accessible to real people.",
   },
   {
     number: "04",
     icon: ShieldCheck,
-    title: "Built for trust",
+    title: "Designed to build trust",
     description:
-      "Clear information, polished interactions and reliable experiences help turn first-time visitors into confident customers.",
+      "Clear information, polished interactions and a professional digital experience help visitors understand your business and take the next step.",
   },
 ] as const;
 
@@ -75,7 +75,10 @@ export default function TrustPoints() {
             {/* CONTENT */}
             <div>
               <div className="flex items-center gap-3">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#252525] bg-[#0D0D0D] text-[#FFC400] transition-all duration-300 group-hover:border-[#FFC400]/25 group-hover:bg-[#FFC400]/[0.06]">
+                <span
+                  aria-hidden="true"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#252525] bg-[#0D0D0D] text-[#FFC400] transition-all duration-300 group-hover:border-[#FFC400]/25 group-hover:bg-[#FFC400]/[0.06]"
+                >
                   <Icon size={15} strokeWidth={1.8} />
                 </span>
 
@@ -90,7 +93,10 @@ export default function TrustPoints() {
             </div>
 
             {/* INDEX DETAIL */}
-            <span className="hidden self-center text-xs text-[#3F3F3F] transition-colors duration-200 group-hover:text-[#666] sm:block">
+            <span
+              aria-hidden="true"
+              className="hidden self-center text-xs text-[#3F3F3F] transition-colors duration-200 group-hover:text-[#666] sm:block"
+            >
               ↗
             </span>
           </motion.article>

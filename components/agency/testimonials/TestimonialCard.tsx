@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   ArrowUpRight,
   MapPin,
@@ -91,11 +92,13 @@ export default function TestimonialCard({
                 ? "text-[#FFC400]"
                 : "text-[#B89100]",
             ].join(" ")}
+            role="img"
             aria-label={`${rating} out of 5 stars`}
           >
             {Array.from({ length: 5 }).map((_, index) => (
               <Star
                 key={index}
+                aria-hidden="true"
                 size={featured ? 15 : 13}
                 strokeWidth={1.7}
                 fill={
@@ -108,6 +111,7 @@ export default function TestimonialCard({
           </div>
 
           <Quote
+            aria-hidden="true"
             size={featured ? 22 : 18}
             strokeWidth={1.4}
             className="shrink-0 text-[#2F2F2F] transition-colors duration-300 group-hover:text-[#FFC400]/30"
@@ -135,9 +139,12 @@ export default function TestimonialCard({
         <div className="flex min-w-0 items-center gap-3">
           {/* AVATAR */}
           {testimonial.image ? (
-            <img
+            <Image
               src={testimonial.image.url}
-              alt={testimonial.image.alt}
+              alt={testimonial.image.alt || testimonial.name}
+              width={featured ? 48 : 40}
+              height={featured ? 48 : 40}
+              sizes={featured ? "48px" : "40px"}
               loading="lazy"
               className={[
                 "shrink-0 rounded-full border border-[#292929] object-cover",
@@ -148,6 +155,7 @@ export default function TestimonialCard({
             />
           ) : (
             <div
+              aria-hidden="true"
               className={[
                 "flex shrink-0 items-center justify-center rounded-full border border-[#292929] bg-[#121212] font-semibold text-[#FFC400]",
                 featured
@@ -211,6 +219,7 @@ export default function TestimonialCard({
         {testimonial.location && (
           <div className="mt-4 flex min-w-0 items-center gap-1.5 text-[10px] text-[#555]">
             <MapPin
+              aria-hidden="true"
               size={11}
               className="shrink-0"
             />
@@ -228,8 +237,14 @@ export default function TestimonialCard({
               Client experience
             </span>
 
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#292929] text-[#555] transition-all duration-200 group-hover:border-[#FFC400]/30 group-hover:bg-[#FFC400]/[0.06] group-hover:text-[#FFC400]">
-              <ArrowUpRight size={14} />
+            <span
+              aria-hidden="true"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#292929] text-[#555] transition-all duration-200 group-hover:border-[#FFC400]/30 group-hover:bg-[#FFC400]/[0.06] group-hover:text-[#FFC400]"
+            >
+              <ArrowUpRight
+                aria-hidden="true"
+                size={14}
+              />
             </span>
           </div>
         )}

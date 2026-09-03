@@ -93,13 +93,12 @@ export default async function ServicesSection() {
 
       <div className="relative mx-auto w-full max-w-7xl min-w-0 px-5 sm:px-8 lg:px-10">
         <div className="grid min-w-0 gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20">
-          
           {/* LEFT — STICKY INTRO */}
           <div className="min-w-0 lg:sticky lg:top-32 lg:self-start">
             <ServicesIntro />
           </div>
 
-          {/* RIGHT — NORMAL PAGE FLOW */}
+          {/* RIGHT — SERVICE LIST */}
           <div className="min-w-0 space-y-5">
             {services.map((service, index) => (
               <ServiceCard
@@ -118,13 +117,13 @@ export default async function ServicesSection() {
                 View all services
 
                 <ArrowUpRight
+                  aria-hidden="true"
                   size={14}
                   className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                 />
               </Link>
             </div>
           </div>
-
         </div>
       </div>
     </section>

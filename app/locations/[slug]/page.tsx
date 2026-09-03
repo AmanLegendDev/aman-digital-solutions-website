@@ -164,9 +164,9 @@ export async function generateMetadata({
      TITLE
   ------------------------------------------------------- */
 
-  const title =
-    location.seoTitle ||
-    `${location.name} | Aman Digital Solutions`;
+ const title =
+  location.seoTitle?.trim() ||
+  location.name;
 
   /* -------------------------------------------------------
      DESCRIPTION
@@ -180,13 +180,8 @@ export async function generateMetadata({
      CANONICAL
   ------------------------------------------------------- */
 
-  const canonical =
-    location.canonicalUrl &&
-    !location.canonicalUrl.includes(
-      "localhost"
-    )
-      ? location.canonicalUrl
-      : `${SITE_URL}/locations/${location.slug}`;
+ const canonical =
+  `${SITE_URL}/locations/${location.slug}`;
 
   /* -------------------------------------------------------
      OG
@@ -323,8 +318,8 @@ export default async function LocationPage({
   ======================================================== */
 
   const seoTitle =
-    location.seoTitle ||
-    `${location.name} | Aman Digital Solutions`;
+  location.seoTitle?.trim() ||
+  location.name;
 
   const seoDescription =
     location.seoDescription ||

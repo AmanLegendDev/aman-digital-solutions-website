@@ -84,8 +84,8 @@ export async function generateMetadata({
   ------------------------------------------------------- */
 
   const title =
-    blog.seoTitle?.trim() ||
-    `${blog.title} | ${SITE_NAME}`;
+  blog.seoTitle?.trim() ||
+  blog.title;
 
   /* -------------------------------------------------------
      SEO DESCRIPTION
@@ -99,14 +99,8 @@ export async function generateMetadata({
      CANONICAL
   ------------------------------------------------------- */
 
-  const databaseCanonical =
-    blog.canonicalUrl?.trim();
-
   const canonical =
-    databaseCanonical &&
-    !databaseCanonical.includes("localhost")
-      ? databaseCanonical
-      : `${SITE_URL}/blog/${blog.slug}`;
+  `${SITE_URL}/blog/${blog.slug}`;
 
   /* -------------------------------------------------------
      OPEN GRAPH

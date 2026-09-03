@@ -17,15 +17,23 @@ import FAQSection from "@/components/agency/faq/FAQSection";
 import FinalCTA from "@/components/agency/cta/FinalCTA";
 import Footer from "@/components/agency/footer/Footer";
 
+/* =========================================================
+   HOMEPAGE SEO CONFIG
+========================================================= */
+
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.amandigitalsolutions.com";
 
 const HOME_TITLE =
-  "Web Development & Digital Solutions for Businesses | Aman Digital Solutions";
+  "Web Development & Digital Solutions in Shimla | Aman Digital Solutions";
 
 const HOME_DESCRIPTION =
-  "Aman Digital Solutions builds fast, modern websites, web applications, e-commerce platforms, SEO strategies and business systems for businesses across India and worldwide, from Shimla, Himachal Pradesh.";
+  "Aman Digital Solutions is a Shimla-based web development and digital solutions company building modern business websites, e-commerce stores, custom web applications and SEO-ready digital experiences for businesses across Himachal Pradesh, India and beyond.";
+
+/* =========================================================
+   HOMEPAGE METADATA
+========================================================= */
 
 export const metadata: Metadata = {
   title: HOME_TITLE,
@@ -33,7 +41,7 @@ export const metadata: Metadata = {
   description: HOME_DESCRIPTION,
 
   alternates: {
-    canonical: "/",
+    canonical: SITE_URL,
   },
 
   robots: {
@@ -45,15 +53,24 @@ export const metadata: Metadata = {
     title: HOME_TITLE,
 
     description:
-      "Modern websites, web applications, e-commerce platforms, SEO and business systems built for businesses across India and worldwide.",
+      "Modern websites, e-commerce stores, custom web applications and digital solutions for businesses in Shimla, Himachal Pradesh, across India and beyond.",
 
-    url: "/",
+    url: SITE_URL,
 
     type: "website",
 
     siteName: "Aman Digital Solutions",
 
     locale: "en_IN",
+
+    images: [
+      {
+        url: `${SITE_URL}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: "Aman Digital Solutions - Web Development and Digital Solutions in Shimla",
+      },
+    ],
   },
 
   twitter: {
@@ -62,16 +79,20 @@ export const metadata: Metadata = {
     title: HOME_TITLE,
 
     description:
-      "Modern websites, web applications, e-commerce platforms, SEO and business systems built for businesses across India and worldwide.",
+      "Web development and digital solutions for businesses in Shimla, Himachal Pradesh, across India and beyond.",
+
+    images: [`${SITE_URL}/og-image.png`],
   },
 };
+
+/* =========================================================
+   HOMEPAGE
+========================================================= */
 
 export default function HomePage() {
   const webPageSchema = getWebPageSchema({
     url: SITE_URL,
-
     name: HOME_TITLE,
-
     description: HOME_DESCRIPTION,
   });
 
@@ -101,6 +122,7 @@ export default function HomePage() {
 
         <WhyUsSection />
 
+        <TestimonialsSection />
 
         <PricingSection />
 

@@ -21,7 +21,7 @@ export default function WhyUsSection() {
             <WhyUsIntro />
           </div>
 
-          {/* POINTS */}
+          {/* REASONS TO CHOOSE US */}
           <WhyUsPoints />
         </div>
       </div>

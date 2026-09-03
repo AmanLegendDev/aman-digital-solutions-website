@@ -9,7 +9,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Aman Digital Solutions",
     short_name: "Aman Digital",
     description:
-      "Aman Digital Solutions builds fast, modern websites, web applications, SEO solutions and business systems for businesses worldwide.",
+      "Aman Digital Solutions is a Shimla-based web development and digital solutions company serving businesses across Himachal Pradesh, India and beyond.",
     start_url: "/",
     display: "standalone",
     background_color: "#050505",

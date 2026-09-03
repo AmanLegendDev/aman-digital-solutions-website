@@ -50,9 +50,9 @@ export default async function FAQSection() {
   const featuredFAQ =
     faqs.find((faq) => faq.featured) ?? faqs[0];
 
-  const supportingFAQs = faqs.filter(
-    (faq) => faq.id !== featuredFAQ.id
-  );
+  const supportingFAQs = faqs
+    .filter((faq) => faq.id !== featuredFAQ.id)
+    .slice(0, 6);
 
   return (
     <section
@@ -74,7 +74,7 @@ export default async function FAQSection() {
           </div>
 
           {/* RIGHT — FAQ */}
-          <div className="min-w-0 w-full max-w-full">
+          <div className="w-full min-w-0 max-w-full">
             <FAQAccordion
               featuredFAQ={featuredFAQ}
               faqs={supportingFAQs}
@@ -84,13 +84,42 @@ export default async function FAQSection() {
             <div className="mt-5 flex justify-end">
               <Link
                 href="/faq"
-                className="group inline-flex items-center gap-2 rounded-full border border-[#292929] bg-[#0A0A0A] px-5 py-3 text-xs font-medium text-[#BDBDBD] transition-all duration-200 hover:border-[#FFC400]/35 hover:bg-[#FFC400]/[0.06] hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
+                className="
+                  group
+                  inline-flex
+                  min-h-11
+                  items-center
+                  gap-2
+                  rounded-full
+                  border
+                  border-[#292929]
+                  bg-[#0A0A0A]
+                  px-5
+                  py-3
+                  text-xs
+                  font-medium
+                  text-[#BDBDBD]
+                  transition-all
+                  duration-200
+                  hover:border-[#FFC400]/35
+                  hover:bg-[#FFC400]/[0.06]
+                  hover:text-[#FFC400]
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-[#FFC400]
+                "
               >
                 View all FAQs
 
                 <ArrowUpRight
+                  aria-hidden="true"
                   size={14}
-                  className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  className="
+                    transition-transform
+                    duration-200
+                    group-hover:-translate-y-0.5
+                    group-hover:translate-x-0.5
+                  "
                 />
               </Link>
             </div>

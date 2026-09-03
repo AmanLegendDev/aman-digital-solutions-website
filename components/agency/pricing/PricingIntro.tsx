@@ -27,8 +27,14 @@ export default function PricingIntro() {
     >
       {/* EYEBROW */}
       <div className="inline-flex items-center gap-2 rounded-full border border-[#292929] bg-[#0D0D0D] px-3.5 py-2">
-        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#FFC400]/10 text-[#FFC400]">
-          <Sparkles size={12} />
+        <span
+          aria-hidden="true"
+          className="flex h-5 w-5 items-center justify-center rounded-full bg-[#FFC400]/10 text-[#FFC400]"
+        >
+          <Sparkles
+            aria-hidden="true"
+            size={12}
+          />
         </span>
 
         <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#8A8A8A] sm:text-[11px]">
@@ -64,6 +70,7 @@ export default function PricingIntro() {
 
           <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] transition-all duration-200 group-hover:border-[#FFC400]/40 group-hover:bg-[#FFC400]/10">
             <ArrowUpRight
+              aria-hidden="true"
               size={13}
               className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
             />
@@ -76,7 +83,7 @@ export default function PricingIntro() {
         />
 
         <Link
-          href="start-a-project"
+          href="/start-a-project"
           className="text-xs font-medium text-[#666] transition-colors duration-200 hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
         >
           Talk about your project

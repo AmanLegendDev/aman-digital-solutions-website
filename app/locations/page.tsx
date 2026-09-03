@@ -5,14 +5,16 @@ import Location from "@/models/Location";
 
 import LocationsHero from "@/components/locations/LocationsHero";
 import LocationsPageClient from "@/components/locations/LocationsPageClient";
+
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
-
 
 import {
   getCollectionPageSchema,
   getItemListSchema,
 } from "@/lib/seo/schema";
+
+import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 /* =========================================================
    SITE CONFIG
@@ -28,10 +30,10 @@ const SITE_URL =
 
 export const metadata: Metadata = {
   title:
-    "Locations | Aman Digital Solutions",
+    "Locations",
 
   description:
-    "Explore the locations where Aman Digital Solutions provides professional website development, digital solutions and business-focused web services.",
+    "Explore the locations where Aman Digital Solutions provides web development, digital solutions and business-focused websites, serving businesses in Shimla, Himachal Pradesh, across India and beyond.",
 
   alternates: {
     canonical:
@@ -43,7 +45,7 @@ export const metadata: Metadata = {
       "Locations | Aman Digital Solutions",
 
     description:
-      "Explore the locations where Aman Digital Solutions helps businesses build modern websites, digital experiences and business systems.",
+      "Explore the locations served by Aman Digital Solutions for web development, digital solutions and business-focused websites.",
 
     url:
       `${SITE_URL}/locations`,
@@ -66,7 +68,7 @@ export const metadata: Metadata = {
       "Locations | Aman Digital Solutions",
 
     description:
-      "Explore locations served by Aman Digital Solutions and discover our digital services for businesses.",
+      "Explore the locations served by Aman Digital Solutions for web development and digital solutions.",
   },
 
   robots: {
@@ -224,89 +226,6 @@ async function getLocations(): Promise<LocationData[]> {
 }
 
 /* =========================================================
-   WEBPAGE SCHEMA
-========================================================= */
-
-function createWebPageSchema() {
-  return {
-    "@context":
-      "https://schema.org",
-
-    "@type":
-      "CollectionPage",
-
-    "@id":
-      `${SITE_URL}/locations#webpage`,
-
-    url:
-      `${SITE_URL}/locations`,
-
-    name:
-      "Locations | Aman Digital Solutions",
-
-    description:
-      "Locations served by Aman Digital Solutions.",
-
-    isPartOf: {
-      "@id":
-        `${SITE_URL}/#website`,
-    },
-
-    breadcrumb: {
-      "@id":
-        `${SITE_URL}/locations#breadcrumb`,
-    },
-  };
-}
-
-/* =========================================================
-   BREADCRUMB SCHEMA
-========================================================= */
-
-function createBreadcrumbSchema() {
-  return {
-    "@context":
-      "https://schema.org",
-
-    "@type":
-      "BreadcrumbList",
-
-    "@id":
-      `${SITE_URL}/locations#breadcrumb`,
-
-    itemListElement: [
-      {
-        "@type":
-          "ListItem",
-
-        position:
-          1,
-
-        name:
-          "Home",
-
-        item:
-          SITE_URL,
-      },
-
-      {
-        "@type":
-          "ListItem",
-
-        position:
-          2,
-
-        name:
-          "Locations",
-
-        item:
-          `${SITE_URL}/locations`,
-      },
-    ],
-  };
-}
-
-/* =========================================================
    PAGE
 ========================================================= */
 
@@ -320,129 +239,149 @@ export default async function LocationsPage() {
         location.featured
     );
 
-  const webPageSchema =
-    createWebPageSchema();
+  const locationsUrl =
+    `${SITE_URL}/locations`;
 
-  const breadcrumbSchema =
-    createBreadcrumbSchema();
+  /* =======================================================
+     LOCATION ITEM LIST
+  ======================================================== */
 
+  const locationItems =
+    locations.map((location) => ({
+      name:
+        location.name,
 
-    const locationsUrl = `${SITE_URL}/locations`;
+      url:
+        `${locationsUrl}/${location.slug}`,
 
-const locationItems = locations.map((location) => ({
-  name: location.name,
-  url: `${locationsUrl}/${location.slug}`,
+      ...(location.image?.url
+        ? {
+            image:
+              location.image.url,
+          }
+        : {}),
 
-  ...(location.image?.url
-    ? {
-        image: location.image.url,
-      }
-    : {}),
+      description:
+        location.shortDescription,
+    }));
 
-  description: location.shortDescription,
-}));
+  const locationsItemList =
+    getItemListSchema({
+      id:
+        `${locationsUrl}#itemlist`,
 
-const locationsItemList = getItemListSchema({
-  id: `${locationsUrl}#itemlist`,
-  name: "Aman Digital Solutions Locations",
-  url: locationsUrl,
-  items: locationItems,
-});
+      name:
+        "Aman Digital Solutions Locations",
 
-const locationsCollection = getCollectionPageSchema({
-  url: locationsUrl,
-  name: "Locations | Aman Digital Solutions",
-  description:
-    "Explore the locations where Aman Digital Solutions provides professional website development and digital solutions.",
-  itemListId: `${locationsUrl}#itemlist`,
-});
+      url:
+        locationsUrl,
+
+      items:
+        locationItems,
+    });
+
+  /* =======================================================
+     COLLECTION PAGE SCHEMA
+  ======================================================== */
+
+  const locationsCollection =
+    getCollectionPageSchema({
+      url:
+        locationsUrl,
+
+      name:
+        "Locations | Aman Digital Solutions",
+
+      description:
+        "Explore the locations where Aman Digital Solutions provides web development, digital solutions and business-focused websites, serving businesses in Shimla, Himachal Pradesh, across India and beyond.",
+
+      itemListId:
+        `${locationsUrl}#itemlist`,
+    });
+
+  /* =======================================================
+     RENDER
+  ======================================================== */
 
   return (
     <>
-    <Navbar />
+      <Navbar />
 
-<script
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{
-    __html: JSON.stringify({
-      "@context": "https://schema.org",
-      "@graph": [
-        locationsCollection,
-        locationsItemList,
-      ],
-    }),
-  }}
-/>
-      {/* =================================================
+      {/* ===================================================
           STRUCTURED DATA
-      ================================================= */}
+      ==================================================== */}
 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html:
-            JSON.stringify(
-              webPageSchema
-            ),
+            JSON.stringify({
+              "@context":
+                "https://schema.org",
+
+              "@graph": [
+                locationsCollection,
+                locationsItemList,
+              ],
+            }),
         }}
       />
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html:
-            JSON.stringify(
-              breadcrumbSchema
-            ),
-        }}
+      {/* ===================================================
+          BREADCRUMB SCHEMA
+      ==================================================== */}
+
+      <BreadcrumbSchema
+        items={[
+          {
+            name:
+              "Home",
+
+            url:
+              "/",
+          },
+
+          {
+            name:
+              "Locations",
+
+            url:
+              "/locations",
+          },
+        ]}
       />
 
-      {/* =================================================
-          BREADCRUMB
-      ================================================= */}
-
-      <nav
-        aria-label="Breadcrumb"
-        className="sr-only"
-      >
-        <ol>
-          <li>
-            <a href="/">
-              Home
-            </a>
-          </li>
-
-          <li aria-current="page">
-            Locations
-          </li>
-        </ol>
-      </nav>
-
-      {/* =================================================
-          HERO
-      ================================================= */}
-
-      <LocationsHero
-        locationCount={
-          locations.length
-        }
-      />
-
-      {/* =================================================
-          CONTENT
-      ================================================= */}
+      {/* ===================================================
+          PAGE CONTENT
+      ==================================================== */}
 
       <main>
+        {/* =================================================
+            HERO
+        ================================================== */}
+
+        <LocationsHero
+          locationCount={
+            locations.length
+          }
+        />
+
+        {/* =================================================
+            LOCATIONS
+        ================================================== */}
+
         <LocationsPageClient
           featuredLocations={
             featuredLocations
           }
+
           locations={
             locations
           }
         />
       </main>
-      <Footer/>
+
+      <Footer />
     </>
   );
 }

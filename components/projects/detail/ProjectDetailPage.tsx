@@ -77,72 +77,28 @@ export default function ProjectDetailPage({
   project,
 }: ProjectDetailPageProps) {
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <div className="min-h-screen bg-[#050505] text-white">
+      <ProjectDetailHero project={project} />
 
-      {/* ===================================================
-          HERO
-      ==================================================== */}
+      <ProjectOverviewSection project={project} />
 
-      <ProjectDetailHero
-        project={project}
-      />
+      <ProjectFeaturesSection features={project.features} />
 
-      {/* ===================================================
-          OVERVIEW
-      ==================================================== */}
-
-      <ProjectOverviewSection
-        project={project}
-      />
-
-      {/* ===================================================
-          FEATURES
-      ==================================================== */}
-
-      <ProjectFeaturesSection
-        features={project.features}
-      />
-
-      {/* ===================================================
-          RESULTS
-      ==================================================== */}
-
-      <ProjectResultsSection
-        results={project.results}
-      />
-
-      {/* ===================================================
-          TECHNOLOGIES
-      ==================================================== */}
+      <ProjectResultsSection results={project.results} />
 
       <ProjectTechnologiesSection
         technologies={project.technologies}
       />
 
-      {/* ===================================================
-          GALLERY
-      ==================================================== */}
-
-      <ProjectGallerySection
-        gallery={project.gallery}
-      />
-
-      {/* ===================================================
-          RELATED SERVICES
-      ==================================================== */}
+      <ProjectGallerySection gallery={project.gallery} />
 
       <ProjectRelatedServicesSection
         services={project.services}
       />
 
-      {/* ===================================================
-          FINAL CTA
-      ==================================================== */}
-
       <ProjectFinalCtaSection
         projectTitle={project.title}
       />
-
-    </main>
+    </div>
   );
 }

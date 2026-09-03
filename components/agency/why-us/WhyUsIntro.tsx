@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function WhyUsIntro() {
@@ -21,7 +21,10 @@ export default function WhyUsIntro() {
     >
       {/* EYEBROW */}
       <div className="flex items-center gap-3">
-        <span className="h-px w-8 bg-[#FFC400]" />
+        <span
+          aria-hidden="true"
+          className="h-px w-8 bg-[#FFC400]"
+        />
 
         <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#FFC400]">
           Why Aman Digital Solutions
@@ -42,10 +45,10 @@ export default function WhyUsIntro() {
 
       {/* DESCRIPTION */}
       <p className="mt-6 max-w-md text-sm leading-7 text-[#858585] sm:text-base sm:leading-7">
-        Your website is often the first interaction someone
-        has with your business. We treat it like a real business
-        asset — designed to communicate clearly, perform well
-        and create opportunities.
+        Your website is often the first interaction someone has with your
+        business. We treat it as a real business asset — combining thoughtful
+        design, modern web development and SEO-ready structure to create a
+        clear, credible and useful digital presence.
       </p>
 
       {/* CTA */}
@@ -57,6 +60,7 @@ export default function WhyUsIntro() {
 
         <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#292929] transition-all duration-200 group-hover:border-[#FFC400]/40 group-hover:bg-[#FFC400]/10">
           <ArrowUpRight
+            aria-hidden="true"
             size={14}
             className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
           />
@@ -70,9 +74,9 @@ export default function WhyUsIntro() {
           <span className="mx-2 text-[#333]">/</span>
           Design
           <span className="mx-2 text-[#333]">/</span>
-          Technology
+          Development
           <span className="mx-2 text-[#333]">/</span>
-          Performance
+          SEO
         </p>
       </div>
     </motion.div>

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
@@ -8,40 +9,37 @@ import DesktopNav from "./DesktopNav";
 import MobileNav from "./MobileNav";
 
 export default function Navbar() {
-  const [scrolled, setScrolled] =
-    useState(false);
-
-  const [menuOpen, setMenuOpen] =
-    useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   /* =========================================================
      SCROLL STATE
   ========================================================= */
 
- useEffect(() => {
-  let ticking = false;
+  useEffect(() => {
+    let ticking = false;
 
-  const handleScroll = () => {
-    if (ticking) return;
+    const handleScroll = () => {
+      if (ticking) return;
 
-    ticking = true;
+      ticking = true;
 
-    window.requestAnimationFrame(() => {
-      setScrolled(window.scrollY > 24);
-      ticking = false;
+      window.requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 24);
+        ticking = false;
+      });
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
     });
-  };
 
-  handleScroll();
-
-  window.addEventListener("scroll", handleScroll, {
-    passive: true,
-  });
-
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, []);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   /* =========================================================
      LOCK BODY WHEN MOBILE MENU IS OPEN
@@ -67,31 +65,23 @@ export default function Navbar() {
   useEffect(() => {
     if (!menuOpen) return;
 
-    const handleKeyDown = (
-      event: KeyboardEvent
-    ) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setMenuOpen(false);
       }
     };
 
-    window.addEventListener(
-      "keydown",
-      handleKeyDown
-    );
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener(
-        "keydown",
-        handleKeyDown
-      );
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [menuOpen]);
 
   return (
     <>
       {/* =====================================================
-          HEADER
+          HEADER / NAVIGATION
       ===================================================== */}
 
       <header
@@ -107,12 +97,10 @@ export default function Navbar() {
         "
       >
         {/* ===================================================
-            DESKTOP NAV
+            DESKTOP NAVIGATION
         =================================================== */}
 
-        <DesktopNav
-          scrolled={scrolled}
-        />
+        <DesktopNav scrolled={scrolled} />
 
         {/* ===================================================
             MOBILE HEADER
@@ -139,9 +127,7 @@ export default function Navbar() {
 
           <Link
             href="/"
-            onClick={() =>
-              setMenuOpen(false)
-            }
+            onClick={() => setMenuOpen(false)}
             aria-label="Aman Digital Solutions home"
             className="
               group
@@ -154,11 +140,13 @@ export default function Navbar() {
               focus-visible:ring-[#FFC400]
             "
           >
-            {/* LOGO */}
-
-            <img
+            <Image
               src="/logo.png"
               alt="Aman Digital Solutions"
+              width={36}
+              height={36}
+              priority
+              sizes="36px"
               className="
                 h-9
                 w-auto
@@ -170,55 +158,53 @@ export default function Navbar() {
               "
             />
 
-            {/* BRAND TEXT hai bht jyadad */}
+            {/* BRAND TEXT */}
 
-           <div
-  className="
-    ml-3
-    flex
-    min-w-0
-    flex-col
-    justify-center
-  "
->
-  <span
-    className="
-      truncate
-      text-[13px]
-      font-semibold
-      leading-[1.1]
-      tracking-[-0.015em]
-      text-white
-    "
-  >
-    Aman Digital Solutions
-  </span>
+            <div
+              className="
+                ml-3
+                flex
+                min-w-0
+                flex-col
+                justify-center
+              "
+            >
+              <span
+                className="
+                  truncate
+                  text-[13px]
+                  font-semibold
+                  leading-[1.1]
+                  tracking-[-0.015em]
+                  text-white
+                "
+              >
+                Aman Digital Solutions
+              </span>
 
-  <span
-    className="
-      mt-1.5
-      truncate
-      text-[8px]
-      font-medium
-      leading-none
-      tracking-[0.03em]
-      text-neutral-500
-    "
-  >
-    Digital solutions that mean business.
-  </span>
-</div>
+              <span
+                className="
+                  mt-1
+                  truncate
+                  text-[8px]
+                  font-medium
+                  leading-none
+                  tracking-[0.03em]
+                  text-neutral-500
+                "
+              >
+                Digital solutions that mean business.
+              </span>
+            </div>
           </Link>
 
           {/* =================================================
-              HAMBURGER
+              MOBILE MENU BUTTON
           ================================================= */}
 
           <button
             type="button"
-            onClick={() =>
-              setMenuOpen(true)
-            }
+            onClick={() => setMenuOpen(true)}
             aria-label="Open navigation menu"
             aria-expanded={menuOpen}
             aria-controls="mobile-navigation"
@@ -245,6 +231,7 @@ export default function Navbar() {
             "
           >
             <Menu
+              aria-hidden="true"
               size={20}
               strokeWidth={2}
             />
@@ -258,9 +245,7 @@ export default function Navbar() {
 
       <MobileNav
         open={menuOpen}
-        onClose={() =>
-          setMenuOpen(false)
-        }
+        onClose={() => setMenuOpen(false)}
       />
     </>
   );

@@ -17,12 +17,11 @@ const SITE_URL =
   "https://www.amandigitalsolutions.com";
 
 export const metadata: Metadata = {
-  title:
-    "Our Projects | Websites, E-commerce & Digital Solutions | Aman Digital Solutions",
+ title:
+  "Our Projects | Websites, E-commerce & Digital Solutions",
 
-  description:
-    "Explore websites, e-commerce platforms, web applications and digital solutions built by Aman Digital Solutions for businesses and brands.",
-
+ description:
+  "Explore websites, e-commerce platforms, web applications and digital solutions built by Aman Digital Solutions for businesses in Shimla, Himachal Pradesh, across India and beyond.",
   alternates: {
     canonical: "/projects",
   },
@@ -34,7 +33,7 @@ export const metadata: Metadata = {
     description:
       "Explore websites, digital products and business solutions built by Aman Digital Solutions.",
 
-    url: "/projects",
+   url: `${SITE_URL}/projects`,
 
     type: "website",
 
@@ -51,8 +50,8 @@ export const metadata: Metadata = {
     title:
       "Our Projects | Aman Digital Solutions",
 
-    description:
-      "Explore real websites, e-commerce platforms and digital solutions built by Aman Digital Solutions.",
+   description:
+  "Explore websites, e-commerce platforms, web applications and digital solutions built by Aman Digital Solutions for businesses in India and beyond.",
   },
 
   robots: {
@@ -154,7 +153,7 @@ const projectsCollection = getCollectionPageSchema({
   url: projectsUrl,
   name: "Our Projects | Aman Digital Solutions",
   description:
-    "Explore websites, e-commerce platforms, web applications and digital solutions built by Aman Digital Solutions.",
+  "Explore websites, e-commerce platforms, web applications and digital solutions built by Aman Digital Solutions for businesses in Shimla, Himachal Pradesh, across India and beyond.",
   itemListId: `${projectsUrl}#itemlist`,
 });
 
