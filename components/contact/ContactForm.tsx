@@ -13,6 +13,7 @@ import {
   Loader2,
   X,
   AlertCircle,
+  Link,
 } from "lucide-react";
 
 import { createContactEnquiry } from "@/actions/contact";
@@ -651,18 +652,16 @@ export default function ContactForm() {
                 )}
               </button>
 
-              <p
-                className="
-                  mt-4
-                  text-center
-                  text-[10px]
-                  leading-5
-                  text-neutral-700
-                "
-              >
-                By submitting this form, you agree
-                to our privacy policy.
-              </p>
+            <p className="mt-4 text-center text-[10px] leading-5 text-neutral-700">
+  By submitting this form, you agree to our{" "}
+  <Link
+    href="/privacy"
+    className="underline underline-offset-2 transition-colors hover:text-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
+  >
+    privacy policy
+  </Link>
+  .
+</p>
             </form>
           </div>
         </div>

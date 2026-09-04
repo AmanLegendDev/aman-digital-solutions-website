@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   CalendarDays,
@@ -69,7 +70,10 @@ export default function BlogArticleHeroSection({
   );
 
   return (
-    <section className="relative overflow-hidden border-b border-white/[0.06] bg-[#050505]">
+    <section
+      aria-labelledby="blog-article-title"
+      className="relative overflow-hidden border-b border-white/[0.06] bg-[#050505]"
+    >
       {/* =====================================================
           BACKGROUND GLOW
       ===================================================== */}
@@ -92,7 +96,7 @@ export default function BlogArticleHeroSection({
             <li>
               <Link
                 href="/"
-                className="text-neutral-700 transition-colors hover:text-neutral-400"
+                className="rounded-sm text-neutral-700 transition-colors hover:text-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
               >
                 Home
               </Link>
@@ -102,13 +106,16 @@ export default function BlogArticleHeroSection({
               aria-hidden="true"
               className="text-neutral-800"
             >
-              <ChevronRight size={12} />
+              <ChevronRight
+                size={12}
+                aria-hidden="true"
+              />
             </li>
 
             <li>
               <Link
                 href="/blog"
-                className="text-neutral-700 transition-colors hover:text-neutral-400"
+                className="rounded-sm text-neutral-700 transition-colors hover:text-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
               >
                 Blog
               </Link>
@@ -118,7 +125,10 @@ export default function BlogArticleHeroSection({
               aria-hidden="true"
               className="text-neutral-800"
             >
-              <ChevronRight size={12} />
+              <ChevronRight
+                size={12}
+                aria-hidden="true"
+              />
             </li>
 
             <li
@@ -145,7 +155,10 @@ export default function BlogArticleHeroSection({
 
           {/* TITLE */}
 
-          <h1 className="mt-7 text-4xl font-semibold leading-[0.98] tracking-[-0.055em] text-white sm:text-5xl lg:text-[4.7rem]">
+          <h1
+            id="blog-article-title"
+            className="mt-7 text-4xl font-semibold leading-[0.98] tracking-[-0.055em] text-white sm:text-5xl lg:text-[4.7rem]"
+          >
             {blog.title}
           </h1>
 
@@ -161,7 +174,10 @@ export default function BlogArticleHeroSection({
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-3">
             <div className="flex items-center gap-2 text-[9px] font-medium uppercase tracking-[0.12em] text-neutral-600">
-              <UserRound size={12} />
+              <UserRound
+                size={12}
+                aria-hidden="true"
+              />
 
               <span>{blog.author}</span>
             </div>
@@ -174,29 +190,40 @@ export default function BlogArticleHeroSection({
                 />
 
                 <div className="flex items-center gap-2 text-[9px] font-medium uppercase tracking-[0.12em] text-neutral-600">
-                  <CalendarDays size={12} />
+                  <CalendarDays
+                    size={12}
+                    aria-hidden="true"
+                  />
 
-                  <span>{publishedDate}</span>
+                  <time
+                    dateTime={blog.publishedAt}
+                  >
+                    {publishedDate}
+                  </time>
                 </div>
               </>
             )}
 
-            {blog.readingTime && (
-              <>
-                <span
-                  aria-hidden="true"
-                  className="h-1 w-1 rounded-full bg-neutral-800"
-                />
+            {blog.readingTime &&
+              blog.readingTime > 0 && (
+                <>
+                  <span
+                    aria-hidden="true"
+                    className="h-1 w-1 rounded-full bg-neutral-800"
+                  />
 
-                <div className="flex items-center gap-2 text-[9px] font-medium uppercase tracking-[0.12em] text-neutral-600">
-                  <Clock3 size={12} />
+                  <div className="flex items-center gap-2 text-[9px] font-medium uppercase tracking-[0.12em] text-neutral-600">
+                    <Clock3
+                      size={12}
+                      aria-hidden="true"
+                    />
 
-                  <span>
-                    {blog.readingTime} min read
-                  </span>
-                </div>
-              </>
-            )}
+                    <span>
+                      {blog.readingTime} min read
+                    </span>
+                  </div>
+                </>
+              )}
           </div>
         </div>
 
@@ -208,13 +235,16 @@ export default function BlogArticleHeroSection({
           <div className="overflow-hidden rounded-[2rem] border border-white/[0.08] bg-[#090909] shadow-2xl shadow-black/30">
             <div className="relative aspect-[16/9] overflow-hidden bg-[#0A0A0A]">
               {blog.coverImage?.url ? (
-                <img
+                <Image
                   src={blog.coverImage.url}
                   alt={
-                    blog.coverImage.alt ||
+                    blog.coverImage.alt?.trim() ||
                     blog.title
                   }
-                  className="h-full w-full object-cover"
+                  fill
+                  priority
+                  sizes="(max-width: 640px) 100vw, (max-width: 1280px) 92vw, 1152px"
+                  className="object-cover"
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center">

@@ -29,6 +29,7 @@ export default function GalleryFinalCtaSection() {
         <div className="inline-flex items-center gap-2 rounded-full border border-[#FFC400]/15 bg-[#FFC400]/[0.04] px-3.5 py-2">
           <Sparkles
             size={11}
+            aria-hidden="true"
             className="text-[#FFC400]"
           />
 
@@ -42,10 +43,10 @@ export default function GalleryFinalCtaSection() {
         ================================================= */}
 
         <h2 className="mx-auto mt-7 max-w-3xl text-4xl font-semibold leading-[0.98] tracking-[-0.05em] text-white sm:text-5xl lg:text-[4.25rem]">
-          Your idea could be
+          Your idea could
           <br />
           <span className="text-neutral-500">
-            the next thing we build.
+            be the next thing we build.
           </span>
         </h2>
 
@@ -53,7 +54,7 @@ export default function GalleryFinalCtaSection() {
             DESCRIPTION
         ================================================= */}
 
-        <p className="mx-auto mt-7 max-w-2xl text-sm leading-7 text-neutral-600 sm:text-base sm:leading-8">
+        <p className="mx-auto mt-7 max-w-2xl text-sm leading-7 text-neutral-400 sm:text-base sm:leading-8">
           From a first concept to a polished digital
           experience, let&apos;s turn your idea into
           something people can actually use.
@@ -66,23 +67,29 @@ export default function GalleryFinalCtaSection() {
         <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
             href="/start-a-project"
-            className="group inline-flex items-center justify-center gap-3 rounded-xl bg-[#FFC400] px-6 py-3.5 text-xs font-semibold text-black transition-all duration-300 hover:bg-[#FFD23D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
+            aria-label="Start a project with Aman Digital Solutions"
+            className="group inline-flex items-center justify-center gap-3 rounded-xl bg-[#FFC400] px-6 py-3.5 text-xs font-semibold text-black transition-all duration-300 hover:bg-[#FFD23D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505]"
           >
             Start a conversation
 
             <ArrowRight
               size={15}
+              aria-hidden="true"
               className="transition-transform duration-300 group-hover:translate-x-1"
             />
           </Link>
 
           <Link
             href="/projects"
-            className="inline-flex items-center justify-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-6 py-3.5 text-xs font-semibold text-white/70 transition-all duration-300 hover:border-white/[0.15] hover:text-white"
+            aria-label="View Aman Digital Solutions projects"
+            className="inline-flex items-center justify-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-6 py-3.5 text-xs font-semibold text-white/70 transition-all duration-300 hover:border-white/[0.15] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505]"
           >
             See our projects
 
-            <MessageCircle size={14} />
+            <MessageCircle
+              size={14}
+              aria-hidden="true"
+            />
           </Link>
         </div>
 
@@ -96,7 +103,7 @@ export default function GalleryFinalCtaSection() {
             className="h-px flex-1 bg-gradient-to-r from-transparent to-white/[0.07]"
           />
 
-          <span className="shrink-0 text-[8px] font-medium uppercase tracking-[0.16em] text-neutral-800">
+          <span className="shrink-0 text-[8px] font-medium uppercase tracking-[0.16em] text-neutral-500">
             Ideas into digital experiences
           </span>
 

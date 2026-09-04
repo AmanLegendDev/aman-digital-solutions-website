@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
@@ -77,11 +78,101 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
+      "max-image-preview":
+        "large",
+      "max-snippet":
+        -1,
+      "max-video-preview":
+        -1,
     },
   },
+};
+
+/* =========================================================
+   WEB PAGE STRUCTURED DATA
+========================================================= */
+
+const webPageSchema = {
+  "@type":
+    "WebPage",
+
+  "@id":
+    `${PRIVACY_URL}#webpage`,
+
+  url:
+    PRIVACY_URL,
+
+  name:
+    "Privacy Policy | Aman Digital Solutions",
+
+  description:
+    "Privacy Policy explaining how Aman Digital Solutions collects, uses, protects and handles personal information.",
+
+  isPartOf: {
+    "@id":
+      `${SITE_URL}/#website`,
+  },
+
+  breadcrumb: {
+    "@id":
+      `${PRIVACY_URL}#breadcrumb`,
+  },
+};
+
+/* =========================================================
+   BREADCRUMB STRUCTURED DATA
+========================================================= */
+
+const breadcrumbSchema = {
+  "@type":
+    "BreadcrumbList",
+
+  "@id":
+    `${PRIVACY_URL}#breadcrumb`,
+
+  itemListElement: [
+    {
+      "@type":
+        "ListItem",
+
+      position:
+        1,
+
+      name:
+        "Home",
+
+      item:
+        SITE_URL,
+    },
+
+    {
+      "@type":
+        "ListItem",
+
+      position:
+        2,
+
+      name:
+        "Privacy Policy",
+
+      item:
+        PRIVACY_URL,
+    },
+  ],
+};
+
+/* =========================================================
+   STRUCTURED DATA GRAPH
+========================================================= */
+
+const structuredData = {
+  "@context":
+    "https://schema.org",
+
+  "@graph": [
+    webPageSchema,
+    breadcrumbSchema,
+  ],
 };
 
 /* =========================================================
@@ -91,7 +182,29 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <>
+      {/* =================================================
+          NAVBAR
+      ================================================= */}
+
       <Navbar />
+
+      {/* =================================================
+          STRUCTURED DATA
+      ================================================= */}
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(
+              structuredData
+            ),
+        }}
+      />
+
+      {/* =================================================
+          SEMANTIC BREADCRUMB
+      ================================================= */}
 
       <nav
         aria-label="Breadcrumb"
@@ -99,9 +212,9 @@ export default function PrivacyPage() {
       >
         <ol>
           <li>
-            <a href="/">
+            <Link href="/">
               Home
-            </a>
+            </Link>
           </li>
 
           <li aria-current="page">
@@ -109,6 +222,10 @@ export default function PrivacyPage() {
           </li>
         </ol>
       </nav>
+
+      {/* =================================================
+          PRIVACY PAGE
+      ================================================= */}
 
       <main className="min-h-screen bg-[#080808] text-white">
         <PrivacyHero />
@@ -127,6 +244,10 @@ export default function PrivacyPage() {
 
         <PrivacyContact />
       </main>
+
+      {/* =================================================
+          FOOTER
+      ================================================= */}
 
       <Footer />
     </>

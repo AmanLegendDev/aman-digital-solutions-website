@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Types } from "mongoose";
 
@@ -24,6 +25,8 @@ import { getWebPageSchema } from "@/lib/seo/schema";
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.amandigitalsolutions.com";
+
+export const dynamic = "force-dynamic";
 
 /* =========================================================
    PARAMS
@@ -178,8 +181,9 @@ export async function generateMetadata({
      SEO TITLE
   ------------------------------------------------------- */
 
- const title =
-  project.seoTitle?.trim() || project.title;
+  const title =
+    project.seoTitle?.trim() ||
+    project.title;
 
   /* -------------------------------------------------------
      SEO DESCRIPTION
@@ -193,8 +197,8 @@ export async function generateMetadata({
      CANONICAL
   ------------------------------------------------------- */
 
-const canonical =
-  `${SITE_URL}/projects/${project.slug}`;
+  const canonical =
+    `${SITE_URL}/projects/${project.slug}`;
 
   /* -------------------------------------------------------
      OPEN GRAPH
@@ -238,11 +242,14 @@ const canonical =
       siteName:
         "Aman Digital Solutions",
 
-      title: ogTitle,
+      title:
+        ogTitle,
 
-      description: ogDescription,
+      description:
+        ogDescription,
 
-      url: canonical,
+      url:
+        canonical,
 
       ...(ogImage
         ? {
@@ -257,15 +264,20 @@ const canonical =
     },
 
     twitter: {
-      card: "summary_large_image",
+      card:
+        "summary_large_image",
 
-      title: ogTitle,
+      title:
+        ogTitle,
 
-      description: ogDescription,
+      description:
+        ogDescription,
 
       ...(ogImage
         ? {
-            images: [ogImage],
+            images: [
+              ogImage,
+            ],
           }
         : {}),
     },
@@ -281,9 +293,11 @@ const canonical =
         "max-image-preview":
           "large",
 
-        "max-snippet": -1,
+        "max-snippet":
+          -1,
 
-        "max-video-preview": -1,
+        "max-video-preview":
+          -1,
       },
     },
   };
@@ -301,6 +315,10 @@ export default async function ProjectPage({
   const project =
     await getProjectBySlug(slug);
 
+  /* =======================================================
+     NOT FOUND
+  ======================================================== */
+
   if (!project) {
     notFound();
   }
@@ -313,7 +331,8 @@ export default async function ProjectPage({
     `${SITE_URL}/projects/${project.slug}`;
 
   const seoTitle =
-  project.seoTitle?.trim() || project.title;
+    project.seoTitle?.trim() ||
+    project.title;
 
   const seoDescription =
     project.seoDescription?.trim() ||
@@ -566,35 +585,45 @@ export default async function ProjectPage({
 
   return (
     <>
+      {/* =================================================
+          NAVBAR
+      ================================================= */}
+
       <Navbar />
 
-      {/* ===================================================
+      {/* =================================================
           BREADCRUMB SCHEMA
-      =================================================== */}
+      ================================================= */}
 
       <BreadcrumbSchema
         items={[
           {
-            name: "Home",
-            url: "/",
+            name:
+              "Home",
+            url:
+              "/",
           },
 
           {
-            name: "Projects",
-            url: "/projects",
+            name:
+              "Projects",
+            url:
+              "/projects",
           },
 
           {
-            name: project.title,
+            name:
+              project.title,
+
             url:
               `/projects/${project.slug}`,
           },
         ]}
       />
 
-      {/* ===================================================
+      {/* =================================================
           PROJECT SCHEMA
-      =================================================== */}
+      ================================================= */}
 
       <script
         type="application/ld+json"
@@ -606,9 +635,9 @@ export default async function ProjectPage({
         }}
       />
 
-      {/* ===================================================
+      {/* =================================================
           WEBPAGE SCHEMA
-      =================================================== */}
+      ================================================= */}
 
       <script
         type="application/ld+json"
@@ -620,9 +649,9 @@ export default async function ProjectPage({
         }}
       />
 
-      {/* ===================================================
+      {/* =================================================
           SEMANTIC BREADCRUMB
-      =================================================== */}
+      ================================================= */}
 
       <nav
         aria-label="Breadcrumb"
@@ -630,15 +659,15 @@ export default async function ProjectPage({
       >
         <ol>
           <li>
-            <a href="/">
+            <Link href="/">
               Home
-            </a>
+            </Link>
           </li>
 
           <li>
-            <a href="/projects">
+            <Link href="/projects">
               Projects
-            </a>
+            </Link>
           </li>
 
           <li aria-current="page">
@@ -647,15 +676,21 @@ export default async function ProjectPage({
         </ol>
       </nav>
 
-      {/* ===================================================
+      {/* =================================================
           PROJECT DETAIL
-      =================================================== */}
+      ================================================= */}
 
       <main>
         <ProjectDetailPage
-          project={projectData}
+          project={
+            projectData
+          }
         />
       </main>
+
+      {/* =================================================
+          FOOTER
+      ================================================= */}
 
       <Footer />
     </>

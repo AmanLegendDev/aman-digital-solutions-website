@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 import { connectDB } from "@/lib/db/connect";
 import Location from "@/models/Location";
 
@@ -24,20 +26,23 @@ const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.amandigitalsolutions.com";
 
+const LOCATIONS_URL =
+  `${SITE_URL}/locations`;
+
 /* =========================================================
    METADATA
 ========================================================= */
 
 export const metadata: Metadata = {
   title:
-    "Locations",
+    "Locations | Aman Digital Solutions",
 
   description:
     "Explore the locations where Aman Digital Solutions provides web development, digital solutions and business-focused websites, serving businesses in Shimla, Himachal Pradesh, across India and beyond.",
 
   alternates: {
     canonical:
-      `${SITE_URL}/locations`,
+      LOCATIONS_URL,
   },
 
   openGraph: {
@@ -48,7 +53,7 @@ export const metadata: Metadata = {
       "Explore the locations served by Aman Digital Solutions for web development, digital solutions and business-focused websites.",
 
     url:
-      `${SITE_URL}/locations`,
+      LOCATIONS_URL,
 
     type:
       "website",
@@ -239,9 +244,6 @@ export default async function LocationsPage() {
         location.featured
     );
 
-  const locationsUrl =
-    `${SITE_URL}/locations`;
-
   /* =======================================================
      LOCATION ITEM LIST
   ======================================================== */
@@ -252,7 +254,7 @@ export default async function LocationsPage() {
         location.name,
 
       url:
-        `${locationsUrl}/${location.slug}`,
+        `${LOCATIONS_URL}/${location.slug}`,
 
       ...(location.image?.url
         ? {
@@ -268,13 +270,13 @@ export default async function LocationsPage() {
   const locationsItemList =
     getItemListSchema({
       id:
-        `${locationsUrl}#itemlist`,
+        `${LOCATIONS_URL}#itemlist`,
 
       name:
         "Aman Digital Solutions Locations",
 
       url:
-        locationsUrl,
+        LOCATIONS_URL,
 
       items:
         locationItems,
@@ -287,7 +289,7 @@ export default async function LocationsPage() {
   const locationsCollection =
     getCollectionPageSchema({
       url:
-        locationsUrl,
+        LOCATIONS_URL,
 
       name:
         "Locations | Aman Digital Solutions",
@@ -296,8 +298,22 @@ export default async function LocationsPage() {
         "Explore the locations where Aman Digital Solutions provides web development, digital solutions and business-focused websites, serving businesses in Shimla, Himachal Pradesh, across India and beyond.",
 
       itemListId:
-        `${locationsUrl}#itemlist`,
+        `${LOCATIONS_URL}#itemlist`,
     });
+
+  /* =======================================================
+     STRUCTURED DATA
+  ======================================================== */
+
+  const structuredData = {
+    "@context":
+      "https://schema.org",
+
+    "@graph": [
+      locationsCollection,
+      locationsItemList,
+    ],
+  };
 
   /* =======================================================
      RENDER
@@ -309,27 +325,21 @@ export default async function LocationsPage() {
 
       {/* ===================================================
           STRUCTURED DATA
-      ==================================================== */}
+      =================================================== */}
 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html:
-            JSON.stringify({
-              "@context":
-                "https://schema.org",
-
-              "@graph": [
-                locationsCollection,
-                locationsItemList,
-              ],
-            }),
+            JSON.stringify(
+              structuredData
+            ),
         }}
       />
 
       {/* ===================================================
           BREADCRUMB SCHEMA
-      ==================================================== */}
+      =================================================== */}
 
       <BreadcrumbSchema
         items={[
@@ -353,22 +363,14 @@ export default async function LocationsPage() {
 
       {/* ===================================================
           PAGE CONTENT
-      ==================================================== */}
+      =================================================== */}
 
       <main>
-        {/* =================================================
-            HERO
-        ================================================== */}
-
         <LocationsHero
           locationCount={
             locations.length
           }
         />
-
-        {/* =================================================
-            LOCATIONS
-        ================================================== */}
 
         <LocationsPageClient
           featuredLocations={

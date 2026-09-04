@@ -35,7 +35,10 @@ export default function LocationOverviewSection({
 
           <div>
             <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.02] text-neutral-500">
+              <span
+                aria-hidden="true"
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.02] text-neutral-500"
+              >
                 <Building2 size={15} />
               </span>
 
@@ -56,9 +59,11 @@ export default function LocationOverviewSection({
             </h2>
 
             <p className="mt-5 max-w-sm text-sm leading-6 text-neutral-600">
-              Learn more about our presence in {city}
-              {state ? `, ${state}` : ""} and the businesses
-              we work with from this location.
+              Learn more about our presence in{" "}
+              {city}
+              {state ? `, ${state}` : ""} and the
+              businesses we work with from this
+              location.
             </p>
           </div>
 
@@ -78,7 +83,10 @@ export default function LocationOverviewSection({
               {/* INTRO */}
 
               <div className="flex items-start gap-4">
-                <span className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#FFC400]/15 bg-[#FFC400]/[0.04] text-[#FFC400]">
+                <span
+                  aria-hidden="true"
+                  className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#FFC400]/15 bg-[#FFC400]/[0.04] text-[#FFC400]"
+                >
                   <MapPinned size={16} />
                 </span>
 
@@ -150,16 +158,18 @@ export default function LocationOverviewSection({
                 )}
               </div>
 
-              {/* SMALL INTERNAL LINK */}
+              {/* INTERNAL SECTION LINK */}
 
               <div className="mt-8 border-t border-white/[0.06] pt-6">
                 <a
                   href="#location-services"
-                  className="group inline-flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.17em] text-neutral-600 transition-colors hover:text-[#FFC400]"
+                  aria-label="Explore services available in this location"
+                  className="group inline-flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.17em] text-neutral-600 transition-colors hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] focus-visible:ring-offset-2 focus-visible:ring-offset-[#090909]"
                 >
                   Explore services available here
 
                   <ArrowUpRight
+                    aria-hidden="true"
                     size={13}
                     className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                   />

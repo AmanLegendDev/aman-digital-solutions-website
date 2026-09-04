@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
@@ -74,11 +75,101 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
+      "max-image-preview":
+        "large",
+      "max-snippet":
+        -1,
+      "max-video-preview":
+        -1,
     },
   },
+};
+
+/* =========================================================
+   WEB PAGE STRUCTURED DATA
+========================================================= */
+
+const webPageSchema = {
+  "@type":
+    "WebPage",
+
+  "@id":
+    `${TERMS_URL}#webpage`,
+
+  url:
+    TERMS_URL,
+
+  name:
+    "Terms of Service | Aman Digital Solutions",
+
+  description:
+    "Terms of Service covering projects, services, payments, intellectual property, responsibilities and legal terms.",
+
+  isPartOf: {
+    "@id":
+      `${SITE_URL}/#website`,
+  },
+
+  breadcrumb: {
+    "@id":
+      `${TERMS_URL}#breadcrumb`,
+  },
+};
+
+/* =========================================================
+   BREADCRUMB STRUCTURED DATA
+========================================================= */
+
+const breadcrumbSchema = {
+  "@type":
+    "BreadcrumbList",
+
+  "@id":
+    `${TERMS_URL}#breadcrumb`,
+
+  itemListElement: [
+    {
+      "@type":
+        "ListItem",
+
+      position:
+        1,
+
+      name:
+        "Home",
+
+      item:
+        SITE_URL,
+    },
+
+    {
+      "@type":
+        "ListItem",
+
+      position:
+        2,
+
+      name:
+        "Terms of Service",
+
+      item:
+        TERMS_URL,
+    },
+  ],
+};
+
+/* =========================================================
+   STRUCTURED DATA GRAPH
+========================================================= */
+
+const structuredData = {
+  "@context":
+    "https://schema.org",
+
+  "@graph": [
+    webPageSchema,
+    breadcrumbSchema,
+  ],
 };
 
 /* =========================================================
@@ -88,7 +179,29 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <>
+      {/* =================================================
+          NAVBAR
+      ================================================= */}
+
       <Navbar />
+
+      {/* =================================================
+          STRUCTURED DATA
+      ================================================= */}
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(
+              structuredData
+            ),
+        }}
+      />
+
+      {/* =================================================
+          SEMANTIC BREADCRUMB
+      ================================================= */}
 
       <nav
         aria-label="Breadcrumb"
@@ -96,9 +209,9 @@ export default function TermsPage() {
       >
         <ol>
           <li>
-            <a href="/">
+            <Link href="/">
               Home
-            </a>
+            </Link>
           </li>
 
           <li aria-current="page">
@@ -106,6 +219,10 @@ export default function TermsPage() {
           </li>
         </ol>
       </nav>
+
+      {/* =================================================
+          TERMS CONTENT
+      ================================================= */}
 
       <main className="min-h-screen bg-[#050505] text-white">
         <TermsHero />
@@ -118,6 +235,10 @@ export default function TermsPage() {
 
         <TermsContact />
       </main>
+
+      {/* =================================================
+          FOOTER
+      ================================================= */}
 
       <Footer />
     </>

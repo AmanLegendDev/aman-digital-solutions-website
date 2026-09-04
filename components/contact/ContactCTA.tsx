@@ -60,7 +60,7 @@ export default function ContactCTA() {
             </a>
 
             <a
-              href="mailto:amanansaricodes@gmail.com"
+              href="mailto:hello@amandigitalsolutions.com"
               className="
                 inline-flex items-center justify-center
                 rounded-full

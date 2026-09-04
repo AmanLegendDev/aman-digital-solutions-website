@@ -15,7 +15,10 @@ export default function BlogArticleContentSection({
   }
 
   return (
-    <section className="relative bg-[#050505] py-16 sm:py-20 lg:py-24">
+    <section
+      aria-label="Article content"
+      className="relative bg-[#050505] py-16 sm:py-20 lg:py-24"
+    >
       <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:px-10">
         <div className="grid gap-12 lg:grid-cols-[220px_minmax(0,760px)] lg:gap-16">
 
@@ -23,13 +26,17 @@ export default function BlogArticleContentSection({
               SIDEBAR
           ================================================= */}
 
-          <aside className="hidden lg:block">
+          <aside
+            aria-label="Article navigation"
+            className="hidden lg:block"
+          >
             <div className="sticky top-28">
               <div className="border-l border-white/[0.08] pl-5">
 
                 <div className="flex items-center gap-2">
                   <BookOpen
                     size={13}
+                    aria-hidden="true"
                     className="text-[#FFC400]"
                   />
 
@@ -43,7 +50,10 @@ export default function BlogArticleContentSection({
                   worth understanding properly.
                 </p>
 
-                <div className="mt-7 h-px w-12 bg-[#FFC400]/30" />
+                <div
+                  aria-hidden="true"
+                  className="mt-7 h-px w-12 bg-[#FFC400]/30"
+                />
 
                 <a
                   href="#article-content"
@@ -52,6 +62,7 @@ export default function BlogArticleContentSection({
                     inline-flex
                     items-center
                     gap-2
+                    rounded-sm
                     text-[9px]
                     font-semibold
                     uppercase
@@ -59,11 +70,17 @@ export default function BlogArticleContentSection({
                     text-neutral-600
                     transition-colors
                     hover:text-white
+                    focus-visible:outline-none
+                    focus-visible:ring-2
+                    focus-visible:ring-[#FFC400]
                   "
                 >
                   Start reading
 
-                  <ArrowUpRight size={11} />
+                  <ArrowUpRight
+                    size={11}
+                    aria-hidden="true"
+                  />
                 </a>
 
               </div>
@@ -82,7 +99,10 @@ export default function BlogArticleContentSection({
             {/* MOBILE LABEL */}
 
             <div className="mb-8 flex items-center gap-2 lg:hidden">
-              <span className="h-px w-7 bg-[#FFC400]/40" />
+              <span
+                aria-hidden="true"
+                className="h-px w-7 bg-[#FFC400]/40"
+              />
 
               <span className="text-[9px] font-semibold uppercase tracking-[0.17em] text-[#FFC400]">
                 Article

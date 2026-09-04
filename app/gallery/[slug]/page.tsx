@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { connectDB } from "@/lib/db/connect";
@@ -21,6 +22,8 @@ const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.amandigitalsolutions.com";
 
+export const dynamic = "force-dynamic";
+
 /* =========================================================
    PARAMS
 ========================================================= */
@@ -37,9 +40,7 @@ type GalleryPageProps = {
 
 type PopulatedGalleryProject = {
   _id: unknown;
-
   title: string;
-
   slug: string;
 };
 
@@ -51,11 +52,9 @@ type PopulatedGallery = {
   _id: unknown;
 
   title: string;
-
   slug: string;
 
   shortDescription?: string;
-
   description?: string;
 
   coverImage?: {
@@ -67,45 +66,33 @@ type PopulatedGallery = {
   media?: {
     _id: unknown;
 
-    type:
-      | "image"
-      | "video";
+    type: "image" | "video";
 
     url: string;
-
     publicId?: string;
 
     thumbnailUrl?: string;
-
     thumbnailPublicId?: string;
 
     alt?: string;
-
     caption?: string;
 
     displayOrder: number;
   }[];
 
-  project?:
-    | PopulatedGalleryProject
-    | null;
+  project?: PopulatedGalleryProject | null;
 
   category?: string;
 
   featured: boolean;
-
   published: boolean;
-
   displayOrder: number;
 
   seoTitle?: string;
-
   seoDescription?: string;
-
   canonicalUrl?: string;
 
   ogTitle?: string;
-
   ogDescription?: string;
 
   ogImage?: {
@@ -124,14 +111,10 @@ async function getGalleryBySlug(
 ): Promise<PopulatedGallery | null> {
   await connectDB();
 
-  const gallery =
-    await Gallery.findOne({
-      slug:
-        slug.toLowerCase(),
-
-      published: true,
-    })
-      .lean();
+  const gallery = await Gallery.findOne({
+    slug: slug.toLowerCase(),
+    published: true,
+  }).lean();
 
   if (!gallery) {
     return null;
@@ -147,13 +130,9 @@ async function getGalleryBySlug(
 export async function generateMetadata({
   params,
 }: GalleryPageProps): Promise<Metadata> {
-  const { slug } =
-    await params;
+  const { slug } = await params;
 
-  const gallery =
-    await getGalleryBySlug(
-      slug
-    );
+  const gallery = await getGalleryBySlug(slug);
 
   /* -------------------------------------------------------
      NOT FOUND
@@ -161,8 +140,7 @@ export async function generateMetadata({
 
   if (!gallery) {
     return {
-      title:
-        "Gallery Not Found | Aman Digital Solutions",
+      title: "Gallery Not Found | Aman Digital Solutions",
 
       description:
         "The requested gallery collection could not be found.",
@@ -198,9 +176,7 @@ export async function generateMetadata({
 
   const canonical =
     gallery.canonicalUrl &&
-    !gallery.canonicalUrl.includes(
-      "localhost"
-    )
+    !gallery.canonicalUrl.includes("localhost")
       ? gallery.canonicalUrl
       : `${SITE_URL}/gallery/${gallery.slug}`;
 
@@ -209,12 +185,10 @@ export async function generateMetadata({
   ------------------------------------------------------- */
 
   const ogTitle =
-    gallery.ogTitle ||
-    title;
+    gallery.ogTitle || title;
 
   const ogDescription =
-    gallery.ogDescription ||
-    description;
+    gallery.ogDescription || description;
 
   const ogImage =
     gallery.ogImage?.url ||
@@ -223,10 +197,8 @@ export async function generateMetadata({
       (media) =>
         media.type === "image"
     )?.url ||
-    gallery.media?.[0]
-      ?.thumbnailUrl ||
-    gallery.media?.[0]
-      ?.url;
+    gallery.media?.[0]?.thumbnailUrl ||
+    gallery.media?.[0]?.url;
 
   const ogImageAlt =
     gallery.ogImage?.alt ||
@@ -243,7 +215,6 @@ export async function generateMetadata({
 
   return {
     title,
-
     description,
 
     alternates: {
@@ -251,33 +222,24 @@ export async function generateMetadata({
     },
 
     openGraph: {
-      title:
-        ogTitle,
+      title: ogTitle,
+      description: ogDescription,
 
-      description:
-        ogDescription,
+      url: canonical,
 
-      url:
-        canonical,
-
-      type:
-        "website",
+      type: "website",
 
       siteName:
         "Aman Digital Solutions",
 
-      locale:
-        "en_IN",
+      locale: "en_IN",
 
       ...(ogImage
         ? {
             images: [
               {
-                url:
-                  ogImage,
-
-                alt:
-                  ogImageAlt,
+                url: ogImage,
+                alt: ogImageAlt,
               },
             ],
           }
@@ -285,42 +247,28 @@ export async function generateMetadata({
     },
 
     twitter: {
-      card:
-        "summary_large_image",
+      card: "summary_large_image",
 
-      title:
-        ogTitle,
-
-      description:
-        ogDescription,
+      title: ogTitle,
+      description: ogDescription,
 
       ...(ogImage
         ? {
-            images: [
-              ogImage,
-            ],
+            images: [ogImage],
           }
         : {}),
     },
 
     robots: {
       index: true,
-
       follow: true,
 
       googleBot: {
         index: true,
-
         follow: true,
-
-        "max-image-preview":
-          "large",
-
-        "max-snippet":
-          -1,
-
-        "max-video-preview":
-          -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
       },
     },
   };
@@ -333,13 +281,10 @@ export async function generateMetadata({
 export default async function GallerySlugPage({
   params,
 }: GalleryPageProps) {
-  const { slug } =
-    await params;
+  const { slug } = await params;
 
   const gallery =
-    await getGalleryBySlug(
-      slug
-    );
+    await getGalleryBySlug(slug);
 
   /* =======================================================
      NOT FOUND
@@ -370,6 +315,10 @@ export default async function GallerySlugPage({
     gallery.description ||
     `Explore the ${gallery.title} gallery by Aman Digital Solutions.`;
 
+  /* =======================================================
+     PRIMARY IMAGE
+  ======================================================== */
+
   const primaryImage =
     gallery.ogImage?.url ||
     gallery.coverImage?.url ||
@@ -377,10 +326,8 @@ export default async function GallerySlugPage({
       (media) =>
         media.type === "image"
     )?.url ||
-    gallery.media?.[0]
-      ?.thumbnailUrl ||
-    gallery.media?.[0]
-      ?.url;
+    gallery.media?.[0]?.thumbnailUrl ||
+    gallery.media?.[0]?.url;
 
   const primaryImageAlt =
     gallery.ogImage?.alt ||
@@ -403,41 +350,36 @@ export default async function GallerySlugPage({
         a.displayOrder -
         b.displayOrder
     )
-    .map(
-      (item) => ({
-        _id:
-          String(item._id),
+    .map((item) => ({
+      _id: String(item._id),
 
-        type:
-          item.type,
+      type: item.type,
 
-        url:
-          item.url,
+      url: item.url,
 
-        publicId:
-          item.publicId ||
-          undefined,
+      publicId:
+        item.publicId ||
+        undefined,
 
-        thumbnailUrl:
-          item.thumbnailUrl ||
-          undefined,
+      thumbnailUrl:
+        item.thumbnailUrl ||
+        undefined,
 
-        thumbnailPublicId:
-          item.thumbnailPublicId ||
-          undefined,
+      thumbnailPublicId:
+        item.thumbnailPublicId ||
+        undefined,
 
-        alt:
-          item.alt ||
-          gallery.title,
+      alt:
+        item.alt ||
+        gallery.title,
 
-        caption:
-          item.caption ||
-          undefined,
+      caption:
+        item.caption ||
+        undefined,
 
-        displayOrder:
-          item.displayOrder,
-      })
-    );
+      displayOrder:
+        item.displayOrder,
+    }));
 
   /* =======================================================
      RELATED PROJECT
@@ -446,10 +388,9 @@ export default async function GallerySlugPage({
   const project =
     gallery.project
       ? {
-          _id:
-            String(
-              gallery.project._id
-            ),
+          _id: String(
+            gallery.project._id
+          ),
 
           title:
             gallery.project.title,
@@ -465,10 +406,9 @@ export default async function GallerySlugPage({
 
   const galleryData:
     GalleryDetailData = {
-    _id:
-      String(
-        gallery._id
-      ),
+    _id: String(
+      gallery._id
+    ),
 
     title:
       gallery.title,
@@ -488,8 +428,7 @@ export default async function GallerySlugPage({
       gallery.coverImage
         ? {
             url:
-              gallery.coverImage
-                .url,
+              gallery.coverImage.url,
 
             publicId:
               gallery.coverImage
@@ -497,8 +436,7 @@ export default async function GallerySlugPage({
               undefined,
 
             alt:
-              gallery.coverImage
-                .alt ||
+              gallery.coverImage.alt ||
               gallery.title,
           }
         : undefined,
@@ -523,11 +461,7 @@ export default async function GallerySlugPage({
   ======================================================== */
 
   const imageGallerySchema = {
-    "@context":
-      "https://schema.org",
-
-    "@type":
-      "ImageGallery",
+    "@type": "ImageGallery",
 
     "@id":
       `${galleryUrl}#gallery`,
@@ -553,45 +487,44 @@ export default async function GallerySlugPage({
 
     ...(primaryImage
       ? {
-         image: primaryImage,
+          image:
+            primaryImage,
         }
       : {}),
 
-    associatedMedia:
-      media
-        .filter(
-          (item) =>
-            item.type ===
-            "image"
-        )
-        .map(
-          (item) => ({
-            "@type":
-              "ImageObject",
+    associatedMedia: media
+      .filter(
+        (item) =>
+          item.type === "image"
+      )
+      .map((item) => ({
+        "@type": "ImageObject",
 
-            contentUrl:
-              item.url,
+        contentUrl:
+          item.url,
 
-            url:
-              item.url,
+        url:
+          item.url,
 
-           name: item.caption || item.alt || gallery.title,
+        name:
+          item.caption ||
+          item.alt ||
+          gallery.title,
 
-            ...(item.alt
-              ? {
-                  caption:
-                    item.alt,
-                }
-              : {}),
+        ...(item.alt
+          ? {
+              caption:
+                item.alt,
+            }
+          : {}),
 
-            ...(item.caption
-              ? {
-                  description:
-                    item.caption,
-                }
-              : {}),
-          })
-        ),
+        ...(item.caption
+          ? {
+              description:
+                item.caption,
+            }
+          : {}),
+      })),
   };
 
   /* =======================================================
@@ -599,11 +532,7 @@ export default async function GallerySlugPage({
   ======================================================== */
 
   const webPageSchema = {
-    "@context":
-      "https://schema.org",
-
-    "@type":
-      "WebPage",
+    "@type": "WebPage",
 
     "@id":
       `${galleryUrl}#webpage`,
@@ -653,9 +582,6 @@ export default async function GallerySlugPage({
   ======================================================== */
 
   const breadcrumbSchema = {
-    "@context":
-      "https://schema.org",
-
     "@type":
       "BreadcrumbList",
 
@@ -667,8 +593,7 @@ export default async function GallerySlugPage({
         "@type":
           "ListItem",
 
-        position:
-          1,
+        position: 1,
 
         name:
           "Home",
@@ -681,8 +606,7 @@ export default async function GallerySlugPage({
         "@type":
           "ListItem",
 
-        position:
-          2,
+        position: 2,
 
         name:
           "Gallery",
@@ -695,8 +619,7 @@ export default async function GallerySlugPage({
         "@type":
           "ListItem",
 
-        position:
-          3,
+        position: 3,
 
         name:
           gallery.title,
@@ -704,6 +627,21 @@ export default async function GallerySlugPage({
         item:
           galleryUrl,
       },
+    ],
+  };
+
+  /* =======================================================
+     STRUCTURED DATA GRAPH
+  ======================================================== */
+
+  const structuredData = {
+    "@context":
+      "https://schema.org",
+
+    "@graph": [
+      imageGallerySchema,
+      webPageSchema,
+      breadcrumbSchema,
     ],
   };
 
@@ -716,21 +654,22 @@ export default async function GallerySlugPage({
       <Navbar />
 
       <BreadcrumbSchema
-  items={[
-    {
-      name: "Home",
-      url: "/",
-    },
-    {
-      name: "Gallery",
-      url: "/gallery",
-    },
-    {
-      name: gallery.title,
-      url: `/gallery/${gallery.slug}`,
-    },
-  ]}
-/>
+        items={[
+          {
+            name: "Home",
+            url: "/",
+          },
+          {
+            name: "Gallery",
+            url: "/gallery",
+          },
+          {
+            name: gallery.title,
+            url:
+              `/gallery/${gallery.slug}`,
+          },
+        ]}
+      />
 
       {/* =================================================
           STRUCTURED DATA
@@ -741,27 +680,7 @@ export default async function GallerySlugPage({
         dangerouslySetInnerHTML={{
           __html:
             JSON.stringify(
-              imageGallerySchema
-            ),
-        }}
-      />
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html:
-            JSON.stringify(
-              webPageSchema
-            ),
-        }}
-      />
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html:
-            JSON.stringify(
-              breadcrumbSchema
+              structuredData
             ),
         }}
       />
@@ -776,15 +695,15 @@ export default async function GallerySlugPage({
       >
         <ol>
           <li>
-            <a href="/">
+            <Link href="/">
               Home
-            </a>
+            </Link>
           </li>
 
           <li>
-            <a href="/gallery">
+            <Link href="/gallery">
               Gallery
-            </a>
+            </Link>
           </li>
 
           <li aria-current="page">

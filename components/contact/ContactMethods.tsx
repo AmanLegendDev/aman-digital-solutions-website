@@ -18,10 +18,10 @@ const CONTACT_METHODS = [
   {
     icon: Mail,
     label: "Email",
-    value: "amanansaricodes@gmail.com",
+    value: "hello@amandigitalsolutions.com",
     description:
       "Send your requirements, references, documents or a detailed project brief.",
-    href: "mailto:amanansaricodes@gmail.com",
+    href: "mailto:hello@amandigitalsolutions.com",
     action: "Send an email",
   },
   {

@@ -63,7 +63,7 @@ export default function LocationDetailPage({
   location,
 }: LocationDetailPageProps) {
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <div className="min-h-screen bg-[#050505] text-white">
       {/* =====================================================
           HERO
       ===================================================== */}
@@ -129,6 +129,6 @@ export default function LocationDetailPage({
         name={location.name}
         city={location.city}
       />
-    </main>
+    </div>
   );
 }

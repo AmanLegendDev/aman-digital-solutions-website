@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { connectDB } from "@/lib/db/connect";
@@ -38,9 +39,7 @@ type BlogPageProps = {
    FETCH BLOG
 ========================================================= */
 
-async function getBlogBySlug(
-  slug: string
-) {
+async function getBlogBySlug(slug: string) {
   await connectDB();
 
   return Blog.findOne({
@@ -66,8 +65,7 @@ export async function generateMetadata({
 
   if (!blog) {
     return {
-      title:
-        "Article Not Found | Aman Digital Solutions",
+      title: "Article Not Found | Aman Digital Solutions",
 
       description:
         "The requested article could not be found.",
@@ -80,27 +78,19 @@ export async function generateMetadata({
   }
 
   /* -------------------------------------------------------
-     SEO TITLE
+     SEO VALUES
   ------------------------------------------------------- */
 
   const title =
-  blog.seoTitle?.trim() ||
-  blog.title;
-
-  /* -------------------------------------------------------
-     SEO DESCRIPTION
-  ------------------------------------------------------- */
+    blog.seoTitle?.trim() ||
+    blog.title;
 
   const description =
     blog.seoDescription?.trim() ||
     blog.excerpt;
 
-  /* -------------------------------------------------------
-     CANONICAL
-  ------------------------------------------------------- */
-
   const canonical =
-  `${SITE_URL}/blog/${blog.slug}`;
+    `${SITE_URL}/blog/${blog.slug}`;
 
   /* -------------------------------------------------------
      OPEN GRAPH
@@ -215,12 +205,8 @@ export async function generateMetadata({
       googleBot: {
         index: true,
         follow: true,
-
-        "max-image-preview":
-          "large",
-
+        "max-image-preview": "large",
         "max-snippet": -1,
-
         "max-video-preview": -1,
       },
     },
@@ -236,8 +222,7 @@ export default async function BlogPage({
 }: BlogPageProps) {
   const { slug } = await params;
 
-  const blog =
-    await getBlogBySlug(slug);
+  const blog = await getBlogBySlug(slug);
 
   /* =======================================================
      NOT FOUND
@@ -284,59 +269,40 @@ export default async function BlogPage({
   ======================================================== */
 
   const articleSchema = {
-    "@context":
-      "https://schema.org",
+    "@context": "https://schema.org",
 
-    "@type":
-      "BlogPosting",
+    "@type": "BlogPosting",
 
-    "@id":
-      `${blogUrl}#article`,
+    "@id": `${blogUrl}#article`,
 
-    headline:
-      blog.title,
+    headline: blog.title,
 
-    description:
-      seoDescription,
+    description: seoDescription,
 
-    url:
-      blogUrl,
+    url: blogUrl,
 
     mainEntityOfPage: {
-      "@type":
-        "WebPage",
-
-      "@id":
-        `${blogUrl}#webpage`,
+      "@type": "WebPage",
+      "@id": `${blogUrl}#webpage`,
     },
 
     author: {
-      "@type":
-        "Person",
-
-      name:
-        blog.author,
+      "@type": "Person",
+      name: blog.author,
     },
 
     publisher: {
-      "@type":
-        "Organization",
+      "@type": "Organization",
 
-      "@id":
-        `${SITE_URL}/#organization`,
+      "@id": `${SITE_URL}/#organization`,
 
-      name:
-        SITE_NAME,
+      name: SITE_NAME,
 
-      url:
-        SITE_URL,
+      url: SITE_URL,
 
       logo: {
-        "@type":
-          "ImageObject",
-
-        url:
-          `${SITE_URL}/icon.png`,
+        "@type": "ImageObject",
+        url: `${SITE_URL}/icon.png`,
       },
     },
 
@@ -357,14 +323,11 @@ export default async function BlogPage({
     ...(primaryImage
       ? {
           image: {
-            "@type":
-              "ImageObject",
+            "@type": "ImageObject",
 
-            url:
-              primaryImage,
+            url: primaryImage,
 
-            caption:
-              primaryImageAlt,
+            caption: primaryImageAlt,
           },
         }
       : {}),
@@ -391,14 +354,11 @@ export default async function BlogPage({
 
   const webPageSchema =
     getWebPageSchema({
-      url:
-        blogUrl,
+      url: blogUrl,
 
-      name:
-        seoTitle,
+      name: seoTitle,
 
-      description:
-        seoDescription,
+      description: seoDescription,
     });
 
   /* =======================================================
@@ -427,8 +387,7 @@ export default async function BlogPage({
 
           {
             name: blog.title,
-            url:
-              `/blog/${blog.slug}`,
+            url: `/blog/${blog.slug}`,
           },
         ]}
       />
@@ -441,9 +400,7 @@ export default async function BlogPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html:
-            JSON.stringify(
-              articleSchema
-            ),
+            JSON.stringify(articleSchema),
         }}
       />
 
@@ -455,9 +412,7 @@ export default async function BlogPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html:
-            JSON.stringify(
-              webPageSchema
-            ),
+            JSON.stringify(webPageSchema),
         }}
       />
 
@@ -471,15 +426,15 @@ export default async function BlogPage({
       >
         <ol>
           <li>
-            <a href="/">
+            <Link href="/">
               Home
-            </a>
+            </Link>
           </li>
 
           <li>
-            <a href="/blog">
+            <Link href="/blog">
               Blog
-            </a>
+            </Link>
           </li>
 
           <li aria-current="page">
@@ -495,17 +450,13 @@ export default async function BlogPage({
       <main>
         <BlogDetailPage
           blog={{
-            title:
-              blog.title,
+            title: blog.title,
 
-            slug:
-              blog.slug,
+            slug: blog.slug,
 
-            excerpt:
-              blog.excerpt,
+            excerpt: blog.excerpt,
 
-            content:
-              blog.content,
+            content: blog.content,
 
             coverImage:
               blog.coverImage
@@ -514,8 +465,7 @@ export default async function BlogPage({
                       blog.coverImage.url,
 
                     publicId:
-                      blog.coverImage
-                        .publicId ||
+                      blog.coverImage.publicId ||
                       undefined,
 
                     alt:

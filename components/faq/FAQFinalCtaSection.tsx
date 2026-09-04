@@ -11,7 +11,10 @@ import {
 
 export default function FAQFinalCtaSection() {
   return (
-    <section className="relative overflow-hidden border-t border-white/[0.06] bg-[#050505] py-20 sm:py-24 lg:py-28">
+    <section
+      aria-labelledby="faq-cta-heading"
+      className="relative overflow-hidden border-t border-white/[0.06] bg-[#050505] py-20 sm:py-24 lg:py-28"
+    >
       {/* =====================================================
           BACKGROUND GLOW
       ===================================================== */}
@@ -22,11 +25,14 @@ export default function FAQFinalCtaSection() {
       />
 
       <div className="relative mx-auto max-w-4xl px-5 text-center sm:px-8">
-        {/* EYEBROW */}
+        {/* =================================================
+            EYEBROW
+        ================================================= */}
 
         <div className="inline-flex items-center gap-2 rounded-full border border-[#FFC400]/15 bg-[#FFC400]/[0.04] px-3.5 py-2">
           <Sparkles
             size={11}
+            aria-hidden="true"
             className="text-[#FFC400]"
           />
 
@@ -35,9 +41,14 @@ export default function FAQFinalCtaSection() {
           </span>
         </div>
 
-        {/* HEADING */}
+        {/* =================================================
+            HEADING
+        ================================================= */}
 
-        <h2 className="mx-auto mt-7 max-w-3xl text-4xl font-semibold leading-[0.98] tracking-[-0.05em] text-white sm:text-5xl lg:text-[4.25rem]">
+        <h2
+          id="faq-cta-heading"
+          className="mx-auto mt-7 max-w-3xl text-4xl font-semibold leading-[0.98] tracking-[-0.05em] text-white sm:text-5xl lg:text-[4.25rem]"
+        >
           Can&apos;t find
           <br />
           <span className="text-neutral-500">
@@ -45,7 +56,9 @@ export default function FAQFinalCtaSection() {
           </span>
         </h2>
 
-        {/* DESCRIPTION */}
+        {/* =================================================
+            DESCRIPTION
+        ================================================= */}
 
         <p className="mx-auto mt-7 max-w-2xl text-sm leading-7 text-neutral-600 sm:text-base sm:leading-8">
           No problem. Tell us what you&apos;re trying to build,
@@ -53,33 +66,45 @@ export default function FAQFinalCtaSection() {
           understand. We&apos;ll take it from there.
         </p>
 
-        {/* ACTIONS */}
+        {/* =================================================
+            ACTIONS
+        ================================================= */}
 
         <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
           <a
-  href="https://wa.me/918219174058?text=Hi%20Aman%2C%20I%20want%20to%20discuss%20a%20project."
-  target="_blank"
-  rel="noopener noreferrer"
-  className="group inline-flex items-center justify-center gap-3 rounded-xl bg-[#FFC400] px-6 py-3.5 text-xs font-semibold text-black transition-all duration-300 hover:bg-[#FFD23D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
->
-  Ask us directly
+            href="https://wa.me/918219174058?text=Hi%20Aman%2C%20I%20want%20to%20discuss%20a%20project."
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Ask Aman Digital Solutions a question on WhatsApp"
+            className="group inline-flex items-center justify-center gap-3 rounded-xl bg-[#FFC400] px-6 py-3.5 text-xs font-semibold text-black transition-all duration-300 hover:bg-[#FFD23D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
+          >
+            Ask us directly
 
-  <ArrowRight
-    size={15}
-    className="transition-transform duration-300 group-hover:translate-x-1"
-  />
-</a>
+            <ArrowRight
+              size={15}
+              aria-hidden="true"
+              className="transition-transform duration-300 group-hover:translate-x-1"
+            />
+          </a>
+
           <Link
             href="/services"
-            className="inline-flex items-center justify-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-6 py-3.5 text-xs font-semibold text-white/70 transition-all duration-300 hover:border-white/[0.15] hover:text-white"
+            aria-label="Explore Aman Digital Solutions services"
+            className="group inline-flex items-center justify-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-6 py-3.5 text-xs font-semibold text-white/70 transition-all duration-300 hover:border-white/[0.15] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
           >
             Explore services
 
-            <MessageCircle size={14} />
+            <MessageCircle
+              size={14}
+              aria-hidden="true"
+              className="transition-transform duration-300 group-hover:translate-x-0.5"
+            />
           </Link>
         </div>
 
-        {/* BOTTOM DETAIL */}
+        {/* =================================================
+            BOTTOM DETAIL
+        ================================================= */}
 
         <div className="mx-auto mt-12 flex max-w-xl items-center justify-center gap-3">
           <span

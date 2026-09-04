@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Types } from "mongoose";
 
@@ -9,10 +10,11 @@ import "@/models/Service";
 import LocationDetailPage, {
   type LocationDetailData,
 } from "@/components/locations/detail/LocationDetailPage";
+
 import Navbar from "@/components/agency/navbar/Navbar";
+import Footer from "@/components/agency/footer/Footer";
 
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
-import Footer from "@/components/agency/footer/Footer";
 
 /* =========================================================
    SITE CONFIG
@@ -102,22 +104,16 @@ async function getLocationBySlug(
 ): Promise<PopulatedLocation | null> {
   await connectDB();
 
-  const location =
-    await Location.findOne({
-      slug:
-        slug.toLowerCase(),
-
-      published:
-        true,
+  const location = await Location.findOne({
+    slug: slug.toLowerCase(),
+    published: true,
+  })
+    .populate({
+      path: "services",
+      select:
+        "_id title slug shortDescription category",
     })
-      .populate({
-        path:
-          "services",
-
-        select:
-          "_id title slug shortDescription category",
-      })
-      .lean();
+    .lean();
 
   if (!location) {
     return null;
@@ -133,13 +129,10 @@ async function getLocationBySlug(
 export async function generateMetadata({
   params,
 }: LocationPageProps): Promise<Metadata> {
-  const { slug } =
-    await params;
+  const { slug } = await params;
 
   const location =
-    await getLocationBySlug(
-      slug
-    );
+    await getLocationBySlug(slug);
 
   /* -------------------------------------------------------
      NOT FOUND
@@ -164,37 +157,38 @@ export async function generateMetadata({
      TITLE
   ------------------------------------------------------- */
 
- const title =
-  location.seoTitle?.trim() ||
-  location.name;
+  const title =
+    location.seoTitle?.trim() ||
+    location.name;
 
   /* -------------------------------------------------------
      DESCRIPTION
   ------------------------------------------------------- */
 
   const description =
-    location.seoDescription ||
+    location.seoDescription?.trim() ||
     location.shortDescription;
 
   /* -------------------------------------------------------
      CANONICAL
   ------------------------------------------------------- */
 
- const canonical =
-  `${SITE_URL}/locations/${location.slug}`;
+  const canonical =
+    location.canonicalUrl?.trim() ||
+    `${SITE_URL}/locations/${location.slug}`;
 
   /* -------------------------------------------------------
      OG
   ------------------------------------------------------- */
 
   const ogTitle =
-    location.ogTitle ||
-    location.seoTitle ||
+    location.ogTitle?.trim() ||
+    location.seoTitle?.trim() ||
     location.name;
 
   const ogDescription =
-    location.ogDescription ||
-    location.seoDescription ||
+    location.ogDescription?.trim() ||
+    location.seoDescription?.trim() ||
     location.shortDescription;
 
   const ogImage =
@@ -216,33 +210,25 @@ export async function generateMetadata({
     },
 
     openGraph: {
-      title:
-        ogTitle,
+      title: ogTitle,
 
-      description:
-        ogDescription,
+      description: ogDescription,
 
-      url:
-        canonical,
+      url: canonical,
 
-      type:
-        "website",
+      type: "website",
 
       siteName:
         "Aman Digital Solutions",
 
-      locale:
-        "en_IN",
+      locale: "en_IN",
 
       ...(ogImage
         ? {
             images: [
               {
-                url:
-                  ogImage,
-
-                alt:
-                  ogImageAlt,
+                url: ogImage,
+                alt: ogImageAlt,
               },
             ],
           }
@@ -253,17 +239,13 @@ export async function generateMetadata({
       card:
         "summary_large_image",
 
-      title:
-        ogTitle,
+      title: ogTitle,
 
-      description:
-        ogDescription,
+      description: ogDescription,
 
       ...(ogImage
         ? {
-            images: [
-              ogImage,
-            ],
+            images: [ogImage],
           }
         : {}),
     },
@@ -287,16 +269,15 @@ export async function generateMetadata({
    PAGE
 ========================================================= */
 
+export const dynamic = "force-dynamic";
+
 export default async function LocationPage({
   params,
 }: LocationPageProps) {
-  const { slug } =
-    await params;
+  const { slug } = await params;
 
   const location =
-    await getLocationBySlug(
-      slug
-    );
+    await getLocationBySlug(slug);
 
   /* =======================================================
      NOT FOUND
@@ -318,11 +299,11 @@ export default async function LocationPage({
   ======================================================== */
 
   const seoTitle =
-  location.seoTitle?.trim() ||
-  location.name;
+    location.seoTitle?.trim() ||
+    location.name;
 
   const seoDescription =
-    location.seoDescription ||
+    location.seoDescription?.trim() ||
     location.shortDescription;
 
   const primaryImage =
@@ -339,11 +320,7 @@ export default async function LocationPage({
   ======================================================== */
 
   const locationSchema = {
-    "@context":
-      "https://schema.org",
-
-    "@type":
-      "Place",
+    "@type": "Place",
 
     "@id":
       `${locationUrl}#place`,
@@ -358,17 +335,28 @@ export default async function LocationPage({
     url:
       locationUrl,
 
-    ...(location.address
+    ...(location.address ||
+    location.city ||
+    location.state ||
+    location.country
       ? {
           address: {
             "@type":
               "PostalAddress",
 
-            streetAddress:
-              location.address,
+            ...(location.address
+              ? {
+                  streetAddress:
+                    location.address,
+                }
+              : {}),
 
-            addressLocality:
-              location.city,
+            ...(location.city
+              ? {
+                  addressLocality:
+                    location.city,
+                }
+              : {}),
 
             ...(location.state
               ? {
@@ -377,37 +365,27 @@ export default async function LocationPage({
                 }
               : {}),
 
-            postalCode:
-              location.postalCode,
+            ...(location.postalCode
+              ? {
+                  postalCode:
+                    location.postalCode,
+                }
+              : {}),
 
-            addressCountry:
-              location.country,
+            ...(location.country
+              ? {
+                  addressCountry:
+                    location.country,
+                }
+              : {}),
           },
         }
-      : {
-          address: {
-            "@type":
-              "PostalAddress",
-
-            addressLocality:
-              location.city,
-
-            ...(location.state
-              ? {
-                  addressRegion:
-                    location.state,
-                }
-              : {}),
-
-            addressCountry:
-              location.country,
-          },
-        }),
+      : {}),
 
     ...(typeof location.latitude ===
-      "number" &&
+        "number" &&
     typeof location.longitude ===
-      "number"
+        "number"
       ? {
           geo: {
             "@type":
@@ -438,8 +416,16 @@ export default async function LocationPage({
 
     ...(primaryImage
       ? {
-          image:
-            primaryImage,
+          image: {
+            "@type":
+              "ImageObject",
+
+            url:
+              primaryImage,
+
+            caption:
+              primaryImageAlt,
+          },
         }
       : {}),
   };
@@ -449,11 +435,7 @@ export default async function LocationPage({
   ======================================================== */
 
   const webPageSchema = {
-    "@context":
-      "https://schema.org",
-
-    "@type":
-      "WebPage",
+    "@type": "WebPage",
 
     "@id":
       `${locationUrl}#webpage`,
@@ -488,9 +470,6 @@ export default async function LocationPage({
   ======================================================== */
 
   const breadcrumbSchema = {
-    "@context":
-      "https://schema.org",
-
     "@type":
       "BreadcrumbList",
 
@@ -502,8 +481,7 @@ export default async function LocationPage({
         "@type":
           "ListItem",
 
-        position:
-          1,
+        position: 1,
 
         name:
           "Home",
@@ -516,8 +494,7 @@ export default async function LocationPage({
         "@type":
           "ListItem",
 
-        position:
-          2,
+        position: 2,
 
         name:
           "Locations",
@@ -530,8 +507,7 @@ export default async function LocationPage({
         "@type":
           "ListItem",
 
-        position:
-          3,
+        position: 3,
 
         name:
           location.name,
@@ -539,6 +515,21 @@ export default async function LocationPage({
         item:
           locationUrl,
       },
+    ],
+  };
+
+  /* =======================================================
+     COMBINED STRUCTURED DATA
+  ======================================================== */
+
+  const structuredData = {
+    "@context":
+      "https://schema.org",
+
+    "@graph": [
+      locationSchema,
+      webPageSchema,
+      breadcrumbSchema,
     ],
   };
 
@@ -644,8 +635,7 @@ export default async function LocationPage({
 
   return (
     <>
-    <Navbar/>
-
+      <Navbar />
 
       {/* =================================================
           STRUCTURED DATA
@@ -656,29 +646,31 @@ export default async function LocationPage({
         dangerouslySetInnerHTML={{
           __html:
             JSON.stringify(
-              locationSchema
+              structuredData
             ),
         }}
       />
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html:
-            JSON.stringify(
-              webPageSchema
-            ),
-        }}
-      />
+      {/* =================================================
+          BREADCRUMB SCHEMA
+      ================================================= */}
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html:
-            JSON.stringify(
-              breadcrumbSchema
-            ),
-        }}
+      <BreadcrumbSchema
+        items={[
+          {
+            name: "Home",
+            url: "/",
+          },
+          {
+            name: "Locations",
+            url: "/locations",
+          },
+          {
+            name: location.name,
+            url:
+              `/locations/${location.slug}`,
+          },
+        ]}
       />
 
       {/* =================================================
@@ -691,15 +683,15 @@ export default async function LocationPage({
       >
         <ol>
           <li>
-            <a href="/">
+            <Link href="/">
               Home
-            </a>
+            </Link>
           </li>
 
           <li>
-            <a href="/locations">
+            <Link href="/locations">
               Locations
-            </a>
+            </Link>
           </li>
 
           <li aria-current="page">
@@ -714,12 +706,11 @@ export default async function LocationPage({
 
       <main>
         <LocationDetailPage
-          location={
-            locationData
-          }
+          location={locationData}
         />
       </main>
-      <Footer/>
+
+      <Footer />
     </>
   );
 }

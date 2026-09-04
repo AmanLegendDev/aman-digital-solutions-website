@@ -6,6 +6,7 @@ import Project from "@/models/Project";
 import ProjectsPageClient from "@/components/projects/ProjectsPageClient";
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
+import Link from "next/link";
 
 import {
   getCollectionPageSchema,
@@ -22,10 +23,9 @@ export const metadata: Metadata = {
 
  description:
   "Explore websites, e-commerce platforms, web applications and digital solutions built by Aman Digital Solutions for businesses in Shimla, Himachal Pradesh, across India and beyond.",
-  alternates: {
-    canonical: "/projects",
-  },
-
+ alternates: {
+  canonical: `${SITE_URL}/projects`,
+},
   openGraph: {
     title:
       "Our Projects | Aman Digital Solutions",
@@ -161,6 +161,24 @@ const projectsCollection = getCollectionPageSchema({
     <>
       <Navbar />
 
+      <nav
+      
+  aria-label="Breadcrumb"
+  className="sr-only "
+>
+  <ol>
+    <li>
+      <Link href="/">
+        Home
+      </Link>
+    </li>
+
+    <li aria-current="page">
+      Projects
+    </li>
+  </ol>
+</nav>
+
       <script
   type="application/ld+json"
   dangerouslySetInnerHTML={{
@@ -173,6 +191,7 @@ const projectsCollection = getCollectionPageSchema({
     }),
   }}
 />
+
 
       <main>
         <ProjectsPageClient

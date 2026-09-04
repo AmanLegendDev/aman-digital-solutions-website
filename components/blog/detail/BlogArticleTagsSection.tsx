@@ -45,12 +45,13 @@ export default function BlogArticleTagsSection({
   author,
   publishedAt,
 }: BlogArticleTagsSectionProps) {
-  const formattedDate = formatDate(
-    publishedAt
-  );
+  const formattedDate = formatDate(publishedAt);
 
   return (
-    <section className="border-t border-white/[0.06] bg-[#050505] py-10 sm:py-12">
+    <section
+      aria-label="Article information"
+      className="border-t border-white/[0.06] bg-[#050505] py-10 sm:py-12"
+    >
       <div className="mx-auto max-w-5xl px-5 sm:px-8">
         <div className="flex flex-col gap-8 rounded-[1.75rem] border border-white/[0.06] bg-[#080808] p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between lg:p-7">
           {/* =================================================
@@ -61,6 +62,7 @@ export default function BlogArticleTagsSection({
             <div className="flex items-center gap-2">
               <UserRound
                 size={13}
+                aria-hidden="true"
                 className="text-[#FFC400]"
               />
 
@@ -79,12 +81,16 @@ export default function BlogArticleTagsSection({
                 <div className="flex items-center gap-2">
                   <CalendarDays
                     size={13}
+                    aria-hidden="true"
                     className="text-neutral-700"
                   />
 
-                  <span className="text-[9px] font-medium uppercase tracking-[0.12em] text-neutral-700">
+                  <time
+                    dateTime={publishedAt}
+                    className="text-[9px] font-medium uppercase tracking-[0.12em] text-neutral-700"
+                  >
                     {formattedDate}
-                  </span>
+                  </time>
                 </div>
               </>
             )}
@@ -98,6 +104,7 @@ export default function BlogArticleTagsSection({
             <div className="flex flex-wrap items-center gap-2">
               <Hash
                 size={13}
+                aria-hidden="true"
                 className="mr-1 text-neutral-800"
               />
 
@@ -120,12 +127,14 @@ export default function BlogArticleTagsSection({
         <div className="mt-8 flex justify-center">
           <Link
             href="/blog"
-            className="group inline-flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.16em] text-neutral-700 transition-colors hover:text-[#FFC400]"
+            aria-label="Back to all blog articles"
+            className="group inline-flex items-center gap-2 rounded-md text-[9px] font-semibold uppercase tracking-[0.16em] text-neutral-700 transition-colors hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505]"
           >
             Back to all articles
 
             <ArrowRight
               size={12}
+              aria-hidden="true"
               className="transition-transform duration-300 group-hover:translate-x-1"
             />
           </Link>

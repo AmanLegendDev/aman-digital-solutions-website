@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { connectDB } from "@/lib/db/connect";
 import FAQ from "@/models/FAQ";
@@ -18,19 +19,23 @@ const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.amandigitalsolutions.com";
 
+const FAQ_URL =
+  `${SITE_URL}/faq`;
+
 /* =========================================================
    METADATA
 ========================================================= */
 
 export const metadata: Metadata = {
   title:
-    "FAQ | Web Development, Pricing & Services | Aman Digital Solutions",
+    "FAQ | Web Development & Digital Solutions | Aman Digital Solutions",
 
   description:
     "Find answers to common questions about Aman Digital Solutions, including website development, e-commerce, business systems, pricing, SEO, process and ongoing support.",
 
   alternates: {
-    canonical: `${SITE_URL}/faq`,
+    canonical:
+      FAQ_URL,
   },
 
   openGraph: {
@@ -41,9 +46,10 @@ export const metadata: Metadata = {
       "Find clear answers about our services, website development, pricing, process and digital solutions.",
 
     url:
-      `${SITE_URL}/faq`,
+      FAQ_URL,
 
-    type: "website",
+    type:
+      "website",
 
     siteName:
       "Aman Digital Solutions",
@@ -70,9 +76,12 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
+      "max-image-preview":
+        "large",
+      "max-snippet":
+        -1,
+      "max-video-preview":
+        -1,
     },
   },
 };
@@ -161,17 +170,14 @@ function createFAQSchema(
     }));
 
   return {
-    "@context":
-      "https://schema.org",
-
     "@type":
       "FAQPage",
 
     "@id":
-      `${SITE_URL}/faq#faqpage`,
+      `${FAQ_URL}#faqpage`,
 
     url:
-      `${SITE_URL}/faq`,
+      FAQ_URL,
 
     name:
       "Frequently Asked Questions | Aman Digital Solutions",
@@ -189,17 +195,14 @@ function createFAQSchema(
 
 function createWebPageSchema() {
   return {
-    "@context":
-      "https://schema.org",
-
     "@type":
       "WebPage",
 
     "@id":
-      `${SITE_URL}/faq#webpage`,
+      `${FAQ_URL}#webpage`,
 
     url:
-      `${SITE_URL}/faq`,
+      FAQ_URL,
 
     name:
       "Frequently Asked Questions | Aman Digital Solutions",
@@ -214,7 +217,7 @@ function createWebPageSchema() {
 
     breadcrumb: {
       "@id":
-        `${SITE_URL}/faq#breadcrumb`,
+        `${FAQ_URL}#breadcrumb`,
     },
   };
 }
@@ -225,14 +228,11 @@ function createWebPageSchema() {
 
 function createBreadcrumbSchema() {
   return {
-    "@context":
-      "https://schema.org",
-
     "@type":
       "BreadcrumbList",
 
     "@id":
-      `${SITE_URL}/faq#breadcrumb`,
+      `${FAQ_URL}#breadcrumb`,
 
     itemListElement: [
       {
@@ -260,7 +260,7 @@ function createBreadcrumbSchema() {
           "FAQ",
 
         item:
-          `${SITE_URL}/faq`,
+          FAQ_URL,
       },
     ],
   };
@@ -278,21 +278,27 @@ export default async function FAQPage() {
      STRUCTURED DATA
   ======================================================= */
 
-  const faqSchema =
-    createFAQSchema(faqs);
+  const structuredData = {
+    "@context":
+      "https://schema.org",
 
-  const webPageSchema =
-    createWebPageSchema();
-
-  const breadcrumbSchema =
-    createBreadcrumbSchema();
+    "@graph": [
+      createFAQSchema(faqs),
+      createWebPageSchema(),
+      createBreadcrumbSchema(),
+    ],
+  };
 
   return (
     <>
+      {/* =================================================
+          NAVBAR
+      ================================================= */}
+
       <Navbar />
 
       {/* =================================================
-          FAQ STRUCTURED DATA
+          STRUCTURED DATA
       ================================================= */}
 
       <script
@@ -300,35 +306,7 @@ export default async function FAQPage() {
         dangerouslySetInnerHTML={{
           __html:
             JSON.stringify(
-              faqSchema
-            ),
-        }}
-      />
-
-      {/* =================================================
-          WEBPAGE STRUCTURED DATA
-      ================================================= */}
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html:
-            JSON.stringify(
-              webPageSchema
-            ),
-        }}
-      />
-
-      {/* =================================================
-          BREADCRUMB STRUCTURED DATA
-      ================================================= */}
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html:
-            JSON.stringify(
-              breadcrumbSchema
+              structuredData
             ),
         }}
       />
@@ -343,9 +321,9 @@ export default async function FAQPage() {
       >
         <ol>
           <li>
-            <a href="/">
+            <Link href="/">
               Home
-            </a>
+            </Link>
           </li>
 
           <li aria-current="page">
@@ -363,6 +341,10 @@ export default async function FAQPage() {
           faqs={faqs}
         />
       </main>
+
+      {/* =================================================
+          FOOTER
+      ================================================= */}
 
       <Footer />
     </>

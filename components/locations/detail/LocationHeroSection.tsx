@@ -1,10 +1,16 @@
+import Image from "next/image";
 import Link from "next/link";
+
 import {
   ArrowRight,
   ChevronRight,
   MapPin,
   Navigation,
 } from "lucide-react";
+
+/* =========================================================
+   TYPES
+========================================================= */
 
 export type LocationHeroData = {
   name: string;
@@ -29,11 +35,22 @@ type LocationHeroSectionProps = {
   location: LocationHeroData;
 };
 
+/* =========================================================
+   COMPONENT
+========================================================= */
+
 export default function LocationHeroSection({
   location,
 }: LocationHeroSectionProps) {
+  const imageAlt =
+    location.image?.alt?.trim() ||
+    `${location.name} - Aman Digital Solutions`;
+
   return (
-    <section className="relative overflow-hidden border-b border-white/[0.06] bg-[#050505]">
+    <section
+      aria-labelledby="location-hero-heading"
+      className="relative overflow-hidden border-b border-white/[0.06] bg-[#050505]"
+    >
       {/* =====================================================
           BACKGROUND
       ===================================================== */}
@@ -56,7 +73,7 @@ export default function LocationHeroSection({
             <li>
               <Link
                 href="/"
-                className="text-neutral-700 transition-colors hover:text-neutral-400"
+                className="text-neutral-700 transition-colors hover:text-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
               >
                 Home
               </Link>
@@ -72,7 +89,7 @@ export default function LocationHeroSection({
             <li>
               <Link
                 href="/locations"
-                className="text-neutral-700 transition-colors hover:text-neutral-400"
+                className="text-neutral-700 transition-colors hover:text-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
               >
                 Locations
               </Link>
@@ -107,7 +124,10 @@ export default function LocationHeroSection({
             {/* EYEBROW */}
 
             <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#FFC400]/20 bg-[#FFC400]/[0.05] text-[#FFC400]">
+              <span
+                aria-hidden="true"
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#FFC400]/20 bg-[#FFC400]/[0.05] text-[#FFC400]"
+              >
                 <MapPin size={15} />
               </span>
 
@@ -120,6 +140,7 @@ export default function LocationHeroSection({
 
             <div className="mt-7 flex items-center gap-2">
               <Navigation
+                aria-hidden="true"
                 size={13}
                 className="text-neutral-600"
               />
@@ -136,7 +157,10 @@ export default function LocationHeroSection({
 
             {/* TITLE */}
 
-            <h1 className="mt-4 max-w-2xl text-4xl font-semibold leading-[0.98] tracking-[-0.05em] text-white sm:text-5xl lg:text-[4.5rem]">
+            <h1
+              id="location-hero-heading"
+              className="mt-4 max-w-2xl text-4xl font-semibold leading-[0.98] tracking-[-0.05em] text-white sm:text-5xl lg:text-[4.5rem]"
+            >
               {location.name}
             </h1>
 
@@ -151,6 +175,7 @@ export default function LocationHeroSection({
             {location.address && (
               <div className="mt-7 flex max-w-md items-start gap-3">
                 <MapPin
+                  aria-hidden="true"
                   size={14}
                   className="mt-0.5 shrink-0 text-neutral-700"
                 />
@@ -165,12 +190,14 @@ export default function LocationHeroSection({
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/booking"
-                className="group inline-flex items-center justify-center gap-3 rounded-xl bg-[#FFC400] px-5 py-3.5 text-xs font-semibold text-black transition-all duration-300 hover:bg-[#FFD23D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
+                href="/start-a-project"
+                aria-label={`Start a project with Aman Digital Solutions in ${location.name}`}
+                className="group inline-flex items-center justify-center gap-3 rounded-xl bg-[#FFC400] px-5 py-3.5 text-xs font-semibold text-black transition-all duration-300 hover:bg-[#FFD23D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505]"
               >
                 Start a project
 
                 <ArrowRight
+                  aria-hidden="true"
                   size={15}
                   className="transition-transform duration-300 group-hover:translate-x-1"
                 />
@@ -178,7 +205,8 @@ export default function LocationHeroSection({
 
               <Link
                 href="/locations"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.02] px-5 py-3.5 text-xs font-semibold text-white/70 transition-all duration-300 hover:border-white/[0.15] hover:text-white"
+                aria-label="Explore all locations served by Aman Digital Solutions"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.02] px-5 py-3.5 text-xs font-semibold text-white/70 transition-all duration-300 hover:border-white/[0.15] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505]"
               >
                 Explore locations
               </Link>
@@ -193,16 +221,19 @@ export default function LocationHeroSection({
             <div className="overflow-hidden rounded-[2rem] border border-white/[0.08] bg-[#090909]">
               <div className="relative aspect-[16/11] overflow-hidden">
                 {location.image?.url ? (
-                  <img
+                  <Image
                     src={location.image.url}
-                    alt={
-                      location.image.alt ||
-                      `${location.name} location`
-                    }
-                    className="h-full w-full object-cover"
+                    alt={imageAlt}
+                    fill
+                    priority
+                    sizes="(max-width: 1023px) 100vw, 55vw"
+                    className="object-cover"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-[#0A0A0A]">
+                  <div
+                    aria-hidden="true"
+                    className="flex h-full w-full items-center justify-center bg-[#0A0A0A]"
+                  >
                     <MapPin
                       size={42}
                       strokeWidth={1}
@@ -233,7 +264,10 @@ export default function LocationHeroSection({
                   </p>
                 </div>
 
-                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.08] text-neutral-600">
+                <div
+                  aria-hidden="true"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.08] text-neutral-600"
+                >
                   <MapPin size={14} />
                 </div>
               </div>

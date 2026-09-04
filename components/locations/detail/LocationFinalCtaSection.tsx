@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import {
   ArrowRight,
   MessageCircle,
@@ -58,6 +59,7 @@ export default function LocationFinalCtaSection({
 
             <div className="inline-flex items-center gap-2 rounded-full border border-[#FFC400]/15 bg-[#FFC400]/[0.04] px-3 py-1.5">
               <Sparkles
+                aria-hidden="true"
                 size={12}
                 className="text-[#FFC400]"
               />
@@ -83,9 +85,10 @@ export default function LocationFinalCtaSection({
             {/* DESCRIPTION */}
 
             <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-neutral-500 sm:text-base">
-              From {city} to businesses beyond it, we create
-              websites, digital systems and growth solutions
-              designed around real business goals.
+              From {city} to businesses beyond it, we
+              create websites, digital systems and
+              growth solutions designed around real
+              business goals.
             </p>
 
             {/* =================================================
@@ -94,12 +97,14 @@ export default function LocationFinalCtaSection({
 
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
-                href="/booking"
-                className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#FFC400] px-6 text-xs font-bold uppercase tracking-[0.12em] text-black transition-all duration-300 hover:bg-[#FFD43B] hover:shadow-[0_0_35px_rgba(255,196,0,0.12)]"
+                href="/start-a-project"
+                aria-label={`Start a project with Aman Digital Solutions in ${name}`}
+                className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#FFC400] px-6 text-xs font-bold uppercase tracking-[0.12em] text-black transition-all duration-300 hover:bg-[#FFD43B] hover:shadow-[0_0_35px_rgba(255,196,0,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] focus-visible:ring-offset-2 focus-visible:ring-offset-[#090909]"
               >
                 Start a project
 
                 <ArrowRight
+                  aria-hidden="true"
                   size={15}
                   className="transition-transform duration-300 group-hover:translate-x-1"
                 />
@@ -107,9 +112,11 @@ export default function LocationFinalCtaSection({
 
               <Link
                 href="/contact"
-                className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/[0.09] bg-white/[0.02] px-6 text-xs font-semibold uppercase tracking-[0.12em] text-white/60 transition-all duration-300 hover:border-white/[0.18] hover:bg-white/[0.04] hover:text-white"
+                aria-label="Contact Aman Digital Solutions"
+                className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/[0.09] bg-white/[0.02] px-6 text-xs font-semibold uppercase tracking-[0.12em] text-white/60 transition-all duration-300 hover:border-white/[0.18] hover:bg-white/[0.04] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] focus-visible:ring-offset-2 focus-visible:ring-offset-[#090909]"
               >
                 <MessageCircle
+                  aria-hidden="true"
                   size={14}
                   className="text-neutral-600 transition-colors group-hover:text-[#FFC400]"
                 />

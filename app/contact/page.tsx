@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
@@ -26,10 +27,10 @@ const CONTACT_URL =
 
 export const metadata: Metadata = {
   title:
-    "Contact Aman Digital Solutions | Start Your Project",
+    "Contact Aman Digital Solutions | Web Development in Shimla",
 
   description:
-    "Have a website, e-commerce store, web application or digital project in mind? Contact Aman Digital Solutions to discuss your requirements and start your project.",
+    "Contact Aman Digital Solutions to discuss a website, e-commerce store, web application or digital project for your business in Shimla, Himachal Pradesh, India or beyond.",
 
   alternates: {
     canonical:
@@ -38,10 +39,10 @@ export const metadata: Metadata = {
 
   openGraph: {
     title:
-      "Contact Aman Digital Solutions | Start Your Project",
+      "Contact Aman Digital Solutions | Web Development in Shimla",
 
     description:
-      "Tell Aman Digital Solutions what you are building, improving or growing and discuss the right digital solution for your business.",
+      "Start a conversation about your next website, web application, e-commerce store or digital project with Aman Digital Solutions.",
 
     url:
       CONTACT_URL,
@@ -61,7 +62,7 @@ export const metadata: Metadata = {
       "summary_large_image",
 
     title:
-      "Contact Aman Digital Solutions | Start Your Project",
+      "Contact Aman Digital Solutions | Web Development in Shimla",
 
     description:
       "Start a conversation about your next website, web application, e-commerce or digital project.",
@@ -74,21 +75,21 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
+      "max-image-preview":
+        "large",
+      "max-snippet":
+        -1,
+      "max-video-preview":
+        -1,
     },
   },
 };
 
 /* =========================================================
-   STRUCTURED DATA — CONTACT PAGE
+   CONTACT PAGE STRUCTURED DATA
 ========================================================= */
 
 const contactPageSchema = {
-  "@context":
-    "https://schema.org",
-
   "@type":
     "ContactPage",
 
@@ -115,14 +116,8 @@ const contactPageSchema = {
   },
 
   mainEntity: {
-    "@type":
-      "Organization",
-
-    name:
-      "Aman Digital Solutions",
-
-    url:
-      SITE_URL,
+    "@id":
+      `${SITE_URL}/#organization`,
   },
 };
 
@@ -131,9 +126,6 @@ const contactPageSchema = {
 ========================================================= */
 
 const breadcrumbSchema = {
-  "@context":
-    "https://schema.org",
-
   "@type":
     "BreadcrumbList",
 
@@ -172,6 +164,20 @@ const breadcrumbSchema = {
 };
 
 /* =========================================================
+   STRUCTURED DATA GRAPH
+========================================================= */
+
+const structuredData = {
+  "@context":
+    "https://schema.org",
+
+  "@graph": [
+    contactPageSchema,
+    breadcrumbSchema,
+  ],
+};
+
+/* =========================================================
    PAGE
 ========================================================= */
 
@@ -187,17 +193,7 @@ export default function ContactPage() {
         dangerouslySetInnerHTML={{
           __html:
             JSON.stringify(
-              contactPageSchema
-            ),
-        }}
-      />
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html:
-            JSON.stringify(
-              breadcrumbSchema
+              structuredData
             ),
         }}
       />
@@ -218,9 +214,9 @@ export default function ContactPage() {
       >
         <ol>
           <li>
-            <a href="/">
+            <Link href="/">
               Home
-            </a>
+            </Link>
           </li>
 
           <li aria-current="page">

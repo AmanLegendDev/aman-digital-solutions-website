@@ -49,10 +49,6 @@ export default function BlogDetailPage({
 }: BlogDetailPageProps) {
   return (
     <div className="min-h-screen bg-[#050505] text-white">
-      {/* ===================================================
-          ARTICLE HERO
-      =================================================== */}
-
       <BlogArticleHeroSection
         blog={{
           title: blog.title,
@@ -66,27 +62,15 @@ export default function BlogDetailPage({
         }}
       />
 
-      {/* ===================================================
-          ARTICLE CONTENT
-      =================================================== */}
-
       <BlogArticleContentSection
         content={blog.content}
       />
-
-      {/* ===================================================
-          TAGS + ARTICLE META
-      =================================================== */}
 
       <BlogArticleTagsSection
         tags={blog.tags}
         author={blog.author}
         publishedAt={blog.publishedAt}
       />
-
-      {/* ===================================================
-          FINAL CTA
-      =================================================== */}
 
       <BlogArticleCtaSection />
     </div>

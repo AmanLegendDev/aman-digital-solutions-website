@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -18,7 +19,7 @@ type GalleryGridSectionProps = {
 
 /* =========================================================
    COMPONENT
-============================================== */
+========================================================= */
 
 export default function GalleryGridSection({
   galleries,
@@ -37,9 +38,12 @@ export default function GalleryGridSection({
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="flex items-center gap-3">
-              <span className="h-px w-7 bg-white/[0.12]" />
+              <span
+                aria-hidden="true"
+                className="h-px w-7 bg-white/[0.12]"
+              />
 
-              <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-neutral-600">
+              <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-neutral-500">
                 All collections
               </span>
             </div>
@@ -49,7 +53,7 @@ export default function GalleryGridSection({
             </h2>
           </div>
 
-          <p className="max-w-sm text-xs leading-6 text-neutral-800 sm:text-right">
+          <p className="max-w-sm text-xs leading-6 text-neutral-400 sm:text-right">
             Browse every available collection and open
             any one to explore its complete visual story.
           </p>
@@ -70,7 +74,7 @@ export default function GalleryGridSection({
               const alt =
                 gallery.coverImage?.alt ||
                 gallery.media[0]?.alt ||
-                gallery.title;
+                `${gallery.title} gallery`;
 
               const videoCount =
                 gallery.media.filter(
@@ -79,38 +83,40 @@ export default function GalleryGridSection({
                 ).length;
 
               return (
-               <Link
-  key={gallery._id}
-  href={`/gallery/${gallery.slug}`}
-  className="group block w-full min-w-0 max-w-full"
->
+                <Link
+                  key={gallery._id}
+                  href={`/gallery/${gallery.slug}`}
+                  aria-label={`View ${gallery.title} gallery`}
+                  className="group block w-full min-w-0 max-w-full rounded-[1.5rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505]"
+                >
                   {/* =================================================
                       VISUAL
                   ================================================= */}
 
-<div className="w-full min-w-0 max-w-full overflow-hidden rounded-[1.5rem] border border-white/[0.07] bg-[#080808]">
-                    <div className="relative aspect-[4/3] w-full min-w-0 max-w-full overflow-hidden">
+                  <div className="w-full min-w-0 max-w-full overflow-hidden rounded-[1.5rem] border border-white/[0.07] bg-[#080808] transition-colors duration-300 group-hover:border-white/[0.12]">
+                    <div className="relative aspect-[4/3] w-full min-w-0 max-w-full overflow-hidden bg-[#080808]">
                       {cover ? (
-                      <img
-  src={cover}
-  alt={alt}
-  loading="lazy"
-  decoding="async"
-  className="block h-full w-full min-w-0 max-w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-/>
+                        <Image
+                          src={cover}
+                          alt={alt}
+                          fill
+                          sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 400px"
+                          className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                        />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center bg-[#090909]">
                           <Images
                             size={34}
                             strokeWidth={1}
-                            className="text-neutral-800"
+                            aria-hidden="true"
+                            className="text-neutral-700"
                           />
                         </div>
                       )}
 
                       <div
                         aria-hidden="true"
-                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"
+                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent"
                       />
                     </div>
 
@@ -138,7 +144,10 @@ export default function GalleryGridSection({
 
                         {/* ARROW */}
 
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/[0.07] text-neutral-700 transition-all duration-300 group-hover:border-[#FFC400]/25 group-hover:bg-[#FFC400]/[0.05] group-hover:text-[#FFC400]">
+                        <span
+                          aria-hidden="true"
+                          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/[0.07] text-neutral-500 transition-all duration-300 group-hover:border-[#FFC400]/25 group-hover:bg-[#FFC400]/[0.05] group-hover:text-[#FFC400]"
+                        >
                           <ArrowRight
                             size={14}
                             className="transition-transform duration-300 group-hover:translate-x-0.5"
@@ -149,7 +158,7 @@ export default function GalleryGridSection({
                       {/* DESCRIPTION */}
 
                       {gallery.shortDescription && (
-                        <p className="mt-3 line-clamp-2 text-xs leading-6 text-neutral-700">
+                        <p className="mt-3 line-clamp-2 text-xs leading-6 text-neutral-400">
                           {gallery.shortDescription}
                         </p>
                       )}
@@ -162,10 +171,11 @@ export default function GalleryGridSection({
                         <div className="flex items-center gap-1.5">
                           <Images
                             size={10}
-                            className="text-neutral-800"
+                            aria-hidden="true"
+                            className="text-neutral-600"
                           />
 
-                          <span className="text-[8px] font-medium uppercase tracking-[0.11em] text-neutral-800">
+                          <span className="text-[8px] font-medium uppercase tracking-[0.11em] text-neutral-500">
                             {gallery.media.length}{" "}
                             {gallery.media.length === 1
                               ? "item"
@@ -175,16 +185,20 @@ export default function GalleryGridSection({
 
                         {videoCount > 0 && (
                           <>
-                            <span className="h-1 w-1 rounded-full bg-neutral-900" />
+                            <span
+                              aria-hidden="true"
+                              className="h-1 w-1 rounded-full bg-neutral-700"
+                            />
 
                             <div className="flex items-center gap-1.5">
                               <Play
                                 size={8}
                                 fill="currentColor"
-                                className="text-neutral-800"
+                                aria-hidden="true"
+                                className="text-neutral-600"
                               />
 
-                              <span className="text-[8px] font-medium uppercase tracking-[0.11em] text-neutral-800">
+                              <span className="text-[8px] font-medium uppercase tracking-[0.11em] text-neutral-500">
                                 {videoCount}{" "}
                                 {videoCount === 1
                                   ? "video"
@@ -210,14 +224,15 @@ export default function GalleryGridSection({
               <Images
                 size={30}
                 strokeWidth={1}
-                className="mx-auto text-neutral-800"
+                aria-hidden="true"
+                className="mx-auto text-neutral-700"
               />
 
-              <p className="mt-5 text-sm font-medium text-white/60">
+              <p className="mt-5 text-sm font-medium text-white/70">
                 No gallery collections yet.
               </p>
 
-              <p className="mt-2 max-w-sm text-xs leading-6 text-neutral-800">
+              <p className="mt-2 max-w-sm text-xs leading-6 text-neutral-400">
                 New visual collections will appear here
                 once they are published.
               </p>
@@ -231,9 +246,12 @@ export default function GalleryGridSection({
 
         {galleries.length > 0 && (
           <div className="mt-8 flex items-center justify-center gap-3">
-            <span className="h-px w-12 bg-white/[0.05]" />
+            <span
+              aria-hidden="true"
+              className="h-px w-12 bg-white/[0.05]"
+            />
 
-            <span className="text-[8px] font-medium uppercase tracking-[0.16em] text-neutral-800">
+            <span className="text-[8px] font-medium uppercase tracking-[0.16em] text-neutral-500">
               {totalGalleries}{" "}
               {totalGalleries === 1
                 ? "collection"
@@ -241,7 +259,10 @@ export default function GalleryGridSection({
               available
             </span>
 
-            <span className="h-px w-12 bg-white/[0.05]" />
+            <span
+              aria-hidden="true"
+              className="h-px w-12 bg-white/[0.05]"
+            />
           </div>
         )}
       </div>

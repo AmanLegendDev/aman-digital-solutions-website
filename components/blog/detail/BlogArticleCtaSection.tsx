@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  MessageCircle,
+  BriefcaseBusiness,
   Sparkles,
 } from "lucide-react";
 
@@ -21,7 +21,10 @@ export default function BlogArticleCtaSection({
   title = "Have an idea worth building?",
 }: BlogArticleCtaSectionProps) {
   return (
-    <section className="relative overflow-hidden border-t border-white/[0.06] bg-[#050505] py-20 sm:py-24 lg:py-28">
+    <section
+      aria-labelledby="blog-cta-heading"
+      className="relative overflow-hidden border-t border-white/[0.06] bg-[#050505] py-20 sm:py-24 lg:py-28"
+    >
       {/* =====================================================
           BACKGROUND
       ===================================================== */}
@@ -32,11 +35,14 @@ export default function BlogArticleCtaSection({
       />
 
       <div className="relative mx-auto max-w-4xl px-5 text-center sm:px-8">
-        {/* EYEBROW */}
+        {/* ===================================================
+            EYEBROW
+        =================================================== */}
 
         <div className="inline-flex items-center gap-2 rounded-full border border-[#FFC400]/15 bg-[#FFC400]/[0.04] px-3.5 py-2">
           <Sparkles
             size={11}
+            aria-hidden="true"
             className="text-[#FFC400]"
           />
 
@@ -45,9 +51,14 @@ export default function BlogArticleCtaSection({
           </span>
         </div>
 
-        {/* TITLE */}
+        {/* ===================================================
+            TITLE
+        =================================================== */}
 
-        <h2 className="mx-auto mt-7 max-w-3xl text-4xl font-semibold leading-[0.98] tracking-[-0.05em] text-white sm:text-5xl lg:text-[4.25rem]">
+        <h2
+          id="blog-cta-heading"
+          className="mx-auto mt-7 max-w-3xl text-4xl font-semibold leading-[0.98] tracking-[-0.05em] text-white sm:text-5xl lg:text-[4.25rem]"
+        >
           {title}
           <br />
           <span className="text-neutral-500">
@@ -55,7 +66,9 @@ export default function BlogArticleCtaSection({
           </span>
         </h2>
 
-        {/* DESCRIPTION */}
+        {/* ===================================================
+            DESCRIPTION
+        =================================================== */}
 
         <p className="mx-auto mt-7 max-w-2xl text-sm leading-7 text-neutral-600 sm:text-base sm:leading-8">
           Whether you&apos;re starting from scratch or improving
@@ -63,32 +76,43 @@ export default function BlogArticleCtaSection({
           idea into a clear digital solution.
         </p>
 
-        {/* ACTIONS */}
+        {/* ===================================================
+            ACTIONS
+        =================================================== */}
 
         <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
-            href="/contact"
+            href="/start-a-project"
+            aria-label="Start a project with Aman Digital Solutions"
             className="group inline-flex items-center justify-center gap-3 rounded-xl bg-[#FFC400] px-6 py-3.5 text-xs font-semibold text-black transition-all duration-300 hover:bg-[#FFD23D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
           >
-            Start a conversation
+            Start a project
 
             <ArrowRight
               size={15}
+              aria-hidden="true"
               className="transition-transform duration-300 group-hover:translate-x-1"
             />
           </Link>
 
           <Link
             href="/projects"
-            className="inline-flex items-center justify-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-6 py-3.5 text-xs font-semibold text-white/70 transition-all duration-300 hover:border-white/[0.15] hover:text-white"
+            aria-label="Explore Aman Digital Solutions projects"
+            className="group inline-flex items-center justify-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-6 py-3.5 text-xs font-semibold text-white/70 transition-all duration-300 hover:border-white/[0.15] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
           >
             Explore our work
 
-            <MessageCircle size={14} />
+            <BriefcaseBusiness
+              size={14}
+              aria-hidden="true"
+              className="transition-transform duration-300 group-hover:translate-x-0.5"
+            />
           </Link>
         </div>
 
-        {/* BOTTOM DETAIL */}
+        {/* ===================================================
+            BOTTOM DETAIL
+        =================================================== */}
 
         <div className="mx-auto mt-12 flex max-w-xl items-center justify-center gap-3">
           <span

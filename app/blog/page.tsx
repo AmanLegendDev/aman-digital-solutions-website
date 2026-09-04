@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+
 export const dynamic = "force-dynamic";
+
 import { connectDB } from "@/lib/db/connect";
 import Blog from "@/models/Blog";
 
@@ -19,6 +22,8 @@ const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.amandigitalsolutions.com";
 
+const BLOG_URL = `${SITE_URL}/blog`;
+
 /* =========================================================
    METADATA
 ========================================================= */
@@ -31,7 +36,7 @@ export const metadata: Metadata = {
     "Read practical insights on web development, SEO, digital marketing, business systems and digital growth from Aman Digital Solutions, serving businesses in Shimla, Himachal Pradesh, across India and beyond.",
 
   alternates: {
-    canonical: `${SITE_URL}/blog`,
+    canonical: BLOG_URL,
   },
 
   openGraph: {
@@ -41,7 +46,7 @@ export const metadata: Metadata = {
     description:
       "Practical insights on web development, SEO, technology and digital growth for businesses in Shimla, Himachal Pradesh, across India and beyond.",
 
-    url: `${SITE_URL}/blog`,
+    url: BLOG_URL,
 
     type: "website",
 
@@ -78,7 +83,7 @@ export const metadata: Metadata = {
 };
 
 /* =========================================================
-   FETCH BLOGS
+   FETCH PUBLISHED BLOGS
 ========================================================= */
 
 async function getPublishedBlogs(): Promise<BlogCardData[]> {
@@ -147,9 +152,6 @@ async function getPublishedBlogs(): Promise<BlogCardData[]> {
 export default async function BlogPage() {
   const blogs = await getPublishedBlogs();
 
-  const blogUrl =
-    `${SITE_URL}/blog`;
-
   /* =======================================================
      BLOG ITEM LIST
   ======================================================== */
@@ -158,7 +160,7 @@ export default async function BlogPage() {
     name: blog.title,
 
     url:
-      `${blogUrl}/${blog.slug}`,
+      `${BLOG_URL}/${blog.slug}`,
 
     ...(blog.coverImage?.url
       ? {
@@ -174,13 +176,13 @@ export default async function BlogPage() {
   const blogItemList =
     getItemListSchema({
       id:
-        `${blogUrl}#itemlist`,
+        `${BLOG_URL}#itemlist`,
 
       name:
         "Aman Digital Solutions Blog Articles",
 
       url:
-        blogUrl,
+        BLOG_URL,
 
       items:
         blogItems,
@@ -193,7 +195,7 @@ export default async function BlogPage() {
   const blogCollectionSchema =
     getBlogSchema({
       url:
-        blogUrl,
+        BLOG_URL,
 
       name:
         "Blog | Web Development, SEO & Digital Growth",
@@ -202,7 +204,7 @@ export default async function BlogPage() {
         "Practical insights on web development, SEO, digital marketing, technology and digital growth for businesses in Shimla, Himachal Pradesh, across India and beyond.",
 
       itemListId:
-        `${blogUrl}#itemlist`,
+        `${BLOG_URL}#itemlist`,
     });
 
   /* =======================================================
@@ -213,23 +215,46 @@ export default async function BlogPage() {
     <>
       <Navbar />
 
+      {/* =====================================================
+          STRUCTURED DATA
+      ===================================================== */}
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html:
-            JSON.stringify({
-              "@context":
-                "https://schema.org",
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
 
-              "@graph": [
-                blogCollectionSchema,
-                blogItemList,
-              ],
-            }),
+            "@graph": [
+              blogCollectionSchema,
+              blogItemList,
+            ],
+          }),
         }}
       />
 
       <main>
+        {/* ===================================================
+            SEMANTIC BREADCRUMB
+        =================================================== */}
+
+        <nav
+          aria-label="Breadcrumb"
+          className="sr-only"
+        >
+          <ol>
+            <li>
+              <Link href="/">
+                Home
+              </Link>
+            </li>
+
+            <li aria-current="page">
+              Blog
+            </li>
+          </ol>
+        </nav>
+
         <BlogPageClient
           blogs={blogs}
         />

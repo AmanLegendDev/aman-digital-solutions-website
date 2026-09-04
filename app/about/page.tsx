@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
@@ -31,10 +32,10 @@ const ABOUT_URL =
 
 export const metadata: Metadata = {
   title:
-    "About Aman Digital Solutions | Founder-Led Digital Agency",
+    "About Aman Digital Solutions | Web Development in Shimla",
 
   description:
-    "Learn about Aman Digital Solutions, a founder-led digital agency building modern websites, web applications, business systems and digital experiences for ambitious businesses worldwide.",
+    "Learn about Aman Digital Solutions, a founder-led web development and digital solutions company based in Shimla, serving businesses across Himachal Pradesh, India and beyond.",
 
   alternates: {
     canonical:
@@ -43,10 +44,10 @@ export const metadata: Metadata = {
 
   openGraph: {
     title:
-      "About Aman Digital Solutions | Founder-Led Digital Agency",
+      "About Aman Digital Solutions | Web Development in Shimla",
 
     description:
-      "Discover the story, approach, capabilities and vision behind Aman Digital Solutions.",
+      "Discover the story, approach, capabilities and vision behind Aman Digital Solutions, a Shimla-based digital solutions company.",
 
     url:
       ABOUT_URL,
@@ -66,7 +67,7 @@ export const metadata: Metadata = {
       "summary_large_image",
 
     title:
-      "About Aman Digital Solutions | Founder-Led Digital Agency",
+      "About Aman Digital Solutions | Web Development in Shimla",
 
     description:
       "Discover the story, approach and vision behind Aman Digital Solutions.",
@@ -79,9 +80,12 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
+      "max-image-preview":
+        "large",
+      "max-snippet":
+        -1,
+      "max-video-preview":
+        -1,
     },
   },
 };
@@ -91,9 +95,6 @@ export const metadata: Metadata = {
 ========================================================= */
 
 const aboutPageSchema = {
-  "@context":
-    "https://schema.org",
-
   "@type":
     "AboutPage",
 
@@ -115,14 +116,8 @@ const aboutPageSchema = {
   },
 
   about: {
-    "@type":
-      "Organization",
-
-    name:
-      "Aman Digital Solutions",
-
-    url:
-      SITE_URL,
+    "@id":
+      `${SITE_URL}/#organization`,
   },
 
   breadcrumb: {
@@ -136,9 +131,6 @@ const aboutPageSchema = {
 ========================================================= */
 
 const breadcrumbSchema = {
-  "@context":
-    "https://schema.org",
-
   "@type":
     "BreadcrumbList",
 
@@ -177,6 +169,20 @@ const breadcrumbSchema = {
 };
 
 /* =========================================================
+   STRUCTURED DATA GRAPH
+========================================================= */
+
+const structuredData = {
+  "@context":
+    "https://schema.org",
+
+  "@graph": [
+    aboutPageSchema,
+    breadcrumbSchema,
+  ],
+};
+
+/* =========================================================
    PAGE
 ========================================================= */
 
@@ -192,17 +198,7 @@ export default function AboutPage() {
         dangerouslySetInnerHTML={{
           __html:
             JSON.stringify(
-              aboutPageSchema
-            ),
-        }}
-      />
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html:
-            JSON.stringify(
-              breadcrumbSchema
+              structuredData
             ),
         }}
       />
@@ -223,9 +219,9 @@ export default function AboutPage() {
       >
         <ol>
           <li>
-            <a href="/">
+            <Link href="/">
               Home
-            </a>
+            </Link>
           </li>
 
           <li aria-current="page">

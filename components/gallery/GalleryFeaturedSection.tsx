@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -36,7 +37,10 @@ export default function GalleryFeaturedSection({
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="flex items-center gap-3">
-              <span className="h-px w-7 bg-[#FFC400]/40" />
+              <span
+                aria-hidden="true"
+                className="h-px w-7 bg-[#FFC400]/40"
+              />
 
               <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#FFC400]">
                 Featured collections
@@ -47,14 +51,18 @@ export default function GalleryFeaturedSection({
               A closer look.
             </h2>
 
-            <p className="mt-3 max-w-xl text-sm leading-6 text-neutral-700">
+            <p className="mt-3 max-w-xl text-sm leading-6 text-neutral-400">
               Selected visual collections from our work,
               projects and digital experiences.
             </p>
           </div>
 
-          <div className="hidden items-center gap-2 text-[8px] font-medium uppercase tracking-[0.14em] text-neutral-800 sm:flex">
-            <Images size={11} />
+          <div className="hidden items-center gap-2 text-[8px] font-medium uppercase tracking-[0.14em] text-neutral-500 sm:flex">
+            <Images
+              size={11}
+              aria-hidden="true"
+            />
+
             Featured
           </div>
         </div>
@@ -73,7 +81,7 @@ export default function GalleryFeaturedSection({
             const imageAlt =
               gallery.coverImage?.alt ||
               gallery.media[0]?.alt ||
-              gallery.title;
+              `${gallery.title} gallery`;
 
             const videoCount =
               gallery.media.filter(
@@ -82,40 +90,46 @@ export default function GalleryFeaturedSection({
               ).length;
 
             return (
-          <Link
-  key={gallery._id}
-  href={`/gallery/${gallery.slug}`}
-  className="group block min-w-0 w-full max-w-full"
->
+              <Link
+                key={gallery._id}
+                href={`/gallery/${gallery.slug}`}
+                aria-label={`View ${gallery.title} gallery`}
+                className="group block w-full min-w-0 max-w-full rounded-[1.75rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505]"
+              >
                 {/* =================================================
-                    IMAGE
+                    CARD
                 ================================================= */}
 
-                <div className="w-full min-w-0 max-w-full overflow-hidden rounded-[1.75rem] border border-white/[0.07] bg-[#080808]">
-          <div className="relative w-full min-w-0 max-w-full aspect-[16/10] overflow-hidden bg-[#080808]">
-  {cover ? (
- <img
-  src={cover}
-  alt={imageAlt}
-  loading="lazy"
-  decoding="async"
-  className="block h-full w-full min-w-0 max-w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.025]"
-/>
-  ) : (
-    <div className="flex h-full w-full items-center justify-center bg-[#090909]">
-      <Images
-        size={38}
-        strokeWidth={1}
-        className="text-neutral-800"
-      />
-    </div>
-  )}
+                <div className="w-full min-w-0 max-w-full overflow-hidden rounded-[1.75rem] border border-white/[0.07] bg-[#080808] transition-colors duration-300 group-hover:border-white/[0.12]">
+                  {/* =================================================
+                      IMAGE
+                  ================================================= */}
 
-  <div
-    aria-hidden="true"
-    className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"
-  />
-</div>
+                  <div className="relative aspect-[16/10] w-full min-w-0 overflow-hidden bg-[#080808]">
+                    {cover ? (
+                      <Image
+                        src={cover}
+                        alt={imageAlt}
+                        fill
+                        sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 600px"
+                        className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.025]"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-[#090909]">
+                        <Images
+                          size={38}
+                          strokeWidth={1}
+                          aria-hidden="true"
+                          className="text-neutral-700"
+                        />
+                      </div>
+                    )}
+
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent"
+                    />
+                  </div>
 
                   {/* =================================================
                       CARD CONTENT
@@ -141,7 +155,7 @@ export default function GalleryFeaturedSection({
                         {/* DESCRIPTION */}
 
                         {gallery.shortDescription && (
-                          <p className="mt-2 line-clamp-2 max-w-xl text-xs leading-6 text-neutral-700">
+                          <p className="mt-2 line-clamp-2 max-w-xl text-xs leading-6 text-neutral-400">
                             {gallery.shortDescription}
                           </p>
                         )}
@@ -149,7 +163,10 @@ export default function GalleryFeaturedSection({
 
                       {/* ARROW */}
 
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.07] text-neutral-700 transition-all duration-300 group-hover:border-[#FFC400]/25 group-hover:bg-[#FFC400]/[0.05] group-hover:text-[#FFC400]">
+                      <span
+                        aria-hidden="true"
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.07] text-neutral-500 transition-all duration-300 group-hover:border-[#FFC400]/25 group-hover:bg-[#FFC400]/[0.05] group-hover:text-[#FFC400]"
+                      >
                         <ArrowRight
                           size={15}
                           className="transition-transform duration-300 group-hover:translate-x-0.5"
@@ -165,13 +182,13 @@ export default function GalleryFeaturedSection({
                       <div className="flex items-center gap-2">
                         <Images
                           size={11}
-                          className="text-neutral-800"
+                          aria-hidden="true"
+                          className="text-neutral-600"
                         />
 
-                        <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-neutral-800">
+                        <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-neutral-500">
                           {gallery.media.length}{" "}
-                          {gallery.media.length ===
-                          1
+                          {gallery.media.length === 1
                             ? "item"
                             : "items"}
                         </span>
@@ -179,16 +196,20 @@ export default function GalleryFeaturedSection({
 
                       {videoCount > 0 && (
                         <>
-                          <span className="h-1 w-1 rounded-full bg-neutral-900" />
+                          <span
+                            aria-hidden="true"
+                            className="h-1 w-1 rounded-full bg-neutral-700"
+                          />
 
                           <div className="flex items-center gap-2">
                             <Play
                               size={9}
                               fill="currentColor"
-                              className="text-neutral-800"
+                              aria-hidden="true"
+                              className="text-neutral-600"
                             />
 
-                            <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-neutral-800">
+                            <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-neutral-500">
                               {videoCount}{" "}
                               {videoCount === 1
                                 ? "video"

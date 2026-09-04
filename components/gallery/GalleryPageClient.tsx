@@ -57,7 +57,7 @@ export type GalleryCardData = {
 
 /* =========================================================
    PROPS
-==================================================== */
+========================================================= */
 
 type GalleryPageClientProps = {
   galleries: GalleryCardData[];
@@ -71,22 +71,21 @@ export default function GalleryPageClient({
   galleries,
 }: GalleryPageClientProps) {
   /*
-   * Featured galleries are already ordered by the server,
-   * but keeping this separation here makes the UI predictable.
+   * Galleries are already sorted by the server.
+   * We only separate featured and regular entries
+   * for predictable presentation.
    */
 
-  const featuredGalleries =
-    galleries.filter(
-      (gallery) => gallery.featured
-    );
+  const featuredGalleries = galleries.filter(
+    (gallery) => gallery.featured
+  );
 
-  const regularGalleries =
-    galleries.filter(
-      (gallery) => !gallery.featured
-    );
+  const regularGalleries = galleries.filter(
+    (gallery) => !gallery.featured
+  );
 
   return (
-    <div  className="min-h-screen bg-[#050505] text-white">
+    <div className="min-h-screen bg-[#050505] text-white">
       {/* ===================================================
           HERO
       =================================================== */}
