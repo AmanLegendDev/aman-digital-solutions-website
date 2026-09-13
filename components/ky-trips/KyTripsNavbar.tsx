@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -16,13 +17,14 @@ const NAV_ITEMS = [
 
 export default function KyTripsNavbar() {
   return (
-    <header className="absolute left-0 right-0 top-0 z-50 px-4 pt-4 sm:px-6 lg:px-8 lg:pt-6">
+    <header className="absolute left-0 right-0 top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-4 lg:px-8 lg:pt-6">
       <nav
         aria-label="Main navigation"
         className="
           mx-auto flex w-full max-w-7xl items-center justify-between
           rounded-full border border-white/15
-          bg-[#071A33]/80 px-4 py-3
+          bg-[#071A33]/80
+          px-3 py-2.5
           shadow-[0_18px_60px_rgba(0,0,0,0.22)]
           backdrop-blur-xl
           sm:px-5 sm:py-3.5
@@ -34,15 +36,17 @@ export default function KyTripsNavbar() {
           href="#home"
           aria-label="KY-TRIPS home"
           className="
-            group flex min-w-0 items-center gap-3
+            group flex min-w-0 items-center gap-2.5
             rounded-full
             outline-none
             focus-visible:ring-2
             focus-visible:ring-[#D6B36A]
             focus-visible:ring-offset-2
             focus-visible:ring-offset-[#071A33]
+            sm:gap-3
           "
         >
+          {/* Logo */}
           <div
             className="
               relative flex h-10 w-10 shrink-0 items-center justify-center
@@ -63,12 +67,39 @@ export default function KyTripsNavbar() {
             />
           </div>
 
-          <div className="hidden min-w-0 sm:block">
-            <p className="truncate font-serif text-[17px] font-semibold tracking-[-0.02em] text-white">
+          {/* Brand */}
+          <div className="min-w-0">
+            {/* Brand Name */}
+            <p
+              className="
+                truncate
+                font-serif
+                text-[14px]
+                font-semibold
+                leading-none
+                tracking-[-0.02em]
+                text-white
+                sm:text-[17px]
+              "
+            >
               KY-TRIPS
             </p>
 
-            <p className="mt-0.5 text-[8px] font-medium uppercase tracking-[0.22em] text-white/45">
+            {/* Brand Tagline */}
+            <p
+              className="
+                mt-1
+                whitespace-nowrap
+                text-[6.5px]
+                font-medium
+                uppercase
+                leading-none
+                tracking-[0.16em]
+                text-white/45
+                sm:text-[8px]
+                sm:tracking-[0.22em]
+              "
+            >
               PROPERTY · INVESTMENT · ADVISORY
             </p>
           </div>
@@ -127,10 +158,15 @@ export default function KyTripsNavbar() {
             "
           >
             Get in Touch
+
             <ArrowUpRight
               size={15}
               strokeWidth={2}
-              className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              className="
+                transition-transform duration-300
+                group-hover:translate-x-0.5
+                group-hover:-translate-y-0.5
+              "
             />
           </Link>
         </div>
@@ -141,7 +177,7 @@ export default function KyTripsNavbar() {
           aria-label="Open navigation menu"
           aria-expanded="false"
           className="
-            flex h-10 w-10 shrink-0 items-center justify-center
+            flex h-9 w-9 shrink-0 items-center justify-center
             rounded-full
             border border-white/15
             bg-white/[0.05]
@@ -153,12 +189,14 @@ export default function KyTripsNavbar() {
             focus-visible:outline-none
             focus-visible:ring-2
             focus-visible:ring-[#D6B36A]
+            sm:h-10 sm:w-10
             lg:hidden
           "
         >
-          <Menu size={20} strokeWidth={1.8} />
+          <Menu size={19} strokeWidth={1.8} />
         </button>
       </nav>
     </header>
   );
 }
+
