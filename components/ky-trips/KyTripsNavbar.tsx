@@ -47,25 +47,25 @@ export default function KyTripsNavbar() {
           "
         >
           {/* Logo */}
-          <div
-            className="
-              relative flex h-10 w-10 shrink-0 items-center justify-center
-              overflow-hidden rounded-full
-              border border-[#D6B36A]/50
-              bg-white
-              shadow-[0_0_24px_rgba(214,179,106,0.12)]
-              sm:h-11 sm:w-11
-            "
-          >
-            <Image
-              src="/ky.png"
-              alt="KY-TRIPS"
-              fill
-              sizes="44px"
-              className="object-contain p-1"
-              priority
-            />
-          </div>
+     <div
+  className="
+    relative flex h-11 w-11 shrink-0 items-center justify-center
+    overflow-hidden rounded-full
+    border border-[#D6B36A]/55
+    bg-transparent
+    shadow-[0_0_24px_rgba(214,179,106,0.16)]
+    sm:h-12 sm:w-12
+  "
+>
+  <Image
+    src="/ky.png"
+    alt="KY-Properties logo"
+    fill
+    sizes="48px"
+    className="object-contain p-0"
+    priority
+  />
+</div>
 
           {/* Brand */}
           <div className="min-w-0">
@@ -82,7 +82,7 @@ export default function KyTripsNavbar() {
                 sm:text-[17px]
               "
             >
-              KY-TRIPS
+             KY PROPERTIES
             </p>
 
             {/* Brand Tagline */}
@@ -104,7 +104,7 @@ export default function KyTripsNavbar() {
             </p>
           </div>
 
-          <span className="sr-only">KY-TRIPS</span>
+          <span className="sr-only">KY Properties</span>
         </Link>
 
         {/* Desktop Navigation */}
