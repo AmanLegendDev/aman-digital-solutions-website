@@ -443,7 +443,7 @@ export default function StartProjectClient({
                 <span className="text-xs leading-5 text-neutral-500">
                   I agree to the{" "}
                   <a
-                    href="/privacy-policy"
+                    href="/privacy"
                     className="text-white underline underline-offset-2"
                   >
                     privacy policy
