@@ -75,7 +75,7 @@ export default function GalleryRelatedProjectSection({
 
             <div className="border-t border-white/[0.06] p-7 sm:p-9 lg:border-l lg:border-t-0 lg:p-12">
               <Link
-                href={`/projects/${project.slug}`}
+                href="projects"
                 className="group inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#FFC400] px-6 py-3.5 text-xs font-semibold text-black transition-all duration-300 hover:bg-[#FFD23D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] lg:w-auto"
               >
                 View project
