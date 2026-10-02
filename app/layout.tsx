@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 
   title: {
     default: DEFAULT_TITLE,
-    template: "%s | Aman Digital Solutions",
+    template: "%s | ADS",
   },
 
   /* =======================================================

@@ -348,6 +348,71 @@ export default async function BlogPage({
       : {}),
   };
 
+
+  /* =======================================================
+   FAQ SCHEMA
+======================================================= */
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Is a 5-page website enough for a small business?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "It can be. A simple business with one main service, one location and a straightforward customer journey may be able to communicate everything important with five strong pages. The key is whether those pages answer the customer's questions—not whether the website reaches a specific number.",
+      },
+    },
+
+    {
+      "@type": "Question",
+      name: "Should every service have its own page?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Not always. If a service is important enough to deserve its own explanation, has distinct customer intent, or targets a specific search query, a dedicated service page can make sense. Smaller businesses with only a few closely related services may be better served by one strong services page.",
+      },
+    },
+
+    {
+      "@type": "Question",
+      name: "Do local businesses need location pages?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "A location page can be useful when a business genuinely serves multiple distinct areas and each location has enough unique information to provide value. Creating large numbers of near-duplicate location pages only to target keywords is not a good website structure.",
+      },
+    },
+
+    {
+      "@type": "Question",
+      name: "Does having more pages improve SEO?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Not automatically. More pages can create more opportunities to address relevant customer searches, but each page should have a clear purpose and useful, original information. A smaller website with strong, relevant pages can perform better than a larger website filled with thin or repetitive content.",
+      },
+    },
+
+    {
+      "@type": "Question",
+      name: "Should a small business website have a blog?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "A blog can be useful when the business has helpful topics to publish and can maintain useful content over time. It can support organic visibility, answer customer questions and create opportunities for internal linking, but a blog is not mandatory for every small business website.",
+      },
+    },
+
+    {
+      "@type": "Question",
+      name: "What pages should a small business website have?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Most small business websites should start with a homepage, about page, services or products page, contact page and relevant trust or proof content. Depending on the business, additional pages such as individual service pages, location pages, FAQs, a blog, or case studies may also be useful.",
+      },
+    },
+  ],
+};
+
   /* =======================================================
      WEBPAGE SCHEMA
   ======================================================== */
@@ -403,6 +468,14 @@ export default async function BlogPage({
             JSON.stringify(articleSchema),
         }}
       />
+
+
+      <script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(faqSchema),
+  }}
+/>
 
       {/* ===================================================
           WEBPAGE SCHEMA
