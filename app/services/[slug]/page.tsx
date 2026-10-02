@@ -432,6 +432,31 @@ export default async function ServicePage({
       : {}),
   };
 
+
+  /* =========================================================
+   FAQ PAGE SCHEMA
+========================================================= */
+
+const faqSchema =
+  relatedFaqs.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+
+        "@id": `${serviceUrl}#faq`,
+
+        mainEntity: relatedFaqs.map((faq) => ({
+          "@type": "Question",
+
+          name: faq.question,
+
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer,
+          },
+        })),
+      }
+    : null;
   /*
    * =========================================================
    * WEBPAGE SCHEMA
@@ -491,6 +516,17 @@ export default async function ServicePage({
             ),
         }}
       />
+
+      {/* FAQ PAGE SCHEMA */}
+
+{faqSchema && (
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify(faqSchema),
+    }}
+  />
+)}
 
       {/* WEBPAGE SCHEMA */}
 

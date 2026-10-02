@@ -9,6 +9,7 @@ import ContactMethods from "@/components/contact/ContactMethods";
 import ContactForm from "@/components/contact/ContactForm";
 import ContactExpectations from "@/components/contact/ContactExpectations";
 import ContactCTA from "@/components/contact/ContactCTA";
+import ContactFAQSection from "@/components/contact/ContactFAQSection";
 
 /* =========================================================
    SITE CONFIG
@@ -27,7 +28,7 @@ const CONTACT_URL =
 
 export const metadata: Metadata = {
   title:
-    "Contact Aman Digital Solutions | Web Development in Shimla",
+    "Contact Aman Digital Solutions",
 
   description:
     "Contact Aman Digital Solutions to discuss a website, e-commerce store, web application or digital project for your business in Shimla, Himachal Pradesh, India or beyond.",
@@ -241,6 +242,8 @@ export default function ContactPage() {
 
         {/* 04 — WHAT HAPPENS NEXT */}
         <ContactExpectations />
+        {/* 05 — CONTACT FAQ */}
+<ContactFAQSection />
 
         {/* 05 — DIRECT CONVERSATION */}
         <ContactCTA />

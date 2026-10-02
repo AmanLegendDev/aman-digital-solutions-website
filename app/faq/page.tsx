@@ -28,7 +28,7 @@ const FAQ_URL =
 
 export const metadata: Metadata = {
   title:
-    "FAQ | Web Development & Digital Solutions | Aman Digital Solutions",
+    "FAQ | Web Development & Digital Solutions",
 
   description:
     "Find answers to common questions about Aman Digital Solutions, including website development, e-commerce, business systems, pricing, SEO, process and ongoing support.",

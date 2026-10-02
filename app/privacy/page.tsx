@@ -12,6 +12,7 @@ import DataSharing from "@/components/PrivacyPage/DataSharing";
 import SecurityAndRetention from "@/components/PrivacyPage/SecurityAndRetention";
 import RightsAndCookies from "@/components/PrivacyPage/RightsAndCookies";
 import PrivacyContact from "@/components/PrivacyPage/PrivacyContact";
+import PrivacyFAQSection from "@/components/PrivacyPage/PrivacyFAQSection";
 
 /* =========================================================
    SITE CONFIG
@@ -243,6 +244,7 @@ export default function PrivacyPage() {
         <RightsAndCookies />
 
         <PrivacyContact />
+        <PrivacyFAQSection />
       </main>
 
       {/* =================================================

@@ -14,6 +14,7 @@ import Values from "@/components/AboutPage/Values";
 import WhyWorkWithUs from "@/components/AboutPage/WhyWorkWithUs";
 import FutureVision from "@/components/AboutPage/FutureVision";
 import AboutCTA from "@/components/AboutPage/AboutCTA";
+import AboutFAQSection from "@/components/AboutPage/AboutFAQSection";
 
 /* =========================================================
    SITE CONFIG
@@ -32,7 +33,7 @@ const ABOUT_URL =
 
 export const metadata: Metadata = {
   title:
-    "About Aman Digital Solutions | Web Development in Shimla",
+    "About Aman Digital Solutions",
 
   description:
     "Learn about Aman Digital Solutions, a founder-led web development and digital solutions company based in Shimla, serving businesses across Himachal Pradesh, India and beyond.",
@@ -260,10 +261,13 @@ export default function AboutPage() {
         <WhyWorkWithUs />
 
         {/* 09 — LONG-TERM VISION */}
-        <FutureVision />
+       <FutureVision />
 
-        {/* 10 — FINAL CTA */}
-        <AboutCTA />
+{/* 10 — ABOUT FAQ */}
+<AboutFAQSection />
+
+{/* 11 — FINAL CTA */}
+<AboutCTA />
       </main>
 
       {/* =================================================

@@ -17,6 +17,8 @@ import ReviewStep from "./steps/ReviewStep";
 import SuccessScreen from "./ui/SuccessScreen";
 
 import { INITIAL_DATA } from "./constants";
+import StartProjectFAQSection from "./StartProjectFAQSection";
+import StartProjectInfoSection from "./StartProjectInfoSection";
 
 import type {
   FormData,
@@ -261,7 +263,7 @@ export default function StartProjectClient({
   }
 
   return (
-    <main className="min-h-screen bg-[#050505] px-4 py-10 text-white sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#050505] px-4 py-10 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
         {/* HEADER */}
 
@@ -494,10 +496,15 @@ export default function StartProjectClient({
                   )}
                 </button>
               </div>
+              
             </div>
+            
           )}
         </div>
+          {/* START A PROJECT FAQ */}
+        <StartProjectFAQSection />
+        <StartProjectInfoSection />
       </div>
-    </main>
+    </div>
   );
 }

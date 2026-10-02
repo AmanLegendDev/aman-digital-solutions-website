@@ -7,6 +7,7 @@ import PricingValueSection from "./PricingValueSection";
 import PricingFinalCtaSection from "./PricingFinalCtaSection";
 
 import type { PricingPlanCardData } from "./PricingPlanCard";
+import PricingFAQSection from "./PricingFAQSection";
 
 /* =========================================================
    PROPS
@@ -74,6 +75,8 @@ export default function PricingPageClient({
       {/* =====================================================
           FINAL CTA
       ===================================================== */}
+
+      <PricingFAQSection />
 
       <PricingFinalCtaSection />
     </main>

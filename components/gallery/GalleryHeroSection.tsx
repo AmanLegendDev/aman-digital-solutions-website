@@ -101,21 +101,22 @@ export default function GalleryHeroSection({
 
           {/* TITLE */}
 
-          <h1 className="mt-6 text-4xl font-semibold leading-[0.98] tracking-[-0.055em] text-white sm:text-5xl lg:text-[5rem]">
-            See the work.
-            <br />
-            <span className="text-neutral-500">
-              Beyond the screen.
-            </span>
-          </h1>
+         <h1 className="mt-6 text-4xl font-semibold leading-[0.98] tracking-[-0.055em] text-white sm:text-5xl lg:text-[5rem]">
+  Web Design & Digital Work
+  <br />
+  <span className="text-neutral-500">
+    Gallery
+  </span>
+</h1>
 
           {/* DESCRIPTION */}
 
-          <p className="mx-auto mt-7 max-w-2xl text-sm leading-7 text-neutral-600 sm:text-base sm:leading-8">
-            Explore selected moments, visuals and
-            experiences from the digital products we
-            design and build.
-          </p>
+         <p className="mx-auto mt-7 max-w-2xl text-sm leading-7 text-neutral-600 sm:text-base sm:leading-8">
+  Explore selected website designs, digital experiences,
+  e-commerce interfaces and custom web projects created
+  by Aman Digital Solutions for businesses in Shimla,
+  Himachal Pradesh, India and beyond.
+</p>
 
           {/* =================================================
               QUICK INFO

@@ -13,6 +13,7 @@ import ServicesBottomCta, {
 
 import type { FeaturedServiceCard } from "./FeaturedServicesSection";
 import type { ServiceCardData } from "./AllServices";
+import ServicesFAQSection from "./ServicesFAQSection";
 
 type ServicesPageClientProps = {
   servicesCount: number;
@@ -22,7 +23,7 @@ type ServicesPageClientProps = {
 
 export default function ServicesPageClient({
   servicesCount,
-  featuredServices,
+  featuredServices, 
   allServices,
 }: ServicesPageClientProps) {
   const [activeCategory, setActiveCategory] =
@@ -45,13 +46,16 @@ export default function ServicesPageClient({
       />
 
       {/* 04 — ALL NON-FEATURED SERVICES */}
-      <AllServices
-        services={allServices}
-        activeCategory={activeCategory}
-      />
+    <AllServices
+  services={allServices}
+  activeCategory={activeCategory}
+/>
 
-      {/* 05 — FINAL CTA */}
-      <ServicesBottomCta />
+{/* 05 — FAQ */}
+<ServicesFAQSection />
+
+{/* 06 — FINAL CTA */}
+<ServicesBottomCta />
     </div>
   );
 }

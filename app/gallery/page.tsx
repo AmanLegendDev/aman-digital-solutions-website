@@ -32,8 +32,8 @@ const GALLERY_URL = `${SITE_URL}/gallery`;
 ========================================================= */
 
 export const metadata: Metadata = {
-  title:
-    "Website Design & Digital Work Gallery | Aman Digital Solutions",
+ title:
+  "Web Design & Digital Work Gallery",
 
   description:
     "Explore website designs, digital experiences and creative work built by Aman Digital Solutions for businesses in Shimla, Himachal Pradesh, India and beyond.",

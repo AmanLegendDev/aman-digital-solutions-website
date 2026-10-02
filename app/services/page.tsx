@@ -11,6 +11,7 @@ import {
 import ServicesPageClient from "@/components/services/ServicesPageClient";
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
+import { serviceFAQSchema } from "@/components/services/ServicesFAQSection";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -175,6 +176,7 @@ const servicesCollection = getCollectionPageSchema({
       "@graph": [
         servicesCollection,
         servicesItemList,
+         serviceFAQSchema,
       ],
     }),
   }}

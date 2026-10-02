@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+export const revalidate = 3600;
+
 import { connectDB } from "@/lib/db/connect";
 import Project from "@/models/Project";
 
@@ -18,11 +20,11 @@ const SITE_URL =
   "https://www.amandigitalsolutions.com";
 
 export const metadata: Metadata = {
- title:
-  "Our Projects | Websites, E-commerce & Digital Solutions",
+title:
+  "Web Development Projects",
 
- description:
-  "Explore websites, e-commerce platforms, web applications and digital solutions built by Aman Digital Solutions for businesses in Shimla, Himachal Pradesh, across India and beyond.",
+description:
+  "Explore websites, e-commerce stores and custom web applications built by Aman Digital Solutions for businesses in Shimla, Himachal Pradesh and beyond.",
  alternates: {
   canonical: `${SITE_URL}/projects`,
 },

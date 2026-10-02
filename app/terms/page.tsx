@@ -10,6 +10,8 @@ import TermsProject from "@/components/terms/TermsProject";
 import TermsLegal from "@/components/terms/TermsLegal";
 import TermsContact from "@/components/terms/TermsContact";
 
+import TermsFAQSection from "@/components/terms/TermsFAQSection";
+
 /* =========================================================
    SITE CONFIG
 ========================================================= */
@@ -224,17 +226,19 @@ export default function TermsPage() {
           TERMS CONTENT
       ================================================= */}
 
-      <main className="min-h-screen bg-[#050505] text-white">
-        <TermsHero />
+     <main className="min-h-screen bg-[#050505] text-white">
+  <TermsHero />
 
-        <TermsBasics />
+  <TermsBasics />
 
-        <TermsProject />
+  <TermsProject />
 
-        <TermsLegal />
+  <TermsLegal />
 
-        <TermsContact />
-      </main>
+  <TermsContact />
+
+  <TermsFAQSection />
+</main>
 
       {/* =================================================
           FOOTER

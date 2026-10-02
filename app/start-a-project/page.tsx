@@ -12,11 +12,17 @@ const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.amandigitalsolutions.com";
 
+/**
+ * Services used in the project form do not change frequently.
+ * Cache the generated page and revalidate it every hour.
+ */
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
-  title: "Start a Project | Aman Digital Solutions",
+  title: "Start a Web Project With",
 
   description:
-    "Tell Aman Digital Solutions about your project and get a clear next step for your website, web application, e-commerce store or digital business solution.",
+    "Ready to build your website or digital solution? Tell Aman Digital Solutions about your project and get a clear next step for web development, e-commerce, or custom digital solutions.",
 
   alternates: {
     canonical: `${SITE_URL}/start-a-project`,
@@ -84,11 +90,9 @@ export default async function StartProjectPage() {
 
       <main
         id="main-content"
-        className="min-h-screen bg-[#050505] text-white mt-16"
+        className="mt-16 min-h-screen bg-[#050505] text-white"
       >
-        <StartProjectClient
-          services={serviceOptions}
-        />
+        <StartProjectClient services={serviceOptions} />
       </main>
 
       <Footer />

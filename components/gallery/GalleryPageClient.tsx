@@ -4,6 +4,7 @@ import GalleryHeroSection from "./GalleryHeroSection";
 import GalleryFeaturedSection from "./GalleryFeaturedSection";
 import GalleryGridSection from "./GalleryGridSection";
 import GalleryFinalCtaSection from "./GalleryFinalCtaSection";
+import GalleryFAQSection from "./GalleryFAQSection";
 
 /* =========================================================
    TYPES
@@ -118,6 +119,7 @@ export default function GalleryPageClient({
       =================================================== */}
 
       <GalleryFinalCtaSection />
+      <GalleryFAQSection />
     </div>
   );
 }

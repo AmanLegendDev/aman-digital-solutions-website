@@ -15,7 +15,7 @@ import ProjectDetailPage, {
 
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
-
+import FAQ from "@/models/FAQ";
 import { getWebPageSchema } from "@/lib/seo/schema";
 
 /* =========================================================
@@ -55,6 +55,7 @@ type PopulatedProjectService = {
 ========================================================= */
 
 type PopulatedProject = {
+  _id: unknown;
   title: string;
   slug: string;
 
@@ -324,6 +325,27 @@ export default async function ProjectPage({
   }
 
   /* =======================================================
+   RELATED FAQS
+======================================================= */
+
+const faqDocuments = await FAQ.find({
+  relatedProject: project._id,
+  published: true,
+})
+  .select("_id question slug answer displayOrder")
+  .sort({
+    displayOrder: 1,
+  })
+  .lean();
+
+const relatedFaqs = faqDocuments.map((faq) => ({
+  id: String(faq._id),
+  question: faq.question,
+  slug: faq.slug,
+  answer: faq.answer,
+}));
+
+  /* =======================================================
      URL + SEO VALUES
   ======================================================== */
 
@@ -564,6 +586,32 @@ export default async function ProjectPage({
   };
 
   /* =======================================================
+   FAQ PAGE SCHEMA
+======================================================= */
+
+const faqSchema =
+  relatedFaqs.length > 0
+    ? {
+        "@context": "https://schema.org",
+
+        "@type": "FAQPage",
+
+        "@id": `${projectUrl}#faq`,
+
+        mainEntity: relatedFaqs.map((faq) => ({
+          "@type": "Question",
+
+          name: faq.question,
+
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer,
+          },
+        })),
+      }
+    : null;
+
+  /* =======================================================
      WEBPAGE SCHEMA
   ======================================================== */
 
@@ -634,6 +682,22 @@ export default async function ProjectPage({
             ),
         }}
       />
+
+
+{/* =================================================
+    FAQ PAGE SCHEMA
+================================================= */}
+
+{faqSchema && (
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify(faqSchema),
+    }}
+  />
+)}
+
+      
 
       {/* =================================================
           WEBPAGE SCHEMA

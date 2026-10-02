@@ -4,6 +4,7 @@ import BlogHeroSection from "./BlogHeroSection";
 import FeaturedBlogSection from "./FeaturedBlogSection";
 import BlogGridSection from "./BlogGridSection";
 import BlogFinalCtaSection from "./BlogFinalCtaSection";
+import BlogFAQSection from "./BlogFAQSection";
 
 /* =========================================================
    TYPES
@@ -96,6 +97,8 @@ export default function BlogPageClient({
       <BlogGridSection
         blogs={regularBlogs}
       />
+
+      <BlogFAQSection />
 
       {/* =====================================================
           FINAL CTA
