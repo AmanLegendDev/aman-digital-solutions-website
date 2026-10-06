@@ -9,19 +9,28 @@ import TermsBasics from "@/components/terms/TermsBasics";
 import TermsProject from "@/components/terms/TermsProject";
 import TermsLegal from "@/components/terms/TermsLegal";
 import TermsContact from "@/components/terms/TermsContact";
-
 import TermsFAQSection from "@/components/terms/TermsFAQSection";
 
 /* =========================================================
    SITE CONFIG
 ========================================================= */
 
-const SITE_URL =
+const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ||
-  "https://www.amandigitalsolutions.com";
+  "https://www.amandigitalsolutions.com"
+).replace(/\/$/, "");
+
+const SITE_NAME =
+  "Aman Digital Solutions";
 
 const TERMS_URL =
   `${SITE_URL}/terms`;
+
+/*
+ * Terms content is relatively stable.
+ * Revalidate periodically without forcing dynamic rendering.
+ */
+export const revalidate = 3600;
 
 /* =========================================================
    METADATA
@@ -39,37 +48,6 @@ export const metadata: Metadata = {
       TERMS_URL,
   },
 
-  openGraph: {
-    title:
-      "Terms of Service | Aman Digital Solutions",
-
-    description:
-      "Review the terms that govern projects, services, payments, responsibilities and use of Aman Digital Solutions services.",
-
-    url:
-      TERMS_URL,
-
-    type:
-      "website",
-
-    siteName:
-      "Aman Digital Solutions",
-
-    locale:
-      "en_IN",
-  },
-
-  twitter: {
-    card:
-      "summary_large_image",
-
-    title:
-      "Terms of Service | Aman Digital Solutions",
-
-    description:
-      "Review the Terms of Service for Aman Digital Solutions.",
-  },
-
   robots: {
     index: true,
     follow: true,
@@ -84,6 +62,37 @@ export const metadata: Metadata = {
       "max-video-preview":
         -1,
     },
+  },
+
+  openGraph: {
+    title:
+      "Terms of Service | Aman Digital Solutions",
+
+    description:
+      "Review the terms that govern projects, services, payments, responsibilities and use of Aman Digital Solutions services.",
+
+    url:
+      TERMS_URL,
+
+    type:
+      "website",
+
+    siteName:
+      SITE_NAME,
+
+    locale:
+      "en_IN",
+  },
+
+  twitter: {
+    card:
+      "summary_large_image",
+
+    title:
+      "Terms of Service | Aman Digital Solutions",
+
+    description:
+      "Review the Terms of Service for Aman Digital Solutions.",
   },
 };
 
@@ -226,19 +235,28 @@ export default function TermsPage() {
           TERMS CONTENT
       ================================================= */}
 
-     <main className="min-h-screen bg-[#050505] text-white">
-  <TermsHero />
+      <main
+        id="main-content"
+        className="min-h-screen bg-[#050505] text-white"
+      >
+        {/* 01 — INTRODUCTION */}
+        <TermsHero />
 
-  <TermsBasics />
+        {/* 02 — GENERAL TERMS */}
+        <TermsBasics />
 
-  <TermsProject />
+        {/* 03 — PROJECT TERMS */}
+        <TermsProject />
 
-  <TermsLegal />
+        {/* 04 — LEGAL TERMS */}
+        <TermsLegal />
 
-  <TermsContact />
+        {/* 05 — CONTACT */}
+        <TermsContact />
 
-  <TermsFAQSection />
-</main>
+        {/* 06 — TERMS FAQ */}
+        <TermsFAQSection />
+      </main>
 
       {/* =================================================
           FOOTER

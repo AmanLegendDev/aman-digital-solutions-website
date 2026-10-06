@@ -15,12 +15,23 @@ import Footer from "@/components/agency/footer/Footer";
    SITE CONFIG
 ========================================================= */
 
-const SITE_URL =
+const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ||
-  "https://www.amandigitalsolutions.com";
+  "https://www.amandigitalsolutions.com"
+).replace(/\/$/, "");
+
+const SITE_NAME =
+  "Aman Digital Solutions";
 
 const FAQ_URL =
   `${SITE_URL}/faq`;
+
+/*
+ * FAQ content changes occasionally through the CMS.
+ * Revalidate periodically instead of forcing the page
+ * to render dynamically on every request.
+ */
+export const revalidate = 3600;
 
 /* =========================================================
    METADATA
@@ -38,37 +49,6 @@ export const metadata: Metadata = {
       FAQ_URL,
   },
 
-  openGraph: {
-    title:
-      "Frequently Asked Questions | Aman Digital Solutions",
-
-    description:
-      "Find clear answers about our services, website development, pricing, process and digital solutions.",
-
-    url:
-      FAQ_URL,
-
-    type:
-      "website",
-
-    siteName:
-      "Aman Digital Solutions",
-
-    locale:
-      "en_IN",
-  },
-
-  twitter: {
-    card:
-      "summary_large_image",
-
-    title:
-      "FAQ | Aman Digital Solutions",
-
-    description:
-      "Answers about our services, pricing, process and digital solutions.",
-  },
-
   robots: {
     index: true,
     follow: true,
@@ -83,6 +63,37 @@ export const metadata: Metadata = {
       "max-video-preview":
         -1,
     },
+  },
+
+  openGraph: {
+    title:
+      "Frequently Asked Questions | Aman Digital Solutions",
+
+    description:
+      "Find clear answers about website development, pricing, process, SEO and digital solutions from Aman Digital Solutions.",
+
+    url:
+      FAQ_URL,
+
+    type:
+      "website",
+
+    siteName:
+      SITE_NAME,
+
+    locale:
+      "en_IN",
+  },
+
+  twitter: {
+    card:
+      "summary_large_image",
+
+    title:
+      "FAQ | Aman Digital Solutions",
+
+    description:
+      "Answers about website development, pricing, process, SEO and digital solutions.",
   },
 };
 
@@ -106,38 +117,49 @@ async function getPublishedFAQs(): Promise<FAQData[]> {
     })
     .lean();
 
-  return faqs.map((faq) => ({
-    _id: String(faq._id),
+  return faqs
+    .filter(
+      (faq) =>
+        typeof faq.question === "string" &&
+        faq.question.trim() &&
+        typeof faq.answer === "string" &&
+        faq.answer.trim()
+    )
+    .map((faq) => ({
+      _id:
+        String(faq._id),
 
-    question:
-      faq.question,
+      question:
+        faq.question.trim(),
 
-    slug:
-      faq.slug,
+      slug:
+        faq.slug,
 
-    answer:
-      faq.answer,
+      answer:
+        faq.answer.trim(),
 
-    category:
-      faq.category?.trim() ||
-      undefined,
+      category:
+        typeof faq.category === "string" &&
+        faq.category.trim()
+          ? faq.category.trim()
+          : undefined,
 
-    relatedService:
-      faq.relatedService
-        ? String(faq.relatedService)
-        : undefined,
+      relatedService:
+        faq.relatedService
+          ? String(faq.relatedService)
+          : undefined,
 
-    relatedProject:
-      faq.relatedProject
-        ? String(faq.relatedProject)
-        : undefined,
+      relatedProject:
+        faq.relatedProject
+          ? String(faq.relatedProject)
+          : undefined,
 
-    featured:
-      faq.featured,
+      featured:
+        Boolean(faq.featured),
 
-    displayOrder:
-      faq.displayOrder,
-  }));
+      displayOrder:
+        faq.displayOrder,
+    }));
 }
 
 /* =========================================================
@@ -183,7 +205,7 @@ function createFAQSchema(
       "Frequently Asked Questions | Aman Digital Solutions",
 
     description:
-      "Answers to common questions about Aman Digital Solutions, its services, pricing and working process.",
+      "Answers to common questions about Aman Digital Solutions, including services, pricing, website development, SEO and support.",
 
     mainEntity,
   };
@@ -208,7 +230,7 @@ function createWebPageSchema() {
       "Frequently Asked Questions | Aman Digital Solutions",
 
     description:
-      "Find answers about website development, digital solutions, pricing, process and support.",
+      "Find answers about website development, e-commerce, custom web applications, pricing, SEO, digital solutions and ongoing support.",
 
     isPartOf: {
       "@id":
@@ -218,6 +240,11 @@ function createWebPageSchema() {
     breadcrumb: {
       "@id":
         `${FAQ_URL}#breadcrumb`,
+    },
+
+    mainEntity: {
+      "@id":
+        `${FAQ_URL}#faqpage`,
     },
   };
 }
@@ -336,7 +363,10 @@ export default async function FAQPage() {
           MAIN CONTENT
       ================================================= */}
 
-      <main>
+      <main
+        id="main-content"
+        className="min-h-screen"
+      >
         <FAQPageClient
           faqs={faqs}
         />

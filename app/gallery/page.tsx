@@ -19,7 +19,7 @@ import {
    CONFIG
 ========================================================= */
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -32,8 +32,7 @@ const GALLERY_URL = `${SITE_URL}/gallery`;
 ========================================================= */
 
 export const metadata: Metadata = {
- title:
-  "Web Design & Digital Work Gallery",
+  title: "Web Design & Digital Work Gallery",
 
   description:
     "Explore website designs, digital experiences and creative work built by Aman Digital Solutions for businesses in Shimla, Himachal Pradesh, India and beyond.",
@@ -53,16 +52,13 @@ export const metadata: Metadata = {
 
     type: "website",
 
-    siteName:
-      "Aman Digital Solutions",
+    siteName: "Aman Digital Solutions",
 
-    locale:
-      "en_IN",
+    locale: "en_IN",
   },
 
   twitter: {
-    card:
-      "summary_large_image",
+    card: "summary_large_image",
 
     title:
       "Website Design & Digital Work Gallery | Aman Digital Solutions",
@@ -94,35 +90,41 @@ async function getPublishedGalleries(): Promise<
 > {
   await connectDB();
 
-  const galleries =
-    await Gallery.find({
-      published: true,
+  const galleries = await Gallery.find({
+    published: true,
+  })
+    .select({
+      title: 1,
+      slug: 1,
+      shortDescription: 1,
+      description: 1,
+      coverImage: 1,
+      media: 1,
+      category: 1,
+      featured: 1,
+      displayOrder: 1,
+      createdAt: 1,
     })
-      .sort({
-        featured: -1,
-        displayOrder: 1,
-        createdAt: -1,
-      })
-      .lean();
+    .sort({
+      featured: -1,
+      displayOrder: 1,
+      createdAt: -1,
+    })
+    .lean();
 
   return galleries.map((gallery) => {
-    const media = [
-      ...(gallery.media || []),
-    ]
+    const media = [...(gallery.media || [])]
       .sort(
         (a, b) =>
-          a.displayOrder -
-          b.displayOrder
+          (a.displayOrder ?? 0) -
+          (b.displayOrder ?? 0)
       )
       .map((item) => ({
-        _id:
-          String(item._id),
+        _id: String(item._id),
 
-        type:
-          item.type,
+        type: item.type,
 
-        url:
-          item.url,
+        url: item.url,
 
         publicId:
           item.publicId ||
@@ -145,18 +147,15 @@ async function getPublishedGalleries(): Promise<
           undefined,
 
         displayOrder:
-          item.displayOrder,
+          item.displayOrder ?? 0,
       }));
 
     return {
-      _id:
-        String(gallery._id),
+      _id: String(gallery._id),
 
-      title:
-        gallery.title,
+      title: gallery.title,
 
-      slug:
-        gallery.slug,
+      slug: gallery.slug,
 
       shortDescription:
         gallery.shortDescription ||
@@ -167,14 +166,13 @@ async function getPublishedGalleries(): Promise<
         undefined,
 
       coverImage:
-        gallery.coverImage
+        gallery.coverImage?.url
           ? {
               url:
                 gallery.coverImage.url,
 
               publicId:
-                gallery.coverImage
-                  .publicId ||
+                gallery.coverImage.publicId ||
                 undefined,
 
               alt:
@@ -185,18 +183,17 @@ async function getPublishedGalleries(): Promise<
 
       media,
 
-      project:
-        undefined,
+      project: undefined,
 
       category:
         gallery.category?.trim() ||
         undefined,
 
       featured:
-        gallery.featured,
+        Boolean(gallery.featured),
 
       displayOrder:
-        gallery.displayOrder,
+        gallery.displayOrder ?? 0,
     };
   });
 }
@@ -230,7 +227,8 @@ export default async function GalleryPage() {
 
       description:
         gallery.shortDescription ||
-        gallery.description,
+        gallery.description ||
+        `Explore ${gallery.title} by Aman Digital Solutions.`,
     }));
 
   const galleryItemList =

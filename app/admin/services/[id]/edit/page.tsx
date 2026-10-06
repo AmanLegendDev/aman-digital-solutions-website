@@ -227,8 +227,6 @@ export default async function EditServicePage({
     seoDescription:
       service.seoDescription ?? "",
 
-    canonicalUrl:
-      service.canonicalUrl ?? "",
 
     ogTitle:
       service.ogTitle ?? "",

@@ -18,6 +18,12 @@ const SITE_URL =
   "https://www.amandigitalsolutions.com";
 
 /* =========================================================
+   REVALIDATION
+========================================================= */
+
+export const revalidate = 3600;
+
+/* =========================================================
    METADATA
 ========================================================= */
 
@@ -26,7 +32,7 @@ export const metadata: Metadata = {
     "Website Development Pricing | Aman Digital Solutions",
 
   description:
-    "Explore transparent pricing for professional websites, e-commerce stores, business systems and digital solutions from Aman Digital Solutions.",
+    "Explore transparent pricing for professional websites, e-commerce stores, business systems and digital solutions from Aman Digital Solutions in Shimla, Himachal Pradesh and beyond.",
 
   alternates: {
     canonical:
@@ -43,7 +49,8 @@ export const metadata: Metadata = {
     url:
       `${SITE_URL}/pricing`,
 
-    type: "website",
+    type:
+      "website",
 
     siteName:
       "Aman Digital Solutions",
@@ -57,10 +64,10 @@ export const metadata: Metadata = {
       "summary_large_image",
 
     title:
-      "Pricing | Aman Digital Solutions",
+      "Website Development Pricing | Aman Digital Solutions",
 
     description:
-      "Transparent pricing for professional websites and digital solutions.",
+      "Transparent pricing for professional websites, e-commerce and digital solutions.",
   },
 
   robots: {
@@ -146,7 +153,7 @@ async function getPricingPlans(): Promise<
       plan.ctaLink,
 
     isFeatured:
-      plan.isFeatured,
+      Boolean(plan.isFeatured),
 
     featuredLabel:
       plan.featuredLabel ||
@@ -241,6 +248,76 @@ function createBreadcrumbSchema() {
 }
 
 /* =========================================================
+   COLLECTION PAGE STRUCTURED DATA
+========================================================= */
+
+function createCollectionPageSchema(
+  plans: PricingPlanCardData[]
+) {
+  const itemListElement = plans.map(
+    (plan, index) => ({
+      "@type":
+        "ListItem",
+
+      position:
+        index + 1,
+
+      name:
+        plan.name,
+
+      url:
+        `${SITE_URL}/pricing#${plan.slug}`,
+    })
+  );
+
+  return {
+    "@context":
+      "https://schema.org",
+
+    "@type":
+      "CollectionPage",
+
+    "@id":
+      `${SITE_URL}/pricing#collection`,
+
+    url:
+      `${SITE_URL}/pricing`,
+
+    name:
+      "Website Development Pricing | Aman Digital Solutions",
+
+    description:
+      "Explore pricing for website development, e-commerce, custom web applications, digital marketing, business automation and website support.",
+
+    isPartOf: {
+      "@id":
+        `${SITE_URL}/#website`,
+    },
+
+    mainEntity: {
+      "@type":
+        "ItemList",
+
+      "@id":
+        `${SITE_URL}/pricing#itemlist`,
+
+      itemListOrder:
+        "https://schema.org/ItemListOrderAscending",
+
+      numberOfItems:
+        plans.length,
+
+      itemListElement,
+    },
+
+    breadcrumb: {
+      "@id":
+        `${SITE_URL}/pricing#breadcrumb`,
+    },
+  };
+}
+
+/* =========================================================
    PAGE
 ========================================================= */
 
@@ -257,6 +334,9 @@ export default async function PricingPage() {
 
   const breadcrumbSchema =
     createBreadcrumbSchema();
+
+  const collectionPageSchema =
+    createCollectionPageSchema(plans);
 
   return (
     <>
@@ -276,6 +356,20 @@ export default async function PricingPage() {
           __html:
             JSON.stringify(
               webPageSchema
+            ),
+        }}
+      />
+
+      {/* =================================================
+          COLLECTION PAGE SCHEMA
+      ================================================= */}
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(
+              collectionPageSchema
             ),
         }}
       />

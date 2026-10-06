@@ -76,7 +76,7 @@ const DEFAULT_VALUES: CreateServiceInput = {
   /* SEO */
   seoTitle: "",
   seoDescription: "",
-  canonicalUrl: "",
+ 
   ogTitle: "",
   ogDescription: "",
   ogImage: undefined,

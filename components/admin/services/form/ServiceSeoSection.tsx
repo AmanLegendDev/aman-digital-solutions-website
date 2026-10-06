@@ -6,7 +6,7 @@ import {
   X,
   Plus,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type {
   FieldErrors,
   UseFormReturn,
@@ -24,16 +24,7 @@ type Props = {
 const inputClass =
   "w-full rounded-xl border border-[#262626] bg-[#090909] px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-neutral-700 focus:border-[#FFC400]/50 focus:ring-1 focus:ring-[#FFC400]/20";
 
-function getSiteUrl(): string {
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL?.trim();
 
-  if (!siteUrl) {
-    return "";
-  }
-
-  return siteUrl.replace(/\/+$/, "");
-}
 
 export default function ServiceSeoSection({
   form,
@@ -45,15 +36,13 @@ export default function ServiceSeoSection({
     setValue,
   } = form;
 
-  const slug = watch("slug") ?? "";
-
+const slug = watch("slug") ?? "";
   const seoTitle = watch("seoTitle") ?? "";
 
   const seoDescription =
     watch("seoDescription") ?? "";
 
-  const canonical =
-    watch("canonicalUrl") ?? "";
+ 
 
   const ogTitle = watch("ogTitle") ?? "";
 
@@ -65,49 +54,7 @@ export default function ServiceSeoSection({
   const [keywordInput, setKeywordInput] =
     useState("");
 
-  /*
-   * --------------------------------------------------
-   * AUTO-GENERATE CANONICAL URL
-   * --------------------------------------------------
-   *
-   * Canonical URL is always derived from the
-   * current service slug.
-   */
 
-  useEffect(() => {
-    if (!slug) {
-      setValue("canonicalUrl", "", {
-        shouldDirty: false,
-        shouldValidate: false,
-      });
-
-      return;
-    }
-
-    /*
-     * Use the configured production URL when available.
-     * Fall back to the current browser origin during
-     * local development.
-     */
-
-    const configuredSiteUrl = getSiteUrl();
-
-    const origin =
-      configuredSiteUrl ||
-      window.location.origin;
-
-    const generatedCanonical =
-      `${origin}/services/${slug}`;
-
-    setValue(
-      "canonicalUrl",
-      generatedCanonical,
-      {
-        shouldDirty: true,
-        shouldValidate: true,
-      }
-    );
-  }, [slug, setValue]);
 
   /*
    * --------------------------------------------------
@@ -373,42 +320,7 @@ export default function ServiceSeoSection({
             )}
           </div>
 
-          {/* CANONICAL */}
-
-          <div className="mt-5">
-            <label
-              htmlFor="canonical-url"
-              className="mb-2 block text-xs font-medium text-neutral-300"
-            >
-              Canonical URL
-
-              <span className="ml-2 rounded-md border border-[#262626] bg-[#0D0D0D] px-2 py-0.5 text-[9px] uppercase tracking-wide text-neutral-600">
-                Auto
-              </span>
-            </label>
-
-            <input
-              id="canonical-url"
-              type="url"
-              {...register("canonicalUrl")}
-              readOnly
-              maxLength={500}
-              placeholder="Generated automatically from the service slug"
-              className={`${inputClass} cursor-not-allowed text-neutral-400`}
-            />
-
-            <p className="mt-2 text-[11px] leading-5 text-neutral-700">
-              Automatically generated from the service
-              slug. This keeps the canonical URL consistent
-              with the public service page.
-            </p>
-
-            {errors.canonicalUrl && (
-              <p className="mt-2 text-xs text-red-400">
-                {errors.canonicalUrl.message}
-              </p>
-            )}
-          </div>
+      
         </div>
 
         {/* DIVIDER */}
@@ -508,10 +420,11 @@ export default function ServiceSeoSection({
                 "Your service SEO title will appear here"}
             </p>
 
-            <p className="truncate text-[11px] text-[#55A55A]">
-              {canonical ||
-                "https://yourdomain.com/services/service-name"}
-            </p>
+           <p className="truncate text-[11px] text-[#55A55A]">
+  {slug
+    ? `https://www.amandigitalsolutions.com/services/${slug}`
+    : "https://www.amandigitalsolutions.com/services/service-name"}
+</p>
 
             <p className="mt-2 line-clamp-2 text-xs leading-5 text-neutral-500">
               {seoDescription ||

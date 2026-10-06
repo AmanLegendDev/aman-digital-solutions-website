@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { connectDB } from "@/lib/db/connect";
 import Gallery from "@/models/Gallery";
+import Project from "@/models/Project";
 
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
@@ -22,7 +24,11 @@ const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.amandigitalsolutions.com";
 
-export const dynamic = "force-dynamic";
+/* =========================================================
+   CACHE
+========================================================= */
+
+export const revalidate = 3600;
 
 /* =========================================================
    PARAMS
@@ -114,7 +120,13 @@ async function getGalleryBySlug(
   const gallery = await Gallery.findOne({
     slug: slug.toLowerCase(),
     published: true,
-  }).lean();
+  })
+    .populate({
+      path: "project",
+      model: Project,
+      select: "_id title slug",
+    })
+    .lean();
 
   if (!gallery) {
     return null;
@@ -172,13 +184,13 @@ export async function generateMetadata({
 
   /* -------------------------------------------------------
      CANONICAL
+
+     Always generated from the live site architecture.
+     Do not trust DB canonical values.
   ------------------------------------------------------- */
 
   const canonical =
-    gallery.canonicalUrl &&
-    !gallery.canonicalUrl.includes("localhost")
-      ? gallery.canonicalUrl
-      : `${SITE_URL}/gallery/${gallery.slug}`;
+    `${SITE_URL}/gallery/${gallery.slug}`;
 
   /* -------------------------------------------------------
      OG
@@ -247,10 +259,13 @@ export async function generateMetadata({
     },
 
     twitter: {
-      card: "summary_large_image",
+      card:
+        "summary_large_image",
 
       title: ogTitle,
-      description: ogDescription,
+
+      description:
+        ogDescription,
 
       ...(ogImage
         ? {
@@ -347,8 +362,8 @@ export default async function GallerySlugPage({
   ]
     .sort(
       (a, b) =>
-        a.displayOrder -
-        b.displayOrder
+        (a.displayOrder ?? 0) -
+        (b.displayOrder ?? 0)
     )
     .map((item) => ({
       _id: String(item._id),
@@ -378,7 +393,7 @@ export default async function GallerySlugPage({
         undefined,
 
       displayOrder:
-        item.displayOrder,
+        item.displayOrder ?? 0,
     }));
 
   /* =======================================================
@@ -431,8 +446,7 @@ export default async function GallerySlugPage({
               gallery.coverImage.url,
 
             publicId:
-              gallery.coverImage
-                .publicId ||
+              gallery.coverImage.publicId ||
               undefined,
 
             alt:
@@ -659,10 +673,12 @@ export default async function GallerySlugPage({
             name: "Home",
             url: "/",
           },
+
           {
             name: "Gallery",
             url: "/gallery",
           },
+
           {
             name: gallery.title,
             url:

@@ -18,12 +18,23 @@ import PrivacyFAQSection from "@/components/PrivacyPage/PrivacyFAQSection";
    SITE CONFIG
 ========================================================= */
 
-const SITE_URL =
+const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ||
-  "https://www.amandigitalsolutions.com";
+  "https://www.amandigitalsolutions.com"
+).replace(/\/$/, "");
+
+const SITE_NAME =
+  "Aman Digital Solutions";
 
 const PRIVACY_URL =
   `${SITE_URL}/privacy`;
+
+/*
+ * Privacy content is not expected to change frequently.
+ * Revalidate the page hourly while keeping it statically
+ * cacheable between updates.
+ */
+export const revalidate = 3600;
 
 /* =========================================================
    METADATA
@@ -41,37 +52,6 @@ export const metadata: Metadata = {
       PRIVACY_URL,
   },
 
-  openGraph: {
-    title:
-      "Privacy Policy | Aman Digital Solutions",
-
-    description:
-      "Learn how Aman Digital Solutions collects, uses and protects personal information.",
-
-    url:
-      PRIVACY_URL,
-
-    type:
-      "website",
-
-    siteName:
-      "Aman Digital Solutions",
-
-    locale:
-      "en_IN",
-  },
-
-  twitter: {
-    card:
-      "summary_large_image",
-
-    title:
-      "Privacy Policy | Aman Digital Solutions",
-
-    description:
-      "Learn how Aman Digital Solutions collects, uses and protects personal information.",
-  },
-
   robots: {
     index: true,
     follow: true,
@@ -86,6 +66,37 @@ export const metadata: Metadata = {
       "max-video-preview":
         -1,
     },
+  },
+
+  openGraph: {
+    title:
+      "Privacy Policy | Aman Digital Solutions",
+
+    description:
+      "Learn how Aman Digital Solutions collects, uses and protects personal information.",
+
+    url:
+      PRIVACY_URL,
+
+    type:
+      "website",
+
+    siteName:
+      SITE_NAME,
+
+    locale:
+      "en_IN",
+  },
+
+  twitter: {
+    card:
+      "summary_large_image",
+
+    title:
+      "Privacy Policy | Aman Digital Solutions",
+
+    description:
+      "Learn how Aman Digital Solutions collects, uses and protects personal information.",
   },
 };
 
@@ -225,10 +236,13 @@ export default function PrivacyPage() {
       </nav>
 
       {/* =================================================
-          PRIVACY PAGE
+          PRIVACY CONTENT
       ================================================= */}
 
-      <main className="min-h-screen bg-[#080808] text-white">
+      <main
+        id="main-content"
+        className="min-h-screen bg-[#080808] text-white"
+      >
         <PrivacyHero />
 
         <PrivacyOverview />
@@ -244,6 +258,7 @@ export default function PrivacyPage() {
         <RightsAndCookies />
 
         <PrivacyContact />
+
         <PrivacyFAQSection />
       </main>
 

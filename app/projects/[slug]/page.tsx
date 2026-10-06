@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+
+export const revalidate = 3600;
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Types } from "mongoose";
@@ -6,16 +9,16 @@ import { Types } from "mongoose";
 import { connectDB } from "@/lib/db/connect";
 import Project from "@/models/Project";
 import Service from "@/models/Service";
+import FAQ from "@/models/FAQ";
 
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
-
 import ProjectDetailPage, {
   type ProjectDetailData,
 } from "@/components/projects/detail/ProjectDetailPage";
 
 import Navbar from "@/components/agency/navbar/Navbar";
 import Footer from "@/components/agency/footer/Footer";
-import FAQ from "@/models/FAQ";
+
 import { getWebPageSchema } from "@/lib/seo/schema";
 
 /* =========================================================
@@ -25,8 +28,6 @@ import { getWebPageSchema } from "@/lib/seo/schema";
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.amandigitalsolutions.com";
-
-export const dynamic = "force-dynamic";
 
 /* =========================================================
    PARAMS
@@ -56,16 +57,21 @@ type PopulatedProjectService = {
 
 type PopulatedProject = {
   _id: unknown;
+
   title: string;
+
   slug: string;
 
   client?: string;
+
   industry?: string;
 
   shortDescription: string;
+
   overview: string;
 
   challenge?: string;
+
   solution?: string;
 
   features?: {
@@ -90,6 +96,7 @@ type PopulatedProject = {
   }[];
 
   liveUrl?: string;
+
   githubUrl?: string;
 
   services?: PopulatedProjectService[];
@@ -101,14 +108,19 @@ type PopulatedProject = {
   }[];
 
   featured: boolean;
+
   published: boolean;
+
   displayOrder: number;
 
   seoTitle?: string;
+
   seoDescription?: string;
+
   canonicalUrl?: string;
 
   ogTitle?: string;
+
   ogDescription?: string;
 
   ogImage?: {
@@ -127,18 +139,17 @@ async function getProjectBySlug(
 ): Promise<PopulatedProject | null> {
   await connectDB();
 
-  const project =
-    await Project.findOne({
-      slug: slug.toLowerCase(),
-      published: true,
+  const project = await Project.findOne({
+    slug: slug.toLowerCase(),
+    published: true,
+  })
+    .populate({
+      path: "services",
+      model: Service,
+      select:
+        "_id title slug shortDescription category",
     })
-      .populate({
-        path: "services",
-        model: Service,
-        select:
-          "_id title slug shortDescription category",
-      })
-      .lean();
+    .lean();
 
   if (!project) {
     return null;
@@ -243,14 +254,11 @@ export async function generateMetadata({
       siteName:
         "Aman Digital Solutions",
 
-      title:
-        ogTitle,
+      title: ogTitle,
 
-      description:
-        ogDescription,
+      description: ogDescription,
 
-      url:
-        canonical,
+      url: canonical,
 
       ...(ogImage
         ? {
@@ -265,20 +273,15 @@ export async function generateMetadata({
     },
 
     twitter: {
-      card:
-        "summary_large_image",
+      card: "summary_large_image",
 
-      title:
-        ogTitle,
+      title: ogTitle,
 
-      description:
-        ogDescription,
+      description: ogDescription,
 
       ...(ogImage
         ? {
-            images: [
-              ogImage,
-            ],
+            images: [ogImage],
           }
         : {}),
     },
@@ -290,15 +293,10 @@ export async function generateMetadata({
       googleBot: {
         index: true,
         follow: true,
-
         "max-image-preview":
           "large",
-
-        "max-snippet":
-          -1,
-
-        "max-video-preview":
-          -1,
+        "max-snippet": -1,
+        "max-video-preview": -1,
       },
     },
   };
@@ -325,25 +323,32 @@ export default async function ProjectPage({
   }
 
   /* =======================================================
-   RELATED FAQS
-======================================================= */
+     RELATED FAQS
+  ======================================================== */
 
-const faqDocuments = await FAQ.find({
-  relatedProject: project._id,
-  published: true,
-})
-  .select("_id question slug answer displayOrder")
-  .sort({
-    displayOrder: 1,
-  })
-  .lean();
+  const faqDocuments =
+    await FAQ.find({
+      relatedProject: project._id,
+      published: true,
+    })
+      .select(
+        "_id question slug answer displayOrder"
+      )
+      .sort({
+        displayOrder: 1,
+      })
+      .lean();
 
-const relatedFaqs = faqDocuments.map((faq) => ({
-  id: String(faq._id),
-  question: faq.question,
-  slug: faq.slug,
-  answer: faq.answer,
-}));
+  const relatedFaqs =
+    faqDocuments.map((faq) => ({
+      id: String(faq._id),
+
+      question: faq.question,
+
+      slug: faq.slug,
+
+      answer: faq.answer,
+    }));
 
   /* =======================================================
      URL + SEO VALUES
@@ -429,7 +434,8 @@ const relatedFaqs = faqDocuments.map((faq) => ({
               project.coverImage.url,
 
             publicId:
-              project.coverImage.publicId ||
+              project.coverImage
+                .publicId ||
               undefined,
 
             alt:
@@ -531,6 +537,14 @@ const relatedFaqs = faqDocuments.map((faq) => ({
     url:
       projectUrl,
 
+    mainEntityOfPage: {
+      "@type":
+        "WebPage",
+
+      "@id":
+        `${projectUrl}#webpage`,
+    },
+
     creator: {
       "@id":
         `${SITE_URL}/#organization`,
@@ -543,7 +557,7 @@ const relatedFaqs = faqDocuments.map((faq) => ({
 
     ...(project.client
       ? {
-          client: {
+          contributor: {
             "@type":
               "Organization",
 
@@ -586,30 +600,41 @@ const relatedFaqs = faqDocuments.map((faq) => ({
   };
 
   /* =======================================================
-   FAQ PAGE SCHEMA
-======================================================= */
+     FAQ PAGE SCHEMA
+  ======================================================== */
 
-const faqSchema =
-  relatedFaqs.length > 0
-    ? {
-        "@context": "https://schema.org",
+  const faqSchema =
+    relatedFaqs.length > 0
+      ? {
+          "@context":
+            "https://schema.org",
 
-        "@type": "FAQPage",
+          "@type":
+            "FAQPage",
 
-        "@id": `${projectUrl}#faq`,
+          "@id":
+            `${projectUrl}#faq`,
 
-        mainEntity: relatedFaqs.map((faq) => ({
-          "@type": "Question",
+          mainEntity:
+            relatedFaqs.map(
+              (faq) => ({
+                "@type":
+                  "Question",
 
-          name: faq.question,
+                name:
+                  faq.question,
 
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: faq.answer,
-          },
-        })),
-      }
-    : null;
+                acceptedAnswer: {
+                  "@type":
+                    "Answer",
+
+                  text:
+                    faq.answer,
+                },
+              })
+            ),
+        }
+      : null;
 
   /* =======================================================
      WEBPAGE SCHEMA
@@ -646,17 +671,13 @@ const faqSchema =
       <BreadcrumbSchema
         items={[
           {
-            name:
-              "Home",
-            url:
-              "/",
+            name: "Home",
+            url: "/",
           },
 
           {
-            name:
-              "Projects",
-            url:
-              "/projects",
+            name: "Projects",
+            url: "/projects",
           },
 
           {
@@ -683,21 +704,21 @@ const faqSchema =
         }}
       />
 
+      {/* =================================================
+          FAQ PAGE SCHEMA
+      ================================================= */}
 
-{/* =================================================
-    FAQ PAGE SCHEMA
-================================================= */}
-
-{faqSchema && (
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{
-      __html: JSON.stringify(faqSchema),
-    }}
-  />
-)}
-
-      
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html:
+              JSON.stringify(
+                faqSchema
+              ),
+          }}
+        />
+      )}
 
       {/* =================================================
           WEBPAGE SCHEMA

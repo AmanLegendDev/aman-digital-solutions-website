@@ -15,12 +15,22 @@ import ContactFAQSection from "@/components/contact/ContactFAQSection";
    SITE CONFIG
 ========================================================= */
 
-const SITE_URL =
+const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ||
-  "https://www.amandigitalsolutions.com";
+  "https://www.amandigitalsolutions.com"
+).replace(/\/$/, "");
+
+const SITE_NAME =
+  "Aman Digital Solutions";
 
 const CONTACT_URL =
   `${SITE_URL}/contact`;
+
+/*
+ * Contact page content is relatively stable.
+ * Revalidate periodically without forcing dynamic rendering.
+ */
+export const revalidate = 3600;
 
 /* =========================================================
    METADATA
@@ -38,37 +48,6 @@ export const metadata: Metadata = {
       CONTACT_URL,
   },
 
-  openGraph: {
-    title:
-      "Contact Aman Digital Solutions | Web Development in Shimla",
-
-    description:
-      "Start a conversation about your next website, web application, e-commerce store or digital project with Aman Digital Solutions.",
-
-    url:
-      CONTACT_URL,
-
-    type:
-      "website",
-
-    siteName:
-      "Aman Digital Solutions",
-
-    locale:
-      "en_IN",
-  },
-
-  twitter: {
-    card:
-      "summary_large_image",
-
-    title:
-      "Contact Aman Digital Solutions | Web Development in Shimla",
-
-    description:
-      "Start a conversation about your next website, web application, e-commerce or digital project.",
-  },
-
   robots: {
     index: true,
     follow: true,
@@ -83,6 +62,37 @@ export const metadata: Metadata = {
       "max-video-preview":
         -1,
     },
+  },
+
+  openGraph: {
+    title:
+      "Contact Aman Digital Solutions | Web Development in Shimla",
+
+    description:
+      "Start a conversation about your next website, web application, e-commerce store or digital project with Aman Digital Solutions.",
+
+    url:
+      CONTACT_URL,
+
+    type:
+      "website",
+
+    siteName:
+      SITE_NAME,
+
+    locale:
+      "en_IN",
+  },
+
+  twitter: {
+    card:
+      "summary_large_image",
+
+    title:
+      "Contact Aman Digital Solutions | Web Development in Shimla",
+
+    description:
+      "Start a conversation about your next website, web application, e-commerce or digital project.",
   },
 };
 
@@ -119,6 +129,42 @@ const contactPageSchema = {
   mainEntity: {
     "@id":
       `${SITE_URL}/#organization`,
+  },
+};
+
+/* =========================================================
+   WEB PAGE STRUCTURED DATA
+========================================================= */
+
+const webPageSchema = {
+  "@type":
+    "WebPage",
+
+  "@id":
+    `${CONTACT_URL}#webpage`,
+
+  url:
+    CONTACT_URL,
+
+  name:
+    "Contact Aman Digital Solutions",
+
+  description:
+    "Contact Aman Digital Solutions to discuss websites, e-commerce, custom web applications and digital solutions.",
+
+  isPartOf: {
+    "@id":
+      `${SITE_URL}/#website`,
+  },
+
+  breadcrumb: {
+    "@id":
+      `${CONTACT_URL}#breadcrumb`,
+  },
+
+  mainEntity: {
+    "@id":
+      `${CONTACT_URL}#contactpage`,
   },
 };
 
@@ -174,6 +220,7 @@ const structuredData = {
 
   "@graph": [
     contactPageSchema,
+    webPageSchema,
     breadcrumbSchema,
   ],
 };
@@ -230,7 +277,10 @@ export default function ContactPage() {
           CONTACT PAGE
       ================================================= */}
 
-      <main className="min-h-screen bg-[#080808] text-white">
+      <main
+        id="main-content"
+        className="min-h-screen bg-[#080808] text-white"
+      >
         {/* 01 — INTRO */}
         <ContactHero />
 
@@ -242,10 +292,11 @@ export default function ContactPage() {
 
         {/* 04 — WHAT HAPPENS NEXT */}
         <ContactExpectations />
-        {/* 05 — CONTACT FAQ */}
-<ContactFAQSection />
 
-        {/* 05 — DIRECT CONVERSATION */}
+        {/* 05 — CONTACT FAQ */}
+        <ContactFAQSection />
+
+        {/* 06 — DIRECT CONVERSATION */}
         <ContactCTA />
       </main>
 

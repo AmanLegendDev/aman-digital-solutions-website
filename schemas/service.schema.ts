@@ -341,27 +341,7 @@ export const serviceSchema = z.object({
     )
     .optional(),
 
- canonicalUrl: z.preprocess(
-  (value) => {
-    if (
-      typeof value === "string" &&
-      value.trim() === ""
-    ) {
-      return undefined;
-    }
 
-    return value;
-  },
-  z
-    .string()
-    .trim()
-    .url("Invalid canonical URL.")
-    .max(
-      500,
-      "Canonical URL is too long."
-    )
-    .optional()
-),
 
   ogTitle: z
     .string()

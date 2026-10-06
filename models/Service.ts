@@ -70,7 +70,7 @@ export interface IService extends Document {
 
   seoTitle?: string;
   seoDescription?: string;
-  canonicalUrl?: string;
+  
 
   ogTitle?: string;
   ogDescription?: string;
@@ -344,11 +344,7 @@ projectIds: {
       maxlength: 160,
     },
 
-    canonicalUrl: {
-      type: String,
-      trim: true,
-      maxlength: 500,
-    },
+   
 
     ogTitle: {
       type: String,

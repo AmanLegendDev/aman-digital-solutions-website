@@ -33,7 +33,7 @@ export const metadata: Metadata = {
       "Web Development & Digital Solutions Services | Aman Digital Solutions",
 
     description:
-      "Explore modern web development, e-commerce, SEO, digital marketing and business solutions from Aman Digital Solutions.",
+      "Explore modern web development, e-commerce, SEO, Web applications and business solutions from Aman Digital Solutions.",
 
    url: `${SITE_URL}/services`,
 

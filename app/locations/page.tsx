@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
-
 import { connectDB } from "@/lib/db/connect";
 import Location from "@/models/Location";
 
@@ -30,6 +28,12 @@ const LOCATIONS_URL =
   `${SITE_URL}/locations`;
 
 /* =========================================================
+   REVALIDATION
+========================================================= */
+
+export const revalidate = 3600;
+
+/* =========================================================
    METADATA
 ========================================================= */
 
@@ -38,7 +42,7 @@ export const metadata: Metadata = {
     "Locations | Aman Digital Solutions",
 
   description:
-    "Explore the locations where Aman Digital Solutions provides web development, digital solutions and business-focused websites, serving businesses in Shimla, Himachal Pradesh, across India and beyond.",
+    "Explore the locations served by Aman Digital Solutions for website development, e-commerce, SEO, digital marketing and custom digital solutions across Shimla, Himachal Pradesh and beyond.",
 
   alternates: {
     canonical:
@@ -50,7 +54,7 @@ export const metadata: Metadata = {
       "Locations | Aman Digital Solutions",
 
     description:
-      "Explore the locations served by Aman Digital Solutions for web development, digital solutions and business-focused websites.",
+      "Explore the locations served by Aman Digital Solutions for website development and digital solutions.",
 
     url:
       LOCATIONS_URL,
@@ -73,7 +77,7 @@ export const metadata: Metadata = {
       "Locations | Aman Digital Solutions",
 
     description:
-      "Explore the locations served by Aman Digital Solutions for web development and digital solutions.",
+      "Explore the locations served by Aman Digital Solutions for website development and digital solutions.",
   },
 
   robots: {
@@ -133,21 +137,24 @@ type LocationData = {
    FETCH LOCATIONS
 ========================================================= */
 
-async function getLocations(): Promise<LocationData[]> {
+async function getLocations(): Promise<
+  LocationData[]
+> {
   await connectDB();
 
-  const locations = await Location.find({
-    published: true,
-  })
-    .select(
-      "_id name slug shortDescription description image address city state country postalCode latitude longitude phone email mapUrl featured published displayOrder"
-    )
-    .sort({
-      featured: -1,
-      displayOrder: 1,
-      createdAt: -1,
+  const locations =
+    await Location.find({
+      published: true,
     })
-    .lean();
+      .select(
+        "_id name slug shortDescription description image address city state country postalCode latitude longitude phone email mapUrl featured published displayOrder"
+      )
+      .sort({
+        featured: -1,
+        displayOrder: 1,
+        createdAt: -1,
+      })
+      .lean();
 
   return locations.map((location) => ({
     _id:
@@ -238,6 +245,10 @@ export default async function LocationsPage() {
   const locations =
     await getLocations();
 
+  /* =======================================================
+     FEATURED LOCATIONS
+  ======================================================== */
+
   const featuredLocations =
     locations.filter(
       (location) =>
@@ -249,23 +260,25 @@ export default async function LocationsPage() {
   ======================================================== */
 
   const locationItems =
-    locations.map((location) => ({
-      name:
-        location.name,
+    locations.map(
+      (location) => ({
+        name:
+          location.name,
 
-      url:
-        `${LOCATIONS_URL}/${location.slug}`,
+        url:
+          `${LOCATIONS_URL}/${location.slug}`,
 
-      ...(location.image?.url
-        ? {
-            image:
-              location.image.url,
-          }
-        : {}),
+        ...(location.image?.url
+          ? {
+              image:
+                location.image.url,
+            }
+          : {}),
 
-      description:
-        location.shortDescription,
-    }));
+        description:
+          location.shortDescription,
+      })
+    );
 
   const locationsItemList =
     getItemListSchema({
@@ -295,7 +308,7 @@ export default async function LocationsPage() {
         "Locations | Aman Digital Solutions",
 
       description:
-        "Explore the locations where Aman Digital Solutions provides web development, digital solutions and business-focused websites, serving businesses in Shimla, Himachal Pradesh, across India and beyond.",
+        "Explore the locations served by Aman Digital Solutions for website development, e-commerce, SEO, digital marketing and custom digital solutions across Shimla, Himachal Pradesh and beyond.",
 
       itemListId:
         `${LOCATIONS_URL}#itemlist`,
@@ -321,11 +334,15 @@ export default async function LocationsPage() {
 
   return (
     <>
+      {/* =================================================
+          NAVBAR
+      ================================================= */}
+
       <Navbar />
 
-      {/* ===================================================
+      {/* =================================================
           STRUCTURED DATA
-      =================================================== */}
+      ================================================= */}
 
       <script
         type="application/ld+json"
@@ -337,9 +354,9 @@ export default async function LocationsPage() {
         }}
       />
 
-      {/* ===================================================
+      {/* =================================================
           BREADCRUMB SCHEMA
-      =================================================== */}
+      ================================================= */}
 
       <BreadcrumbSchema
         items={[
@@ -361,9 +378,9 @@ export default async function LocationsPage() {
         ]}
       />
 
-      {/* ===================================================
+      {/* =================================================
           PAGE CONTENT
-      =================================================== */}
+      ================================================= */}
 
       <main>
         <LocationsHero
@@ -382,6 +399,10 @@ export default async function LocationsPage() {
           }
         />
       </main>
+
+      {/* =================================================
+          FOOTER
+      ================================================= */}
 
       <Footer />
     </>

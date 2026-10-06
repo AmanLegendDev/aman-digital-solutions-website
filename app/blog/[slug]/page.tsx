@@ -19,11 +19,20 @@ import { getWebPageSchema } from "@/lib/seo/schema";
    SITE CONFIG
 ========================================================= */
 
-const SITE_URL =
+const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ||
-  "https://www.amandigitalsolutions.com";
+  "https://www.amandigitalsolutions.com"
+).replace(/\/$/, "");
 
-const SITE_NAME = "Aman Digital Solutions";
+const SITE_NAME =
+  "Aman Digital Solutions";
+
+/*
+ * Blog content is managed through the CMS.
+ * Hourly revalidation is sufficient and avoids
+ * force-dynamic rendering on every request.
+ */
+export const revalidate = 3600;
 
 /* =========================================================
    PARAMS
@@ -57,7 +66,8 @@ export async function generateMetadata({
 }: BlogPageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  const blog = await getBlogBySlug(slug);
+  const blog =
+    await getBlogBySlug(slug);
 
   /* -------------------------------------------------------
      NOT FOUND
@@ -65,7 +75,8 @@ export async function generateMetadata({
 
   if (!blog) {
     return {
-      title: "Article Not Found | Aman Digital Solutions",
+      title:
+        "Article Not Found | Aman Digital Solutions",
 
       description:
         "The requested article could not be found.",
@@ -131,7 +142,8 @@ export async function generateMetadata({
 
       locale: "en_IN",
 
-      siteName: SITE_NAME,
+      siteName:
+        SITE_NAME,
 
       url: canonical,
 
@@ -155,20 +167,24 @@ export async function generateMetadata({
 
       ...(blog.author
         ? {
-            authors: [blog.author],
+            authors: [
+              blog.author,
+            ],
           }
         : {}),
 
       ...(blog.category
         ? {
-            section: blog.category,
+            section:
+              blog.category,
           }
         : {}),
 
       ...(Array.isArray(blog.tags) &&
       blog.tags.length
         ? {
-            tags: blog.tags,
+            tags:
+              blog.tags,
           }
         : {}),
 
@@ -176,8 +192,11 @@ export async function generateMetadata({
         ? {
             images: [
               {
-                url: ogImage,
-                alt: ogImageAlt,
+                url:
+                  ogImage,
+
+                alt:
+                  ogImageAlt,
               },
             ],
           }
@@ -185,15 +204,20 @@ export async function generateMetadata({
     },
 
     twitter: {
-      card: "summary_large_image",
+      card:
+        "summary_large_image",
 
-      title: ogTitle,
+      title:
+        ogTitle,
 
-      description: ogDescription,
+      description:
+        ogDescription,
 
       ...(ogImage
         ? {
-            images: [ogImage],
+            images: [
+              ogImage,
+            ],
           }
         : {}),
     },
@@ -205,7 +229,8 @@ export async function generateMetadata({
       googleBot: {
         index: true,
         follow: true,
-        "max-image-preview": "large",
+        "max-image-preview":
+          "large",
         "max-snippet": -1,
         "max-video-preview": -1,
       },
@@ -222,7 +247,8 @@ export default async function BlogPage({
 }: BlogPageProps) {
   const { slug } = await params;
 
-  const blog = await getBlogBySlug(slug);
+  const blog =
+    await getBlogBySlug(slug);
 
   /* =======================================================
      NOT FOUND
@@ -245,7 +271,7 @@ export default async function BlogPage({
 
   const seoTitle =
     blog.seoTitle?.trim() ||
-    `${blog.title} | ${SITE_NAME}`;
+    blog.title;
 
   const seoDescription =
     blog.seoDescription?.trim() ||
@@ -269,40 +295,68 @@ export default async function BlogPage({
   ======================================================== */
 
   const articleSchema = {
-    "@context": "https://schema.org",
+    "@type":
+      "BlogPosting",
 
-    "@type": "BlogPosting",
+    "@id":
+      `${blogUrl}#article`,
 
-    "@id": `${blogUrl}#article`,
+    headline:
+      blog.title,
 
-    headline: blog.title,
+    description:
+      seoDescription,
 
-    description: seoDescription,
-
-    url: blogUrl,
+    url:
+      blogUrl,
 
     mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": `${blogUrl}#webpage`,
+      "@type":
+        "WebPage",
+
+      "@id":
+        `${blogUrl}#webpage`,
     },
 
-    author: {
-      "@type": "Person",
-      name: blog.author,
-    },
+    ...(blog.author
+      ? {
+          author: {
+            "@type":
+              "Organization",
+
+            name:
+              blog.author,
+
+            ...(blog.author ===
+            SITE_NAME
+              ? {
+                  url:
+                    SITE_URL,
+                }
+              : {}),
+          },
+        }
+      : {}),
 
     publisher: {
-      "@type": "Organization",
+      "@type":
+        "Organization",
 
-      "@id": `${SITE_URL}/#organization`,
+      "@id":
+        `${SITE_URL}/#organization`,
 
-      name: SITE_NAME,
+      name:
+        SITE_NAME,
 
-      url: SITE_URL,
+      url:
+        SITE_URL,
 
       logo: {
-        "@type": "ImageObject",
-        url: `${SITE_URL}/icon.png`,
+        "@type":
+          "ImageObject",
+
+        url:
+          `${SITE_URL}/icon.png`,
       },
     },
 
@@ -318,16 +372,24 @@ export default async function BlogPage({
           dateModified:
             blog.updatedAt.toISOString(),
         }
+      : blog.publishedAt
+      ? {
+          dateModified:
+            blog.publishedAt.toISOString(),
+        }
       : {}),
 
     ...(primaryImage
       ? {
           image: {
-            "@type": "ImageObject",
+            "@type":
+              "ImageObject",
 
-            url: primaryImage,
+            url:
+              primaryImage,
 
-            caption: primaryImageAlt,
+            caption:
+              primaryImageAlt,
           },
         }
       : {}),
@@ -348,82 +410,20 @@ export default async function BlogPage({
       : {}),
   };
 
-
-  /* =======================================================
-   FAQ SCHEMA
-======================================================= */
-
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "Is a 5-page website enough for a small business?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "It can be. A simple business with one main service, one location and a straightforward customer journey may be able to communicate everything important with five strong pages. The key is whether those pages answer the customer's questions—not whether the website reaches a specific number.",
-      },
-    },
-
-    {
-      "@type": "Question",
-      name: "Should every service have its own page?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Not always. If a service is important enough to deserve its own explanation, has distinct customer intent, or targets a specific search query, a dedicated service page can make sense. Smaller businesses with only a few closely related services may be better served by one strong services page.",
-      },
-    },
-
-    {
-      "@type": "Question",
-      name: "Do local businesses need location pages?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "A location page can be useful when a business genuinely serves multiple distinct areas and each location has enough unique information to provide value. Creating large numbers of near-duplicate location pages only to target keywords is not a good website structure.",
-      },
-    },
-
-    {
-      "@type": "Question",
-      name: "Does having more pages improve SEO?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Not automatically. More pages can create more opportunities to address relevant customer searches, but each page should have a clear purpose and useful, original information. A smaller website with strong, relevant pages can perform better than a larger website filled with thin or repetitive content.",
-      },
-    },
-
-    {
-      "@type": "Question",
-      name: "Should a small business website have a blog?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "A blog can be useful when the business has helpful topics to publish and can maintain useful content over time. It can support organic visibility, answer customer questions and create opportunities for internal linking, but a blog is not mandatory for every small business website.",
-      },
-    },
-
-    {
-      "@type": "Question",
-      name: "What pages should a small business website have?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Most small business websites should start with a homepage, about page, services or products page, contact page and relevant trust or proof content. Depending on the business, additional pages such as individual service pages, location pages, FAQs, a blog, or case studies may also be useful.",
-      },
-    },
-  ],
-};
-
   /* =======================================================
      WEBPAGE SCHEMA
   ======================================================== */
 
   const webPageSchema =
     getWebPageSchema({
-      url: blogUrl,
+      url:
+        blogUrl,
 
-      name: seoTitle,
+      name:
+        seoTitle,
 
-      description: seoDescription,
+      description:
+        seoDescription,
     });
 
   /* =======================================================
@@ -441,41 +441,47 @@ const faqSchema = {
       <BreadcrumbSchema
         items={[
           {
-            name: "Home",
-            url: "/",
+            name:
+              "Home",
+
+            url:
+              "/",
           },
 
           {
-            name: "Blog",
-            url: "/blog",
+            name:
+              "Blog",
+
+            url:
+              "/blog",
           },
 
           {
-            name: blog.title,
-            url: `/blog/${blog.slug}`,
+            name:
+              blog.title,
+
+            url:
+              `/blog/${blog.slug}`,
           },
         ]}
       />
 
       {/* ===================================================
-          ARTICLE SCHEMA
+          BLOG ARTICLE SCHEMA
       =================================================== */}
 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html:
-            JSON.stringify(articleSchema),
+            JSON.stringify({
+              "@context":
+                "https://schema.org",
+
+              ...articleSchema,
+            }),
         }}
       />
-
-
-      <script
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{
-    __html: JSON.stringify(faqSchema),
-  }}
-/>
 
       {/* ===================================================
           WEBPAGE SCHEMA
@@ -485,7 +491,9 @@ const faqSchema = {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html:
-            JSON.stringify(webPageSchema),
+            JSON.stringify(
+              webPageSchema
+            ),
         }}
       />
 
@@ -510,7 +518,9 @@ const faqSchema = {
             </Link>
           </li>
 
-          <li aria-current="page">
+          <li
+            aria-current="page"
+          >
             {blog.title}
           </li>
         </ol>
@@ -522,53 +532,63 @@ const faqSchema = {
 
       <main>
         <BlogDetailPage
-          blog={{
-            title: blog.title,
+          blog={
+            {
+              title:
+                blog.title,
 
-            slug: blog.slug,
+              slug:
+                blog.slug,
 
-            excerpt: blog.excerpt,
+              excerpt:
+                blog.excerpt,
 
-            content: blog.content,
+              content:
+                blog.content,
 
-            coverImage:
-              blog.coverImage
-                ? {
-                    url:
-                      blog.coverImage.url,
+              coverImage:
+                blog.coverImage
+                  ? {
+                      url:
+                        blog.coverImage.url,
 
-                    publicId:
-                      blog.coverImage.publicId ||
-                      undefined,
+                      publicId:
+                        blog.coverImage
+                          .publicId ||
+                        undefined,
 
-                    alt:
-                      blog.coverImage.alt ||
-                      blog.title,
-                  }
-                : undefined,
+                      alt:
+                        blog.coverImage
+                          .alt ||
+                        blog.title,
+                    }
+                  : undefined,
 
-            author:
-              blog.author,
+              author:
+                blog.author,
 
-            category:
-              blog.category,
+              category:
+                blog.category,
 
-            tags:
-              Array.isArray(blog.tags)
-                ? blog.tags
-                : [],
+              tags:
+                Array.isArray(
+                  blog.tags
+                )
+                  ? blog.tags
+                  : [],
 
-            readingTime:
-              blog.readingTime !==
-              undefined
-                ? blog.readingTime
-                : undefined,
+              readingTime:
+                blog.readingTime !==
+                undefined
+                  ? blog.readingTime
+                  : undefined,
 
-            publishedAt:
-              blog.publishedAt
-                ? blog.publishedAt.toISOString()
-                : undefined,
-          }}
+              publishedAt:
+                blog.publishedAt
+                  ? blog.publishedAt.toISOString()
+                  : undefined,
+            } satisfies BlogDetailData
+          }
         />
       </main>
 

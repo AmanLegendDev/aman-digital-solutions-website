@@ -8,81 +8,149 @@ import Footer from "@/components/agency/footer/Footer";
 
 import StartProjectClient from "@/components/start-project/StartProjectClient";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  "https://www.amandigitalsolutions.com";
+/* =========================================================
+   SITE CONFIG
+========================================================= */
 
-/**
- * Services used in the project form do not change frequently.
- * Cache the generated page and revalidate it every hour.
+const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "https://www.amandigitalsolutions.com"
+).replace(/\/$/, "");
+
+const PAGE_URL =
+  `${SITE_URL}/start-a-project`;
+
+/*
+ * Services used by the project form do not change frequently.
+ * Revalidate the generated page every hour.
  */
 export const revalidate = 3600;
 
+/* =========================================================
+   METADATA
+========================================================= */
+
 export const metadata: Metadata = {
-  title: "Start a Web Project With",
+  title:
+    "Start a Project | Aman Digital Solutions",
 
   description:
-    "Ready to build your website or digital solution? Tell Aman Digital Solutions about your project and get a clear next step for web development, e-commerce, or custom digital solutions.",
+    "Tell Aman Digital Solutions about your website or digital project and get a clear next step for web development, e-commerce, custom web applications and digital solutions.",
 
   alternates: {
-    canonical: `${SITE_URL}/start-a-project`,
-  },
-
-  openGraph: {
-    title: "Start a Project | Aman Digital Solutions",
-
-    description:
-      "Tell us what you're building and let's discuss the right digital solution for your business.",
-
-    url: `${SITE_URL}/start-a-project`,
-
-    type: "website",
-
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Start a Project — Aman Digital Solutions",
-      },
-    ],
-  },
-
-  twitter: {
-    card: "summary_large_image",
-
-    title: "Start a Project | Aman Digital Solutions",
-
-    description:
-      "Tell us what you're building and let's discuss the right digital solution for your business.",
-
-    images: ["/og-image.png"],
+    canonical:
+      PAGE_URL,
   },
 
   robots: {
     index: true,
     follow: true,
+
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview":
+        "large",
+      "max-snippet": -1,
+      "max-video-preview":
+        -1,
+    },
+  },
+
+  openGraph: {
+    title:
+      "Start a Project | Aman Digital Solutions",
+
+    description:
+      "Tell us what you're building and let's discuss the right digital solution for your business.",
+
+    url:
+      PAGE_URL,
+
+    type: "website",
+
+    siteName:
+      "Aman Digital Solutions",
+
+    locale:
+      "en_IN",
+
+    images: [
+      {
+        url:
+          `${SITE_URL}/og-image.png`,
+
+        width: 1200,
+
+        height: 630,
+
+        alt:
+          "Start a Project - Aman Digital Solutions",
+      },
+    ],
+  },
+
+  twitter: {
+    card:
+      "summary_large_image",
+
+    title:
+      "Start a Project | Aman Digital Solutions",
+
+    description:
+      "Tell us what you're building and let's discuss the right digital solution for your business.",
+
+    images: [
+      `${SITE_URL}/og-image.png`,
+    ],
   },
 };
 
-export default async function StartProjectPage() {
+/* =========================================================
+   FETCH PROJECT SERVICES
+========================================================= */
+
+async function getProjectServices() {
   await connectDB();
 
-  const services = await Service.find({
-    published: true,
-  })
-    .select("_id title shortDescription")
-    .sort({
-      displayOrder: 1,
-      title: 1,
+  const services =
+    await Service.find({
+      published: true,
     })
-    .lean();
+      .select(
+        "_id title shortDescription"
+      )
+      .sort({
+        displayOrder: 1,
+        title: 1,
+      })
+      .lean();
 
-  const serviceOptions = services.map((service) => ({
-    _id: String(service._id),
-    title: service.title,
-    shortDescription: service.shortDescription,
-  }));
+  return services
+    .filter(
+      (service) =>
+        Boolean(service.title)
+    )
+    .map((service) => ({
+      _id:
+        String(service._id),
+
+      title:
+        service.title,
+
+      shortDescription:
+        service.shortDescription ||
+        "",
+    }));
+}
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+export default async function StartProjectPage() {
+  const services =
+    await getProjectServices();
 
   return (
     <>
@@ -92,7 +160,11 @@ export default async function StartProjectPage() {
         id="main-content"
         className="mt-16 min-h-screen bg-[#050505] text-white"
       >
-        <StartProjectClient services={serviceOptions} />
+        <StartProjectClient
+          services={
+            services
+          }
+        />
       </main>
 
       <Footer />

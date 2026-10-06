@@ -20,12 +20,22 @@ import AboutFAQSection from "@/components/AboutPage/AboutFAQSection";
    SITE CONFIG
 ========================================================= */
 
-const SITE_URL =
+const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ||
-  "https://www.amandigitalsolutions.com";
+  "https://www.amandigitalsolutions.com"
+).replace(/\/$/, "");
+
+const SITE_NAME =
+  "Aman Digital Solutions";
 
 const ABOUT_URL =
   `${SITE_URL}/about`;
+
+/*
+ * About content is relatively stable.
+ * Revalidate periodically instead of forcing dynamic rendering.
+ */
+export const revalidate = 3600;
 
 /* =========================================================
    METADATA
@@ -43,37 +53,6 @@ export const metadata: Metadata = {
       ABOUT_URL,
   },
 
-  openGraph: {
-    title:
-      "About Aman Digital Solutions | Web Development in Shimla",
-
-    description:
-      "Discover the story, approach, capabilities and vision behind Aman Digital Solutions, a Shimla-based digital solutions company.",
-
-    url:
-      ABOUT_URL,
-
-    type:
-      "website",
-
-    siteName:
-      "Aman Digital Solutions",
-
-    locale:
-      "en_IN",
-  },
-
-  twitter: {
-    card:
-      "summary_large_image",
-
-    title:
-      "About Aman Digital Solutions | Web Development in Shimla",
-
-    description:
-      "Discover the story, approach and vision behind Aman Digital Solutions.",
-  },
-
   robots: {
     index: true,
     follow: true,
@@ -88,6 +67,37 @@ export const metadata: Metadata = {
       "max-video-preview":
         -1,
     },
+  },
+
+  openGraph: {
+    title:
+      "About Aman Digital Solutions | Web Development in Shimla",
+
+    description:
+      "Discover the story, approach, capabilities and vision behind Aman Digital Solutions, a Shimla-based digital solutions company.",
+
+    url:
+      ABOUT_URL,
+
+    type:
+      "website",
+
+    siteName:
+      SITE_NAME,
+
+    locale:
+      "en_IN",
+  },
+
+  twitter: {
+    card:
+      "summary_large_image",
+
+    title:
+      "About Aman Digital Solutions | Web Development in Shimla",
+
+    description:
+      "Discover the story, approach, capabilities and vision behind Aman Digital Solutions.",
   },
 };
 
@@ -124,6 +134,47 @@ const aboutPageSchema = {
   breadcrumb: {
     "@id":
       `${ABOUT_URL}#breadcrumb`,
+  },
+};
+
+/* =========================================================
+   WEB PAGE STRUCTURED DATA
+========================================================= */
+
+const webPageSchema = {
+  "@type":
+    "WebPage",
+
+  "@id":
+    `${ABOUT_URL}#webpage`,
+
+  url:
+    ABOUT_URL,
+
+  name:
+    "About Aman Digital Solutions",
+
+  description:
+    "Learn about the story, capabilities, approach and vision behind Aman Digital Solutions.",
+
+  isPartOf: {
+    "@id":
+      `${SITE_URL}/#website`,
+  },
+
+  about: {
+    "@id":
+      `${SITE_URL}/#organization`,
+  },
+
+  breadcrumb: {
+    "@id":
+      `${ABOUT_URL}#breadcrumb`,
+  },
+
+  mainEntity: {
+    "@id":
+      `${ABOUT_URL}#aboutpage`,
   },
 };
 
@@ -179,6 +230,7 @@ const structuredData = {
 
   "@graph": [
     aboutPageSchema,
+    webPageSchema,
     breadcrumbSchema,
   ],
 };
@@ -235,7 +287,10 @@ export default function AboutPage() {
           ABOUT PAGE
       ================================================= */}
 
-      <main className="min-h-screen bg-[#080808] text-white">
+      <main
+        id="main-content"
+        className="min-h-screen bg-[#080808] text-white"
+      >
         {/* 01 — INTRODUCTION */}
         <AboutHero />
 
@@ -261,13 +316,13 @@ export default function AboutPage() {
         <WhyWorkWithUs />
 
         {/* 09 — LONG-TERM VISION */}
-       <FutureVision />
+        <FutureVision />
 
-{/* 10 — ABOUT FAQ */}
-<AboutFAQSection />
+        {/* 10 — ABOUT FAQ */}
+        <AboutFAQSection />
 
-{/* 11 — FINAL CTA */}
-<AboutCTA />
+        {/* 11 — FINAL CTA */}
+        <AboutCTA />
       </main>
 
       {/* =================================================

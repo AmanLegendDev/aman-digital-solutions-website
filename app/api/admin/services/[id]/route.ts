@@ -332,38 +332,38 @@ export async function PATCH(
        SEO
     ===================================================== */
 
-    existingService.seoTitle =
-      values.seoTitle ||
-      undefined;
+   /* =====================================================
+   SEO
+===================================================== */
 
-    existingService.seoDescription =
-      values.seoDescription ||
-      undefined;
+existingService.seoTitle =
+  values.seoTitle ||
+  undefined;
 
-    existingService.canonicalUrl =
-      values.canonicalUrl ||
-      undefined;
+existingService.seoDescription =
+  values.seoDescription ||
+  undefined;
 
-    existingService.ogTitle =
-      values.ogTitle ||
-      undefined;
+existingService.ogTitle =
+  values.ogTitle ||
+  undefined;
 
-    existingService.ogDescription =
-      values.ogDescription ||
-      undefined;
+existingService.ogDescription =
+  values.ogDescription ||
+  undefined;
 
-    existingService.ogImage =
-      values.ogImage
-        ? {
-            url: values.ogImage.url,
-            publicId:
-              values.ogImage.publicId ||
-              undefined,
-            alt:
-              values.ogImage.alt ||
-              undefined,
-          }
-        : undefined;
+existingService.ogImage =
+  values.ogImage
+    ? {
+        url: values.ogImage.url,
+        publicId:
+          values.ogImage.publicId ||
+          undefined,
+        alt:
+          values.ogImage.alt ||
+          undefined,
+      }
+    : undefined;
 
     /* =====================================================
        SAVE

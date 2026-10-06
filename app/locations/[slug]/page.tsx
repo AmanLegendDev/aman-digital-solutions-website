@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import { Types } from "mongoose";
 
@@ -42,9 +43,11 @@ type PopulatedLocationService = {
   _id: Types.ObjectId;
 
   title: string;
+
   slug: string;
 
   shortDescription?: string;
+
   category?: string;
 };
 
@@ -54,9 +57,11 @@ type PopulatedLocationService = {
 
 type PopulatedLocation = {
   name: string;
+
   slug: string;
 
   shortDescription: string;
+
   description: string;
 
   image?: {
@@ -68,24 +73,33 @@ type PopulatedLocation = {
   address?: string;
 
   city: string;
+
   state?: string;
+
   country: string;
+
   postalCode?: string;
 
   latitude?: number;
+
   longitude?: number;
 
   phone?: string;
+
   email?: string;
+
   mapUrl?: string;
 
   services?: PopulatedLocationService[];
 
   seoTitle?: string;
+
   seoDescription?: string;
+
   canonicalUrl?: string;
 
   ogTitle?: string;
+
   ogDescription?: string;
 
   ogImage?: {
@@ -99,28 +113,31 @@ type PopulatedLocation = {
    FETCH LOCATION
 ========================================================= */
 
-async function getLocationBySlug(
-  slug: string
-): Promise<PopulatedLocation | null> {
-  await connectDB();
+const getLocationBySlug = cache(
+  async (
+    slug: string
+  ): Promise<PopulatedLocation | null> => {
+    await connectDB();
 
-  const location = await Location.findOne({
-    slug: slug.toLowerCase(),
-    published: true,
-  })
-    .populate({
-      path: "services",
-      select:
-        "_id title slug shortDescription category",
-    })
-    .lean();
+    const location =
+      await Location.findOne({
+        slug: slug.toLowerCase(),
+        published: true,
+      })
+        .populate({
+          path: "services",
+          select:
+            "_id title slug shortDescription category",
+        })
+        .lean();
 
-  if (!location) {
-    return null;
+    if (!location) {
+      return null;
+    }
+
+    return location as unknown as PopulatedLocation;
   }
-
-  return location as unknown as PopulatedLocation;
-}
+);
 
 /* =========================================================
    METADATA
@@ -133,10 +150,6 @@ export async function generateMetadata({
 
   const location =
     await getLocationBySlug(slug);
-
-  /* -------------------------------------------------------
-     NOT FOUND
-  ------------------------------------------------------- */
 
   if (!location) {
     return {
@@ -153,43 +166,28 @@ export async function generateMetadata({
     };
   }
 
-  /* -------------------------------------------------------
-     TITLE
-  ------------------------------------------------------- */
-
   const title =
     location.seoTitle?.trim() ||
-    location.name;
-
-  /* -------------------------------------------------------
-     DESCRIPTION
-  ------------------------------------------------------- */
+    `Web Development in ${location.name} | Aman Digital Solutions`;
 
   const description =
     location.seoDescription?.trim() ||
     location.shortDescription;
 
-  /* -------------------------------------------------------
-     CANONICAL
-  ------------------------------------------------------- */
-
+  /*
+   * Canonical is generated from the actual route.
+   * DB canonicalUrl is intentionally not trusted here.
+   */
   const canonical =
-    location.canonicalUrl?.trim() ||
     `${SITE_URL}/locations/${location.slug}`;
-
-  /* -------------------------------------------------------
-     OG
-  ------------------------------------------------------- */
 
   const ogTitle =
     location.ogTitle?.trim() ||
-    location.seoTitle?.trim() ||
-    location.name;
+    title;
 
   const ogDescription =
     location.ogDescription?.trim() ||
-    location.seoDescription?.trim() ||
-    location.shortDescription;
+    description;
 
   const ogImage =
     location.ogImage?.url ||
@@ -198,7 +196,7 @@ export async function generateMetadata({
   const ogImageAlt =
     location.ogImage?.alt ||
     location.image?.alt ||
-    location.name;
+    `${location.name} - Aman Digital Solutions`;
 
   return {
     title,
@@ -266,10 +264,14 @@ export async function generateMetadata({
 }
 
 /* =========================================================
-   PAGE
+   REVALIDATION
 ========================================================= */
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
+/* =========================================================
+   PAGE
+========================================================= */
 
 export default async function LocationPage({
   params,
@@ -278,10 +280,6 @@ export default async function LocationPage({
 
   const location =
     await getLocationBySlug(slug);
-
-  /* =======================================================
-     NOT FOUND
-  ======================================================== */
 
   if (!location) {
     notFound();
@@ -300,7 +298,7 @@ export default async function LocationPage({
 
   const seoTitle =
     location.seoTitle?.trim() ||
-    location.name;
+    `Web Development in ${location.name} | Aman Digital Solutions`;
 
   const seoDescription =
     location.seoDescription?.trim() ||
@@ -313,7 +311,14 @@ export default async function LocationPage({
   const primaryImageAlt =
     location.ogImage?.alt ||
     location.image?.alt ||
-    location.name;
+    `${location.name} - Aman Digital Solutions`;
+
+  /* =======================================================
+     SERVICES
+  ======================================================== */
+
+  const services =
+    location.services || [];
 
   /* =======================================================
      LOCATION STRUCTURED DATA
@@ -383,9 +388,9 @@ export default async function LocationPage({
       : {}),
 
     ...(typeof location.latitude ===
-        "number" &&
+      "number" &&
     typeof location.longitude ===
-        "number"
+      "number"
       ? {
           geo: {
             "@type":
@@ -431,6 +436,46 @@ export default async function LocationPage({
   };
 
   /* =======================================================
+     SERVICE ITEM LIST
+  ======================================================== */
+
+  const serviceItemList =
+    services.length > 0
+      ? {
+          "@type": "ItemList",
+
+          "@id":
+            `${locationUrl}#services`,
+
+          name:
+            `Services in ${location.name}`,
+
+          numberOfItems:
+            services.length,
+
+          itemListOrder:
+            "https://schema.org/ItemListOrderAscending",
+
+          itemListElement:
+            services.map(
+              (service, index) => ({
+                "@type":
+                  "ListItem",
+
+                position:
+                  index + 1,
+
+                name:
+                  service.title,
+
+                url:
+                  `${SITE_URL}/services/${service.slug}`,
+              })
+            ),
+        }
+      : null;
+
+  /* =======================================================
      WEBPAGE SCHEMA
   ======================================================== */
 
@@ -458,6 +503,23 @@ export default async function LocationPage({
       "@id":
         `${locationUrl}#place`,
     },
+
+    ...(services.length > 0
+      ? {
+          about: services.map(
+            (service) => ({
+              "@type":
+                "Service",
+
+              name:
+                service.title,
+
+              url:
+                `${SITE_URL}/services/${service.slug}`,
+            })
+          ),
+        }
+      : {}),
 
     breadcrumb: {
       "@id":
@@ -528,7 +590,13 @@ export default async function LocationPage({
 
     "@graph": [
       locationSchema,
+
       webPageSchema,
+
+      ...(serviceItemList
+        ? [serviceItemList]
+        : []),
+
       breadcrumbSchema,
     ],
   };
@@ -539,95 +607,94 @@ export default async function LocationPage({
 
   const locationData:
     LocationDetailData = {
-    name:
-      location.name,
+      name:
+        location.name,
 
-    slug:
-      location.slug,
+      slug:
+        location.slug,
 
-    shortDescription:
-      location.shortDescription,
+      shortDescription:
+        location.shortDescription,
 
-    description:
-      location.description,
+      description:
+        location.description,
 
-    image:
-      location.image
-        ? {
-            url:
-              location.image.url,
+      image:
+        location.image
+          ? {
+              url:
+                location.image.url,
 
-            publicId:
-              location.image.publicId ||
+              publicId:
+                location.image.publicId ||
+                undefined,
+
+              alt:
+                location.image.alt ||
+                location.name,
+            }
+          : undefined,
+
+      address:
+        location.address ||
+        undefined,
+
+      city:
+        location.city,
+
+      state:
+        location.state ||
+        undefined,
+
+      country:
+        location.country,
+
+      postalCode:
+        location.postalCode ||
+        undefined,
+
+      latitude:
+        location.latitude ??
+        undefined,
+
+      longitude:
+        location.longitude ??
+        undefined,
+
+      phone:
+        location.phone ||
+        undefined,
+
+      email:
+        location.email ||
+        undefined,
+
+      mapUrl:
+        location.mapUrl ||
+        undefined,
+
+      services:
+        services.map(
+          (service) => ({
+            _id:
+              String(service._id),
+
+            title:
+              service.title,
+
+            slug:
+              service.slug,
+
+            shortDescription:
+              service.shortDescription ||
               undefined,
 
-            alt:
-              location.image.alt ||
-              location.name,
-          }
-        : undefined,
-
-    address:
-      location.address ||
-      undefined,
-
-    city:
-      location.city,
-
-    state:
-      location.state ||
-      undefined,
-
-    country:
-      location.country,
-
-    postalCode:
-      location.postalCode ||
-      undefined,
-
-    latitude:
-      location.latitude ??
-      undefined,
-
-    longitude:
-      location.longitude ??
-      undefined,
-
-    phone:
-      location.phone ||
-      undefined,
-
-    email:
-      location.email ||
-      undefined,
-
-    mapUrl:
-      location.mapUrl ||
-      undefined,
-
-    services:
-      (
-        location.services ||
-        []
-      ).map((service) => ({
-        _id:
-          String(service._id),
-
-        title:
-          service.title,
-
-        slug:
-          service.slug,
-
-        shortDescription:
-          service.shortDescription ||
-          undefined,
-
-        category:
-          service.category ||
-          undefined,
-      })),
-  };
+            category:
+              service.category ||
+              undefined,
+          })
+        ),
+    };
 
   /* =======================================================
      RENDER
@@ -635,6 +702,10 @@ export default async function LocationPage({
 
   return (
     <>
+      {/* =================================================
+          NAVBAR
+      ================================================= */}
+
       <Navbar />
 
       {/* =================================================
@@ -658,15 +729,25 @@ export default async function LocationPage({
       <BreadcrumbSchema
         items={[
           {
-            name: "Home",
-            url: "/",
+            name:
+              "Home",
+
+            url:
+              "/",
           },
+
           {
-            name: "Locations",
-            url: "/locations",
+            name:
+              "Locations",
+
+            url:
+              "/locations",
           },
+
           {
-            name: location.name,
+            name:
+              location.name,
+
             url:
               `/locations/${location.slug}`,
           },
@@ -709,6 +790,10 @@ export default async function LocationPage({
           location={locationData}
         />
       </main>
+
+      {/* =================================================
+          FOOTER
+      ================================================= */}
 
       <Footer />
     </>

@@ -151,7 +151,7 @@ export default function ServiceDetailPage({
                 <Link
                   href={
                     service.ctaLink ||
-                    "/start/a-project"
+                    "/start-a-project"
                   }
                   className="group inline-flex items-center justify-center gap-3 rounded-full bg-[#FFC400] px-6 py-3.5 text-sm font-semibold text-black transition-all duration-300 hover:bg-[#FFD43B] hover:shadow-[0_14px_40px_rgba(255,196,0,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
                 >

@@ -1,4 +1,5 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
+
 import "./globals.css";
 
 import GlobalStructuredData from "@/components/seo/GlobalStructuredData";
@@ -7,69 +8,66 @@ import GlobalStructuredData from "@/components/seo/GlobalStructuredData";
    SITE CONFIG
 ========================================================= */
 
-const SITE_URL =
+const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ||
-  "https://www.amandigitalsolutions.com";
+  "https://www.amandigitalsolutions.com"
+).replace(/\/$/, "");
 
-const SITE_NAME = "Aman Digital Solutions";
+const SITE_NAME =
+  "Aman Digital Solutions";
 
 const DEFAULT_TITLE =
   "Aman Digital Solutions | Web Development & Digital Solutions";
 
 const DEFAULT_DESCRIPTION =
-  "Aman Digital Solutions is a Shimla-based web development and digital solutions company building modern business websites, e-commerce stores, custom web applications and SEO-ready digital experiences for businesses across Himachal Pradesh, India and beyond.";
+  "Aman Digital Solutions is a Shimla-based web development and digital solutions studio offering professional websites, e-commerce, custom web applications, SEO and digital solutions for businesses in Himachal Pradesh, across India and beyond.";
 
 /* =========================================================
-   GLOBAL METADATA
+   METADATA
 ========================================================= */
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
+  /*
+   * IMPORTANT:
+   * Keep this as a plain string.
+   *
+   * Individual pages already define their complete SEO titles.
+   * No global "| Aman Digital Solutions" template is applied.
+   */
+  title:
+    DEFAULT_TITLE,
 
-  /* =======================================================
-     TITLE
-  ======================================================= */
+  description:
+    DEFAULT_DESCRIPTION,
 
-  title: {
-    default: DEFAULT_TITLE,
-    template: "%s | ADS",
-  },
+  applicationName:
+    SITE_NAME,
 
-  /* =======================================================
-     DESCRIPTION
-  ======================================================= */
-
-  description: DEFAULT_DESCRIPTION,
-
-  /* =======================================================
-     APPLICATION / BRAND
-  ======================================================= */
-
-  applicationName: SITE_NAME,
+  metadataBase:
+    new URL(SITE_URL),
 
   authors: [
     {
-      name: SITE_NAME,
-      url: SITE_URL,
+      name:
+        SITE_NAME,
+      url:
+        SITE_URL,
     },
   ],
 
-  creator: SITE_NAME,
-  publisher: SITE_NAME,
+  creator:
+    SITE_NAME,
 
-  category: "technology",
+  publisher:
+    SITE_NAME,
 
-  /* =======================================================
-     CANONICAL
-  ======================================================= */
+  category:
+    "technology",
 
   alternates: {
-    canonical: SITE_URL,
+    canonical:
+      SITE_URL,
   },
-
-  /* =======================================================
-     ROBOTS
-  ======================================================= */
 
   robots: {
     index: true,
@@ -78,105 +76,105 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
+      "max-image-preview":
+        "large",
+      "max-snippet":
+        -1,
+      "max-video-preview":
+        -1,
     },
   },
 
-  /* =======================================================
-     ICONS
-  ======================================================= */
-
   icons: {
-    icon: [
-      {
-        url: "/icon.png",
-        type: "image/png",
-        sizes: "512x512",
-      },
-    ],
+    icon:
+      "/icon.png",
 
-    shortcut: "/icon.png",
-
-    apple: [
-      {
-        url: "/apple-icon.png",
-        type: "image/png",
-        sizes: "512x512",
-      },
-    ],
+    apple:
+      "/apple-icon.png",
   },
 
-  /* =======================================================
-     OPEN GRAPH
-  ======================================================= */
-
   openGraph: {
-    type: "website",
-    locale: "en_IN",
-    url: SITE_URL,
-    siteName: SITE_NAME,
-
-    title: DEFAULT_TITLE,
+    title:
+      DEFAULT_TITLE,
 
     description:
-      "Modern websites, e-commerce stores, custom web applications and digital solutions for businesses in Shimla, across Himachal Pradesh, India and beyond.",
+      DEFAULT_DESCRIPTION,
+
+    url:
+      SITE_URL,
+
+    siteName:
+      SITE_NAME,
+
+    type:
+      "website",
+
+    locale:
+      "en_IN",
 
     images: [
       {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
+        url:
+          "/og-image.png",
+
+        width:
+          1200,
+
+        height:
+          630,
+
         alt:
-          "Aman Digital Solutions — Web Development & Digital Solutions",
+          "Aman Digital Solutions | Web Development & Digital Solutions",
       },
     ],
   },
 
-  /* =======================================================
-     TWITTER / X
-  ======================================================= */
-
   twitter: {
-    card: "summary_large_image",
+    card:
+      "summary_large_image",
 
-    title: DEFAULT_TITLE,
+    title:
+      DEFAULT_TITLE,
 
     description:
-      "Modern websites, e-commerce stores, custom web applications and digital solutions for businesses in Shimla, Himachal Pradesh, India and beyond.",
+      DEFAULT_DESCRIPTION,
 
-    images: ["/og-image.png"],
+    images: [
+      "/og-image.png",
+    ],
   },
-
-  /* =======================================================
-     FORMAT DETECTION
-  ======================================================= */
 
   formatDetection: {
-    telephone: true,
-    email: true,
-    address: true,
+    telephone:
+      true,
+
+    email:
+      true,
+
+    address:
+      true,
   },
 
-  /* =======================================================
-     REFERRER
-  ======================================================= */
-
-  referrer: "strict-origin-when-cross-origin",
+  referrer:
+    "strict-origin-when-cross-origin",
 };
 
 /* =========================================================
    VIEWPORT
 ========================================================= */
 
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
+export const viewport = {
+  width:
+    "device-width",
 
-  themeColor: "#050505",
+  initialScale:
+    1,
 
-  colorScheme: "dark",
+  themeColor:
+    "#050505",
+
+  colorScheme:
+    "dark",
 };
 
 /* =========================================================
@@ -191,7 +189,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        {/* =================================================
+            GLOBAL STRUCTURED DATA
+        ================================================= */}
+
         <GlobalStructuredData />
+
+        {/* =================================================
+            APPLICATION
+        ================================================= */}
 
         {children}
       </body>

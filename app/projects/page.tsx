@@ -19,41 +19,40 @@ const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.amandigitalsolutions.com";
 
-export const metadata: Metadata = {
-title:
-  "Web Development Projects",
+const PROJECTS_URL = `${SITE_URL}/projects`;
 
-description:
-  "Explore websites, e-commerce stores and custom web applications built by Aman Digital Solutions for businesses in Shimla, Himachal Pradesh and beyond.",
- alternates: {
-  canonical: `${SITE_URL}/projects`,
-},
+export const metadata: Metadata = {
+  title: "Web Development Projects | Aman Digital Solutions",
+
+  description:
+    "Explore web development projects, e-commerce websites and custom web applications built by Aman Digital Solutions for businesses in Shimla, Himachal Pradesh, India and beyond.",
+
+  alternates: {
+    canonical: PROJECTS_URL,
+  },
+
   openGraph: {
-    title:
-      "Our Projects | Aman Digital Solutions",
+    title: "Web Development Projects | Aman Digital Solutions",
 
     description:
-      "Explore websites, digital products and business solutions built by Aman Digital Solutions.",
+      "Explore web development projects, e-commerce websites and custom web applications built by Aman Digital Solutions for businesses in Shimla, Himachal Pradesh, India and beyond.",
 
-   url: `${SITE_URL}/projects`,
+    url: PROJECTS_URL,
 
     type: "website",
 
-    siteName:
-      "Aman Digital Solutions",
+    siteName: "Aman Digital Solutions",
 
     locale: "en_IN",
   },
 
   twitter: {
-    card:
-      "summary_large_image",
+    card: "summary_large_image",
 
-    title:
-      "Our Projects | Aman Digital Solutions",
+    title: "Web Development Projects | Aman Digital Solutions",
 
-   description:
-  "Explore websites, e-commerce platforms, web applications and digital solutions built by Aman Digital Solutions for businesses in India and beyond.",
+    description:
+      "Explore web development projects, e-commerce websites and custom web applications built by Aman Digital Solutions.",
   },
 
   robots: {
@@ -83,117 +82,179 @@ export default async function ProjectsPage() {
     })
     .lean();
 
-  const serializedProjects =
-    projects.map((project) => ({
-      id: String(project._id),
+  const serializedProjects = projects.map((project) => ({
+    id: String(project._id),
 
-      title: project.title,
+    title: project.title,
 
-      slug: project.slug,
+    slug: project.slug,
 
-      client:
-        project.client,
+    client: project.client,
 
-      industry:
-        project.industry,
+    industry: project.industry,
 
-      shortDescription:
-        project.shortDescription,
+    shortDescription: project.shortDescription,
 
-      technologies:
-        project.technologies ?? [],
+    technologies: project.technologies ?? [],
 
-      coverImage:
-        project.coverImage
-          ? {
-              url:
-                project.coverImage.url,
+    coverImage: project.coverImage
+      ? {
+          url: project.coverImage.url,
 
-              alt:
-                project.coverImage.alt ||
-                project.title,
-            }
-          : undefined,
+          alt:
+            project.coverImage.alt ||
+            project.title,
+        }
+      : undefined,
 
-      featured:
-        project.featured,
-    }));
+    featured: project.featured,
+  }));
 
   const featuredProjects =
     serializedProjects.filter(
-      (project) =>
-        project.featured
+      (project) => project.featured
     );
 
   const allProjects =
     serializedProjects.filter(
-      (project) =>
-        !project.featured
+      (project) => !project.featured
     );
 
-    const projectsUrl = `${SITE_URL}/projects`;
+  /*
+   * --------------------------------------------------------------------------
+   * SEO — Project ItemList
+   * --------------------------------------------------------------------------
+   */
 
-const projectItems = serializedProjects.map((project) => ({
-  name: project.title,
-  url: `${projectsUrl}/${project.slug}`,
-  ...(project.coverImage?.url
-    ? {
-        image: project.coverImage.url,
-      }
-    : {}),
-  description: project.shortDescription,
-}));
+  const projectItems = serializedProjects.map(
+    (project) => ({
+      name: project.title,
 
-const projectsItemList = getItemListSchema({
-  id: `${projectsUrl}#itemlist`,
-  name: "Aman Digital Solutions Projects",
-  url: projectsUrl,
-  items: projectItems,
-});
+      url: `${PROJECTS_URL}/${project.slug}`,
 
-const projectsCollection = getCollectionPageSchema({
-  url: projectsUrl,
-  name: "Our Projects | Aman Digital Solutions",
-  description:
-  "Explore websites, e-commerce platforms, web applications and digital solutions built by Aman Digital Solutions for businesses in Shimla, Himachal Pradesh, across India and beyond.",
-  itemListId: `${projectsUrl}#itemlist`,
-});
+      ...(project.coverImage?.url
+        ? {
+            image:
+              project.coverImage.url,
+          }
+        : {}),
+
+      description:
+        project.shortDescription,
+    })
+  );
+
+  const projectsItemList =
+    getItemListSchema({
+      id: `${PROJECTS_URL}#itemlist`,
+
+      name:
+        "Web Development Projects | Aman Digital Solutions",
+
+      url: PROJECTS_URL,
+
+      items: projectItems,
+    });
+
+  /*
+   * --------------------------------------------------------------------------
+   * SEO — CollectionPage
+   * --------------------------------------------------------------------------
+   */
+
+  const projectsCollection =
+    getCollectionPageSchema({
+      url: PROJECTS_URL,
+
+      name:
+        "Web Development Projects | Aman Digital Solutions",
+
+      description:
+        "Explore web development projects, e-commerce websites and custom web applications built by Aman Digital Solutions for businesses in Shimla, Himachal Pradesh, India and beyond.",
+
+      itemListId:
+        `${PROJECTS_URL}#itemlist`,
+    });
+
+  /*
+   * --------------------------------------------------------------------------
+   * SEO — BreadcrumbList
+   * --------------------------------------------------------------------------
+   */
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+
+    "@type": "BreadcrumbList",
+
+    itemListElement: [
+      {
+        "@type": "ListItem",
+
+        position: 1,
+
+        name: "Home",
+
+        item: SITE_URL,
+      },
+
+      {
+        "@type": "ListItem",
+
+        position: 2,
+
+        name: "Projects",
+
+        item: PROJECTS_URL,
+      },
+    ],
+  };
+
+  /*
+   * --------------------------------------------------------------------------
+   * PAGE
+   * --------------------------------------------------------------------------
+   */
 
   return (
     <>
       <Navbar />
 
+      {/* Accessible breadcrumb navigation */}
       <nav
-      
-  aria-label="Breadcrumb"
-  className="sr-only "
->
-  <ol>
-    <li>
-      <Link href="/">
-        Home
-      </Link>
-    </li>
+        aria-label="Breadcrumb"
+        className="sr-only"
+      >
+        <ol>
+          <li>
+            <Link href="/">
+              Home
+            </Link>
+          </li>
 
-    <li aria-current="page">
-      Projects
-    </li>
-  </ol>
-</nav>
+          <li aria-current="page">
+            Projects
+          </li>
+        </ol>
+      </nav>
 
+      {/* Structured Data */}
       <script
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{
-    __html: JSON.stringify({
-      "@context": "https://schema.org",
-      "@graph": [
-        projectsCollection,
-        projectsItemList,
-      ],
-    }),
-  }}
-/>
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
 
+            "@graph": [
+              projectsCollection,
+
+              projectsItemList,
+
+              breadcrumbSchema,
+            ],
+          }),
+        }}
+      />
 
       <main>
         <ProjectsPageClient
