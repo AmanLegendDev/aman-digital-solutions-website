@@ -20,6 +20,10 @@ export const NAV_ITEMS = [
     href: "/pricing",
   },
   {
+    label: "Offers",
+    href: "/offers",
+  },
+  {
     label: "Blog",
     href: "/blog",
   },
@@ -28,12 +32,12 @@ export const NAV_ITEMS = [
     href: "/faq",
   },
   {
-    label: "Contact",
-    href: "/contact",
-  },
-  {
     label: "About",
     href: "/about",
+  },
+  {
+    label: "Contact",
+    href: "/contact",
   },
 ] as const;
 
