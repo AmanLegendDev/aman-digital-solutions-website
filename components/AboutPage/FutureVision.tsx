@@ -34,24 +34,24 @@ export default function FutureVision() {
               </span>
 
               <h2 className="mt-5 max-w-3xl text-3xl font-semibold leading-[1.08] tracking-[-0.05em] text-white sm:text-4xl lg:text-6xl">
-                From building websites
+                Building for what&apos;s next.
                 <span className="block text-neutral-500">
-                  to building a company.
+                  One better solution at a time.
                 </span>
               </h2>
 
               <p className="mt-7 max-w-2xl text-sm leading-7 text-neutral-500 sm:text-base">
-                Aman Digital Solutions started with one person learning
-                how to build for the web. The long-term goal is much
-                bigger: to grow into a company that helps businesses
-                around the world use technology to communicate, operate
-                and grow better.
+                The long-term vision for Aman Digital Solutions is to
+                grow into a trusted digital solutions studio that helps
+                businesses use technology to communicate, operate and
+                grow more effectively.
               </p>
 
               <p className="mt-4 max-w-2xl text-sm leading-7 text-neutral-500 sm:text-base">
-                The direction is simple — keep improving the craft,
-                understand businesses more deeply and build digital
-                solutions that are genuinely useful.
+                The direction is simple: keep improving the craft,
+                understand business requirements more deeply and build
+                digital products that deliver lasting value across
+                different markets.
               </p>
 
               <Link
@@ -68,10 +68,11 @@ export default function FutureVision() {
                   hover:shadow-[0_0_28px_rgba(255,196,0,0.18)]
                 "
               >
-                Start a conversation
+                Start a Project
 
                 <ArrowUpRight
                   size={14}
+                  aria-hidden="true"
                   className="
                     transition-transform duration-200
                     group-hover:-translate-y-0.5
@@ -92,33 +93,37 @@ export default function FutureVision() {
               "
             >
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#FFC400]/15 bg-[#FFC400]/[0.05] text-[#FFC400]">
-                <Globe2 size={20} />
+                <Globe2
+                  size={20}
+                  aria-hidden="true"
+                />
               </div>
 
               <h3 className="mt-8 text-xl font-semibold tracking-[-0.03em] text-white sm:text-2xl">
-                A global ambition,
+                Built in Shimla,
                 <span className="block text-neutral-500">
-                  one project at a time.
+                  designed to work beyond borders.
                 </span>
               </h3>
 
               <p className="mt-5 text-sm leading-6 text-neutral-500">
-                The current focus is on doing excellent work for every
-                client. The bigger vision is to eventually take that
-                standard to businesses beyond one city, one industry or
-                one market.
+                With experience across businesses in India and Australia,
+                the focus is to keep building a stronger digital
+                practice that can serve businesses across industries,
+                locations and markets.
               </p>
 
               <div className="mt-8 flex items-start gap-3 border-t border-white/[0.08] pt-6">
                 <Lightbulb
                   size={16}
                   className="mt-0.5 shrink-0 text-[#FFC400]"
+                  aria-hidden="true"
                 />
 
                 <p className="text-xs leading-5 text-neutral-600">
                   Growth should come from better work, stronger
-                  relationships and real value — not from chasing
-                  numbers for the sake of numbers.
+                  relationships and measurable value — not from chasing
+                  scale for the sake of scale.
                 </p>
               </div>
             </div>

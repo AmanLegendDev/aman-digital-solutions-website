@@ -22,35 +22,35 @@ const CAPABILITIES = [
     icon: ShoppingBag,
     title: "E-commerce & Business Platforms",
     description:
-      "Product-focused digital experiences and custom platforms designed to make complex business operations easier to manage.",
+      "Product-focused digital experiences and custom platforms designed to help businesses sell, manage and grow online.",
   },
   {
     number: "03",
     icon: Settings2,
     title: "CMS & Business Systems",
     description:
-      "Custom admin panels, content management systems and workflows that give businesses practical control over their digital presence.",
+      "Custom admin panels, content management systems and digital workflows that give businesses practical control over their operations.",
   },
   {
     number: "04",
     icon: Palette,
     title: "UI/UX & Conversion",
     description:
-      "Interfaces designed not just to look good, but to make information easier to understand and important actions easier to take.",
+      "Interfaces designed to make information easier to understand, user journeys clearer and important actions easier to take.",
   },
   {
     number: "05",
     icon: LineChart,
     title: "SEO & Digital Growth",
     description:
-      "Search-ready foundations and digital growth solutions that help businesses become easier to discover and connect with customers.",
+      "Search-ready foundations and digital growth solutions that help businesses become easier to discover and connect with the right customers.",
   },
   {
     number: "06",
     icon: Bot,
     title: "AI & Intelligent Experiences",
     description:
-      "Practical AI features integrated into digital products where automation, assistance or smarter user experiences can create real value.",
+      "Practical AI features integrated where automation, assistance or smarter digital experiences can create meaningful value.",
   },
 ];
 
@@ -59,6 +59,7 @@ export default function WhatWeBuild() {
     <section
       id="capabilities"
       className="relative overflow-hidden bg-[#080808] py-20 sm:py-24 lg:py-32"
+      aria-labelledby="what-we-build-heading"
     >
       <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
         {/* HEADER */}
@@ -67,15 +68,21 @@ export default function WhatWeBuild() {
             What we build
           </span>
 
-          <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.045em] text-white sm:text-4xl lg:text-5xl">
+          <h2
+            id="what-we-build-heading"
+            className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.045em] text-white sm:text-4xl lg:text-5xl"
+          >
             Technology that solves
-            <span className="text-neutral-500"> business problems.</span>
+            <span className="text-neutral-500">
+              {" "}
+              business problems.
+            </span>
           </h2>
 
           <p className="mt-6 max-w-2xl text-sm leading-7 text-neutral-500 sm:text-base">
             Aman Digital Solutions combines development, design, business
             understanding and modern technology to create digital
-            experiences that are useful beyond the launch day.
+            experiences that remain useful beyond launch day.
           </p>
         </div>
 
@@ -102,7 +109,7 @@ export default function WhatWeBuild() {
                   sm:p-7
                 "
               >
-                {/* Number */}
+                {/* NUMBER + ICON */}
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold tracking-[0.16em] text-neutral-600">
                     {item.number}
@@ -120,7 +127,11 @@ export default function WhatWeBuild() {
                       group-hover:text-[#FFC400]
                     "
                   >
-                    <Icon size={17} />
+                    <Icon
+                      size={17}
+                      strokeWidth={1.8}
+                      aria-hidden="true"
+                    />
                   </div>
                 </div>
 
@@ -132,7 +143,7 @@ export default function WhatWeBuild() {
                   {item.description}
                 </p>
 
-                {/* Hover accent */}
+                {/* HOVER ACCENT */}
                 <div
                   aria-hidden="true"
                   className="
@@ -162,6 +173,7 @@ export default function WhatWeBuild() {
 
             <ArrowUpRight
               size={15}
+              aria-hidden="true"
               className="
                 text-[#FFC400]
                 transition-transform duration-200

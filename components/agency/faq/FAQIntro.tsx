@@ -47,17 +47,15 @@ export default function FAQIntro() {
         id="faq-heading"
         className="mt-6 text-[clamp(2.5rem,5vw,4.7rem)] font-semibold leading-[0.94] tracking-[-0.055em] text-[#F5F5F5]"
       >
-        Questions about
+        Have questions
         <span className="block text-[#FFC400]">
-          working with us.
+          before you start?
         </span>
       </h2>
 
       {/* DESCRIPTION */}
       <p className="mt-6 max-w-md text-sm leading-7 text-[#858585] sm:text-base sm:leading-7">
-        From pricing and timelines to our development process,
-        explore answers to common questions businesses have
-        before starting a website or digital project.
+        Choosing a website partner is an important decision. Here are answers to some of the questions businesses commonly ask about our services, process, pricing, SEO and ongoing support.
       </p>
 
       {/* TRUST SIGNAL */}
@@ -69,7 +67,7 @@ export default function FAQIntro() {
           />
 
           <p className="text-[10px] uppercase tracking-[0.15em] text-[#555]">
-            Still have a question? We are happy to talk.
+          Need something more specific?
           </p>
         </div>
       </div>

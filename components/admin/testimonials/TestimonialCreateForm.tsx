@@ -313,7 +313,7 @@ export default function TestimonialCreateForm() {
             />
 
             <span className="ml-auto text-xs text-white/25">
-              Maximum 1000 characters
+              Maximum 2000 characters
             </span>
           </div>
         </div>

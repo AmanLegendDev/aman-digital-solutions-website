@@ -141,7 +141,7 @@ export default function StartProjectFAQSection() {
 
         <div className="mt-10 flex flex-col items-center justify-center gap-4 text-center">
           <p className="text-xs leading-6 text-neutral-600">
-            Have more questions about your project?
+            Still have questions?
           </p>
 
           <Link

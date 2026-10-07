@@ -4,7 +4,23 @@ import Link from "next/link";
 import { ArrowDown, ArrowUpRight, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function HeroContent() {
+type HeroContentProps = {
+  tagline: string;
+  description: string;
+  city: string;
+  state: string;
+};
+
+export default function HeroContent({
+  tagline,
+  description,
+  city,
+  state,
+}: HeroContentProps) {
+  const locationLabel = [city, state]
+    .filter(Boolean)
+    .join(", ");
+
   return (
     <div className="max-w-2xl">
       {/* EYEBROW */}
@@ -22,7 +38,8 @@ export default function HeroContent() {
         </span>
 
         <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-[#A1A1A1] sm:text-[11px]">
-          Web Development & Digital Solutions · Shimla
+          {tagline}
+          {locationLabel ? ` · ${locationLabel}` : ""}
         </span>
       </motion.div>
 
@@ -59,10 +76,7 @@ export default function HeroContent() {
         }}
         className="mt-6 max-w-xl text-sm leading-7 text-[#A1A1A1] sm:mt-7 sm:text-base lg:mt-5 lg:max-w-[520px] lg:leading-6"
       >
-        Aman Digital Solutions is a Shimla-based web development and digital
-        solutions company building fast, modern and SEO-ready websites,
-        e-commerce stores and custom web applications for businesses across
-        Himachal Pradesh, India and beyond.
+        {description}
       </motion.p>
 
       {/* ACTIONS */}

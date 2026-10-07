@@ -1,8 +1,36 @@
+import { getSiteSettings } from "@/lib/site-settings/getSiteSettings";
+
 import HeroContent from "./HeroContent";
 import HeroStats from "./HeroStats";
 import HeroVisual from "./HeroVisual";
 
-export default function Hero() {
+export default async function Hero() {
+  const settings = await getSiteSettings();
+
+  const siteName =
+    settings?.siteName?.trim() ||
+    "Aman Digital Solutions";
+
+  const tagline =
+    settings?.tagline?.trim() ||
+    "Web Development & Digital Solutions";
+
+  const description =
+    settings?.description?.trim() ||
+    "Aman Digital Solutions is a Shimla-based digital solutions studio building professional websites, e-commerce platforms, custom web applications and growth-focused digital solutions for businesses in Himachal Pradesh, across India and beyond.";
+
+  const city =
+    settings?.contact?.city?.trim() ||
+    "Shimla";
+
+  const state =
+    settings?.contact?.state?.trim() ||
+    "Himachal Pradesh";
+
+  const country =
+    settings?.contact?.country?.trim() ||
+    "India";
+
   return (
     <section
       id="home"
@@ -38,18 +66,33 @@ export default function Hero() {
         <div className="grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-10">
           {/* CONTENT */}
           <div className="relative z-20">
-            <HeroContent />
+            <HeroContent
+              
+              tagline={tagline}
+              description={description}
+              city={city}
+              state={state}
+              
+            />
           </div>
 
           {/* VISUAL */}
           <div className="relative z-10 lg:min-h-[560px]">
-            <HeroVisual />
+            <HeroVisual
+              siteName={siteName}
+              tagline={tagline}
+              city={city}
+            />
           </div>
         </div>
 
         {/* STATS / TRUST */}
         <div className="relative z-20 mt-10 lg:mt-4">
-          <HeroStats />
+          <HeroStats
+            city={city}
+            state={state}
+            country={country}
+          />
         </div>
       </div>
 

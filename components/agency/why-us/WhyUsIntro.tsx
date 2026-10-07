@@ -45,15 +45,12 @@ export default function WhyUsIntro() {
 
       {/* DESCRIPTION */}
       <p className="mt-6 max-w-md text-sm leading-7 text-[#858585] sm:text-base sm:leading-7">
-        Your website is often the first interaction someone has with your
-        business. We treat it as a real business asset — combining thoughtful
-        design, modern web development and SEO-ready structure to create a
-        clear, credible and useful digital presence.
+     Your website is often the first interaction someone has with your business. We treat it as a real business asset — combining thoughtful design, modern web development and SEO-ready structure to create a clear, credible and useful digital presence.
       </p>
 
       {/* CTA */}
       <Link
-        href="#contact"
+        href="/start-a-project"
         className="group mt-8 inline-flex items-center gap-2 text-sm font-medium text-[#D8D8D8] transition-colors duration-200 hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
       >
         Let's build something useful

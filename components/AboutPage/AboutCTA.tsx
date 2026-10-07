@@ -42,7 +42,9 @@ export default function AboutCTA() {
           />
 
           <div className="relative mx-auto max-w-3xl">
+            {/* Icon */}
             <div
+              aria-hidden="true"
               className="
                 mx-auto flex h-12 w-12
                 items-center justify-center
@@ -55,10 +57,12 @@ export default function AboutCTA() {
               <MessageCircle size={20} />
             </div>
 
+            {/* Eyebrow */}
             <span className="mt-6 block text-xs font-semibold uppercase tracking-[0.18em] text-[#FFC400]">
               Have a project in mind?
             </span>
 
+            {/* Heading */}
             <h2
               className="
                 mt-4
@@ -72,16 +76,19 @@ export default function AboutCTA() {
             >
               Let&apos;s build something
               <span className="block text-neutral-500">
-                worth putting online.
+                that works for your business.
               </span>
             </h2>
 
+            {/* Description */}
             <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-neutral-500 sm:text-base">
-              Whether you are starting from scratch, improving an
-              existing website or building a custom digital system,
-              tell us what you are trying to achieve.
+              Whether you need a professional website, an e-commerce
+              experience or a custom digital solution, tell us what you are
+              trying to achieve and we&apos;ll help shape the right approach
+              for your business.
             </p>
 
+            {/* CTAs */}
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
                 href="/start-a-project"

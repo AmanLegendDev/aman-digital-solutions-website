@@ -47,7 +47,7 @@ export default function TrustIntro() {
 
       {/* SMALL LINK */}
       <a
-        href="#services"
+        href="/services"
         className="group mt-7 inline-flex items-center gap-2 text-sm font-medium text-[#D8D8D8] transition-colors duration-200 hover:text-[#FFC400]"
       >
         Explore our services

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -6,20 +7,9 @@ import {
   Mail,
   MapPin,
 } from "lucide-react";
-import { FaWhatsapp } from "react-icons/fa";
+import { FaFacebookF, FaGithub, FaYoutube, FaWhatsapp } from "react-icons/fa";
 
-/* =========================================================
-   BUSINESS INFORMATION
-========================================================= */
-
-const BUSINESS = {
-  email: "hello@amandigitalsolutions.com",
-  whatsapp: "918219174058",
-  instagram:
-    "https://www.instagram.com/amandigital.solutions/",
-  linkedin:
-    "https://www.linkedin.com/in/amancodes60/",
-} as const;
+import { getSiteSettings } from "@/lib/site-settings/getSiteSettings";
 
 /* =========================================================
    FOOTER NAVIGATION
@@ -38,21 +28,121 @@ const NAVIGATION = [
 
 /* =========================================================
    SERVICES
+   These are page-specific service links, so they stay static.
 ========================================================= */
 
 const SERVICES = [
-  "Web Development",
-  "UI / UX Design",
-  "SEO & Performance",
-  "Business Solutions",
+  {
+    label: "Web Development",
+    href: "/services/website-development",
+  },
+  {
+    label: "UI / UX Design",
+    href: "/services/uiux-design-conversion-optimization",
+  },
+  {
+    label: "SEO & Performance",
+    href: "/services/seo-search-growth",
+  },
+  {
+    label: "Business Solutions",
+    href: "/services/business-automation-workflow-systems",
+  },
 ] as const;
 
 /* =========================================================
    FOOTER
 ========================================================= */
 
-export default function Footer() {
-  const whatsappHref = `https://wa.me/${BUSINESS.whatsapp}`;
+export default async function Footer() {
+  const settings = await getSiteSettings();
+
+  /* =======================================================
+     GLOBAL BUSINESS DATA — CMS
+  ======================================================= */
+
+  const siteName =
+    settings?.siteName?.trim() ||
+    "Aman Digital Solutions";
+
+  const tagline =
+    settings?.tagline?.trim() ||
+    "Web Development & Digital Solutions";
+
+  const logoUrl =
+    settings?.logo?.url?.trim() ||
+    "/logo.png";
+
+  const logoAlt =
+    settings?.logo?.alt?.trim() ||
+    siteName;
+
+  const footerText =
+    settings?.footerText?.trim() ||
+    settings?.description?.trim() ||
+    "Professional websites, digital solutions and ongoing support for businesses.";
+
+  const email =
+    settings?.primaryEmail?.trim() ||
+    settings?.contact?.email?.trim() ||
+    "";
+
+  const whatsappNumber =
+    settings?.whatsappNumber?.trim() ||
+    settings?.contact?.whatsapp?.trim() ||
+    "";
+
+  const whatsappDigits = whatsappNumber.replace(/\D/g, "");
+
+  const whatsappHref = whatsappDigits
+    ? `https://wa.me/${whatsappDigits}`
+    : "";
+
+  const instagram =
+    settings?.socialLinks?.instagram?.trim() || "";
+
+  const facebook =
+    settings?.socialLinks?.facebook?.trim() || "";
+
+  const linkedin =
+    settings?.socialLinks?.linkedin?.trim() || "";
+
+  const youtube =
+    settings?.socialLinks?.youtube?.trim() || "";
+
+  const github =
+    settings?.socialLinks?.github?.trim() || "";
+
+  const googleMapsUrl =
+    settings?.googleMapsUrl?.trim() || "";
+
+  const address =
+    settings?.contact?.address?.trim() || "";
+
+  const city =
+    settings?.contact?.city?.trim() ||
+    "Shimla";
+
+  const state =
+    settings?.contact?.state?.trim() ||
+    "Himachal Pradesh";
+
+  const country =
+    settings?.contact?.country?.trim() ||
+    "India";
+
+  const locationParts = [
+    address,
+    city,
+    state,
+    country,
+  ].filter(Boolean);
+
+  const locationLabel = locationParts.join(", ");
+
+  const copyrightText =
+    settings?.copyrightText?.trim() ||
+    `© ${new Date().getFullYear()} ${siteName}. All rights reserved.`;
 
   return (
     <footer className="relative w-full max-w-full overflow-hidden border-t border-[#1A1A1A] bg-[#030303]">
@@ -67,7 +157,7 @@ export default function Footer() {
 
             <div className="max-w-3xl">
               <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#FFC400]">
-                Aman Digital Solutions
+                {siteName}
               </p>
 
               <h2 className="mt-4 text-[clamp(2.3rem,5vw,4.8rem)] font-semibold leading-[0.94] tracking-[-0.055em] text-[#F5F5F5]">
@@ -139,7 +229,7 @@ export default function Footer() {
           <div className="max-w-sm">
             <Link
               href="/"
-              aria-label="Aman Digital Solutions home"
+              aria-label={`${siteName} home`}
               className="
                 inline-flex
                 items-center
@@ -152,167 +242,293 @@ export default function Footer() {
             >
               <div
                 aria-hidden="true"
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#292929] bg-[#0D0D0D]"
+                className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-[#292929] bg-[#0D0D0D]"
               >
-                <span className="text-sm font-bold text-[#FFC400]">
-                  A
-                </span>
+                <Image
+                  src={logoUrl}
+                  alt=""
+                  fill
+                  sizes="40px"
+                  className="object-contain p-1.5"
+                />
               </div>
 
               <div>
                 <p className="text-sm font-semibold tracking-tight text-[#EAEAEA]">
-                  Aman Digital Solutions
+                  {siteName}
                 </p>
 
                 <p className="mt-0.5 text-[9px] uppercase tracking-[0.16em] text-[#4F4F4F]">
-                  Digital solutions
+                  {tagline}
                 </p>
               </div>
             </Link>
 
             <p className="mt-6 text-sm leading-7 text-[#666]">
-              We create fast, modern and business-focused
-              digital experiences that help ambitious brands
-              grow online.
+              {footerText}
             </p>
 
             {/* SOCIALS */}
 
-            <div className="mt-7 flex items-center gap-2">
-              {/* INSTAGRAM */}
+            {(instagram ||
+              facebook ||
+              linkedin ||
+              youtube ||
+              github ||
+              whatsappHref ||
+              email) && (
+              <div className="mt-7 flex flex-wrap items-center gap-2">
+                {/* INSTAGRAM */}
 
-              <a
-                href={BUSINESS.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Follow Aman Digital Solutions on Instagram"
-                className="
-                  flex
-                  h-9
-                  w-9
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-[#252525]
-                  bg-[#0A0A0A]
-                  text-[#666]
-                  transition-all
-                  duration-200
-                  hover:border-[#FFC400]/30
-                  hover:bg-[#FFC400]/[0.06]
-                  hover:text-[#FFC400]
-                  focus-visible:outline-none
-                  focus-visible:ring-2
-                  focus-visible:ring-[#FFC400]
-                "
-              >
-                <Instagram
-                  aria-hidden="true"
-                  size={15}
-                />
-              </a>
+                {instagram && (
+                  <a
+                    href={instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Follow ${siteName} on Instagram`}
+                    className="
+                      flex
+                      h-9
+                      w-9
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-[#252525]
+                      bg-[#0A0A0A]
+                      text-[#666]
+                      transition-all
+                      duration-200
+                      hover:border-[#FFC400]/30
+                      hover:bg-[#FFC400]/[0.06]
+                      hover:text-[#FFC400]
+                      focus-visible:outline-none
+                      focus-visible:ring-2
+                      focus-visible:ring-[#FFC400]
+                    "
+                  >
+                    <Instagram
+                      aria-hidden="true"
+                      size={15}
+                    />
+                  </a>
+                )}
 
-              {/* LINKEDIN */}
+                {/* FACEBOOK */}
 
-              <a
-                href={BUSINESS.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Connect with Aman Digital Solutions on LinkedIn"
-                className="
-                  flex
-                  h-9
-                  w-9
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-[#252525]
-                  bg-[#0A0A0A]
-                  text-[#666]
-                  transition-all
-                  duration-200
-                  hover:border-[#FFC400]/30
-                  hover:bg-[#FFC400]/[0.06]
-                  hover:text-[#FFC400]
-                  focus-visible:outline-none
-                  focus-visible:ring-2
-                  focus-visible:ring-[#FFC400]
-                "
-              >
-                <Linkedin
-                  aria-hidden="true"
-                  size={15}
-                />
-              </a>
+                {facebook && (
+                  <a
+                    href={facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Follow ${siteName} on Facebook`}
+                    className="
+                      flex
+                      h-9
+                      w-9
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-[#252525]
+                      bg-[#0A0A0A]
+                      text-[#666]
+                      transition-all
+                      duration-200
+                      hover:border-[#FFC400]/30
+                      hover:bg-[#FFC400]/[0.06]
+                      hover:text-[#FFC400]
+                      focus-visible:outline-none
+                      focus-visible:ring-2
+                      focus-visible:ring-[#FFC400]
+                    "
+                  >
+                    <FaFacebookF
+                      aria-hidden="true"
+                      size={13}
+                    />
+                  </a>
+                )}
 
-              {/* WHATSAPP */}
+                {/* LINKEDIN */}
 
-              <a
-                href={whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Chat with Aman Digital Solutions on WhatsApp"
-                className="
-                  flex
-                  h-9
-                  w-9
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-[#252525]
-                  bg-[#0A0A0A]
-                  text-[#666]
-                  transition-all
-                  duration-200
-                  hover:border-[#FFC400]/30
-                  hover:bg-[#FFC400]/[0.06]
-                  hover:text-[#FFC400]
-                  focus-visible:outline-none
-                  focus-visible:ring-2
-                  focus-visible:ring-[#FFC400]
-                "
-              >
-                <FaWhatsapp
-                  aria-hidden="true"
-                  size={15}
-                />
-              </a>
+                {linkedin && (
+                  <a
+                    href={linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Connect with ${siteName} on LinkedIn`}
+                    className="
+                      flex
+                      h-9
+                      w-9
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-[#252525]
+                      bg-[#0A0A0A]
+                      text-[#666]
+                      transition-all
+                      duration-200
+                      hover:border-[#FFC400]/30
+                      hover:bg-[#FFC400]/[0.06]
+                      hover:text-[#FFC400]
+                      focus-visible:outline-none
+                      focus-visible:ring-2
+                      focus-visible:ring-[#FFC400]
+                    "
+                  >
+                    <Linkedin
+                      aria-hidden="true"
+                      size={15}
+                    />
+                  </a>
+                )}
 
-              {/* EMAIL */}
+                {/* YOUTUBE */}
 
-              <a
-                href={`mailto:${BUSINESS.email}`}
-                aria-label="Email Aman Digital Solutions"
-                className="
-                  flex
-                  h-9
-                  w-9
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-[#252525]
-                  bg-[#0A0A0A]
-                  text-[#666]
-                  transition-all
-                  duration-200
-                  hover:border-[#FFC400]/30
-                  hover:bg-[#FFC400]/[0.06]
-                  hover:text-[#FFC400]
-                  focus-visible:outline-none
-                  focus-visible:ring-2
-                  focus-visible:ring-[#FFC400]
-                "
-              >
-                <Mail
-                  aria-hidden="true"
-                  size={15}
-                />
-              </a>
-            </div>
+                {youtube && (
+                  <a
+                    href={youtube}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Watch ${siteName} on YouTube`}
+                    className="
+                      flex
+                      h-9
+                      w-9
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-[#252525]
+                      bg-[#0A0A0A]
+                      text-[#666]
+                      transition-all
+                      duration-200
+                      hover:border-[#FFC400]/30
+                      hover:bg-[#FFC400]/[0.06]
+                      hover:text-[#FFC400]
+                      focus-visible:outline-none
+                      focus-visible:ring-2
+                      focus-visible:ring-[#FFC400]
+                    "
+                  >
+                    <FaYoutube
+                      aria-hidden="true"
+                      size={14}
+                    />
+                  </a>
+                )}
+
+                {/* GITHUB */}
+
+                {github && (
+                  <a
+                    href={github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`View ${siteName} on GitHub`}
+                    className="
+                      flex
+                      h-9
+                      w-9
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-[#252525]
+                      bg-[#0A0A0A]
+                      text-[#666]
+                      transition-all
+                      duration-200
+                      hover:border-[#FFC400]/30
+                      hover:bg-[#FFC400]/[0.06]
+                      hover:text-[#FFC400]
+                      focus-visible:outline-none
+                      focus-visible:ring-2
+                      focus-visible:ring-[#FFC400]
+                    "
+                  >
+                    <FaGithub
+                      aria-hidden="true"
+                      size={15}
+                    />
+                  </a>
+                )}
+
+                {/* WHATSAPP */}
+
+                {whatsappHref && (
+                  <a
+                    href={whatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Chat with ${siteName} on WhatsApp`}
+                    className="
+                      flex
+                      h-9
+                      w-9
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-[#252525]
+                      bg-[#0A0A0A]
+                      text-[#666]
+                      transition-all
+                      duration-200
+                      hover:border-[#FFC400]/30
+                      hover:bg-[#FFC400]/[0.06]
+                      hover:text-[#FFC400]
+                      focus-visible:outline-none
+                      focus-visible:ring-2
+                      focus-visible:ring-[#FFC400]
+                    "
+                  >
+                    <FaWhatsapp
+                      aria-hidden="true"
+                      size={15}
+                    />
+                  </a>
+                )}
+
+                {/* EMAIL */}
+
+                {email && (
+                  <a
+                    href={`mailto:${email}`}
+                    aria-label={`Email ${siteName}`}
+                    className="
+                      flex
+                      h-9
+                      w-9
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-[#252525]
+                      bg-[#0A0A0A]
+                      text-[#666]
+                      transition-all
+                      duration-200
+                      hover:border-[#FFC400]/30
+                      hover:bg-[#FFC400]/[0.06]
+                      hover:text-[#FFC400]
+                      focus-visible:outline-none
+                      focus-visible:ring-2
+                      focus-visible:ring-[#FFC400]
+                    "
+                  >
+                    <Mail
+                      aria-hidden="true"
+                      size={15}
+                    />
+                  </a>
+                )}
+              </div>
+            )}
           </div>
 
           {/* =================================================
@@ -359,14 +575,28 @@ export default function Footer() {
               What we do
             </p>
 
-            <div className="mt-5 flex flex-col gap-3">
+            <nav
+              aria-label="Our services"
+              className="mt-5 flex flex-col items-start gap-3"
+            >
               {SERVICES.map((service) => (
-                <span
-                  key={service}
-                  className="text-sm text-[#777]"
+                <Link
+                  key={service.href}
+                  href={service.href}
+                  className="
+                    rounded-sm
+                    text-sm
+                    text-[#777]
+                    transition-colors
+                    duration-200
+                    hover:text-[#FFC400]
+                    focus-visible:outline-none
+                    focus-visible:ring-2
+                    focus-visible:ring-[#FFC400]
+                  "
                 >
-                  {service}
-                </span>
+                  {service.label}
+                </Link>
               ))}
 
               <Link
@@ -403,7 +633,7 @@ export default function Footer() {
                   "
                 />
               </Link>
-            </div>
+            </nav>
           </div>
 
           {/* =================================================
@@ -418,118 +648,207 @@ export default function Footer() {
             <div className="mt-5 space-y-4">
               {/* EMAIL */}
 
-              <a
-                href={`mailto:${BUSINESS.email}`}
-                className="
-                  group
-                  flex
-                  items-start
-                  gap-3
-                  rounded-sm
-                  text-sm
-                  text-[#777]
-                  transition-colors
-                  duration-200
-                  hover:text-[#FFC400]
-                  focus-visible:outline-none
-                  focus-visible:ring-2
-                  focus-visible:ring-[#FFC400]
-                "
-              >
-                <Mail
-                  aria-hidden="true"
-                  size={15}
+              {email && (
+                <a
+                  href={`mailto:${email}`}
                   className="
-                    mt-0.5
-                    shrink-0
-                    text-[#555]
+                    group
+                    flex
+                    items-start
+                    gap-3
+                    rounded-sm
+                    text-sm
+                    text-[#777]
                     transition-colors
-                    group-hover:text-[#FFC400]
+                    duration-200
+                    hover:text-[#FFC400]
+                    focus-visible:outline-none
+                    focus-visible:ring-2
+                    focus-visible:ring-[#FFC400]
                   "
-                />
+                >
+                  <Mail
+                    aria-hidden="true"
+                    size={15}
+                    className="
+                      mt-0.5
+                      shrink-0
+                      text-[#555]
+                      transition-colors
+                      group-hover:text-[#FFC400]
+                    "
+                  />
 
-                <span className="break-all">
-                  {BUSINESS.email}
-                </span>
-              </a>
+                  <span className="break-all">
+                    {email}
+                  </span>
+                </a>
+              )}
 
               {/* WHATSAPP */}
 
-              <a
-                href={whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Chat with Aman Digital Solutions on WhatsApp"
-                className="
-                  group
-                  flex
-                  items-start
-                  gap-3
-                  rounded-sm
-                  text-sm
-                  text-[#777]
-                  transition-colors
-                  duration-200
-                  hover:text-[#FFC400]
-                  focus-visible:outline-none
-                  focus-visible:ring-2
-                  focus-visible:ring-[#FFC400]
-                "
-              >
-                <FaWhatsapp
-                  aria-hidden="true"
-                  size={17}
+              {whatsappHref && (
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Chat with ${siteName} on WhatsApp`}
                   className="
-                    mt-0.5
-                    shrink-0
-                    text-[#555]
+                    group
+                    flex
+                    items-start
+                    gap-3
+                    rounded-sm
+                    text-sm
+                    text-[#777]
                     transition-colors
-                    group-hover:text-[#FFC400]
+                    duration-200
+                    hover:text-[#FFC400]
+                    focus-visible:outline-none
+                    focus-visible:ring-2
+                    focus-visible:ring-[#FFC400]
                   "
-                />
+                >
+                  <FaWhatsapp
+                    aria-hidden="true"
+                    size={17}
+                    className="
+                      mt-0.5
+                      shrink-0
+                      text-[#555]
+                      transition-colors
+                      group-hover:text-[#FFC400]
+                    "
+                  />
 
-                <span>WhatsApp us</span>
-              </a>
+                  <span>WhatsApp us</span>
+                </a>
+              )}
 
-              {/* LOCATION */}
+              {/* LOCATION / GOOGLE BUSINESS PROFILE */}
 
-              <Link
-                href="/locations/shimla"
-                aria-label="Aman Digital Solutions in Shimla, Himachal Pradesh"
-                className="
-                  group
-                  flex
-                  items-start
-                  gap-3
-                  rounded-sm
-                  text-sm
-                  text-[#777]
-                  transition-colors
-                  duration-200
-                  hover:text-[#FFC400]
-                  focus-visible:outline-none
-                  focus-visible:ring-2
-                  focus-visible:ring-[#FFC400]
-                "
-              >
-                <MapPin
-                  aria-hidden="true"
-                  size={15}
+              {locationLabel && (
+                <>
+                  {googleMapsUrl ? (
+                    <a
+                      href={googleMapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`View ${siteName} on Google Business Profile and Maps`}
+                      className="
+                        group
+                        flex
+                        items-start
+                        gap-3
+                        rounded-sm
+                        text-sm
+                        text-[#777]
+                        transition-colors
+                        duration-200
+                        hover:text-[#FFC400]
+                        focus-visible:outline-none
+                        focus-visible:ring-2
+                        focus-visible:ring-[#FFC400]
+                      "
+                    >
+                      <MapPin
+                        aria-hidden="true"
+                        size={15}
+                        className="
+                          mt-0.5
+                          shrink-0
+                          text-[#555]
+                          transition-colors
+                          group-hover:text-[#FFC400]
+                        "
+                      />
+
+                      <span>
+                        {address && (
+                          <>
+                            {address}
+                            <br />
+                          </>
+                        )}
+
+                        {city}
+                        {state ? `, ${state}` : ""}
+                        {country ? `, ${country}` : ""}
+                      </span>
+                    </a>
+                  ) : (
+                    <div
+                      className="
+                        flex
+                        items-start
+                        gap-3
+                        text-sm
+                        text-[#777]
+                      "
+                    >
+                      <MapPin
+                        aria-hidden="true"
+                        size={15}
+                        className="mt-0.5 shrink-0 text-[#555]"
+                      />
+
+                      <span>
+                        {address && (
+                          <>
+                            {address}
+                            <br />
+                          </>
+                        )}
+
+                        {city}
+                        {state ? `, ${state}` : ""}
+                        {country ? `, ${country}` : ""}
+                      </span>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* GOOGLE BUSINESS PROFILE LINK */}
+
+              {googleMapsUrl && (
+                <a
+                  href={googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="
-                    mt-0.5
-                    shrink-0
-                    text-[#555]
+                    group
+                    inline-flex
+                    min-h-10
+                    items-center
+                    gap-2
+                    rounded-sm
+                    pt-1
+                    text-xs
+                    font-medium
+                    text-[#8A8A8A]
                     transition-colors
-                    group-hover:text-[#FFC400]
+                    duration-200
+                    hover:text-[#FFC400]
+                    focus-visible:outline-none
+                    focus-visible:ring-2
+                    focus-visible:ring-[#FFC400]
                   "
-                />
+                >
+                  View us on Google
 
-                <span>
-                  Shimla, Himachal Pradesh
-                  <br />
-                  India
-                </span>
-              </Link>
+                  <ArrowUpRight
+                    aria-hidden="true"
+                    size={13}
+                    className="
+                      transition-transform
+                      duration-200
+                      group-hover:-translate-y-0.5
+                      group-hover:translate-x-0.5
+                    "
+                  />
+                </a>
+              )}
 
               {/* PROJECT CTA */}
 
@@ -577,8 +896,7 @@ export default function Footer() {
 
         <div className="mt-12 flex flex-col gap-5 border-t border-[#1A1A1A] pt-6 sm:mt-14 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-[10px] text-[#444]">
-            © {new Date().getFullYear()} Aman Digital Solutions.
-            All rights reserved.
+            {copyrightText}
           </p>
 
           <div className="flex flex-wrap items-center gap-5 text-[10px] text-[#444]">

@@ -147,7 +147,7 @@ export default function ServicesFAQSection() {
         {/* Bottom CTA */}
         <div className="mt-10 flex flex-col items-center justify-center gap-4 text-center">
           <p className="text-xs leading-6 text-neutral-600">
-            Looking for more answers about working with us?
+            Looking for more answers?
           </p>
 
           <Link

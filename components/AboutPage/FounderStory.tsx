@@ -1,31 +1,32 @@
 import {
   ArrowUpRight,
+  BriefcaseBusiness,
   Code2,
-  Lightbulb,
+  Globe2,
   Rocket,
 } from "lucide-react";
 
 const JOURNEY = [
   {
-    year: "16 JUN 2025",
-    title: "The starting point",
+    year: "2025",
+    title: "Built on web development",
     description:
-      "I started learning web development through a web designing course, beginning with HTML, CSS and the fundamentals of WordPress.",
+      "Aman Digital Solutions began with a focus on learning modern web development and understanding how websites, applications and digital products can solve practical business problems.",
     icon: Code2,
   },
   {
-    year: "SELF-LEARNING",
-    title: "Going beyond the basics",
+    year: "2025 → 2026",
+    title: "From learning to real projects",
     description:
-      "After the fundamentals, I continued learning independently through building projects, experimenting with modern technologies and solving real development problems.",
-    icon: Lightbulb,
+      "The focus moved from learning individual technologies to building complete digital experiences — websites, e-commerce platforms, custom web applications, business systems and SEO-ready solutions.",
+    icon: BriefcaseBusiness,
   },
   {
-    year: "2025 → 2026",
-    title: "From projects to business",
+    year: "INDIA & AUSTRALIA",
+    title: "Working across markets",
     description:
-      "As the projects became more capable and the development skills grew, the goal shifted from simply getting a job to building something of my own.",
-    icon: Rocket,
+      "Projects have expanded beyond the local market, with more than 20 projects completed across different business needs and work delivered for businesses in India and Australia.",
+    icon: Globe2,
   },
 ];
 
@@ -34,6 +35,7 @@ export default function FounderStory() {
     <section
       id="story"
       className="relative overflow-hidden bg-[#080808] py-20 sm:py-24 lg:py-32"
+      aria-labelledby="story-heading"
     >
       <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-[0.72fr_1.28fr] lg:gap-24">
@@ -43,18 +45,20 @@ export default function FounderStory() {
               The journey
             </span>
 
-            <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.04em] text-white sm:text-4xl lg:text-5xl">
-              It started with a skill.
+            <h2
+              id="story-heading"
+              className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.04em] text-white sm:text-4xl lg:text-5xl"
+            >
+              From learning
               <span className="block text-neutral-500">
-                It became a vision.
+                to building for business.
               </span>
             </h2>
 
             <p className="mt-6 max-w-md text-sm leading-7 text-neutral-500 sm:text-base">
-              Aman Digital Solutions wasn&apos;t created overnight.
-              It grew from learning, building, making mistakes, solving
-              problems and gradually understanding what businesses
-              actually need from technology.
+              Aman Digital Solutions has grown through continuous
+              learning, real-world projects and a deeper understanding
+              of what businesses actually need from technology.
             </p>
 
             <a
@@ -69,6 +73,7 @@ export default function FounderStory() {
 
               <ArrowUpRight
                 size={15}
+                aria-hidden="true"
                 className="
                   text-[#FFC400]
                   transition-transform duration-200
@@ -121,7 +126,6 @@ export default function FounderStory() {
                         border border-[#FFC400]/40
                         bg-[#080808]
                         sm:left-[11px] sm:top-9
-                        sm:h-[18px] sm:w-[18px]
                       "
                     >
                       <span className="h-1.5 w-1.5 rounded-full bg-[#FFC400]" />
@@ -139,7 +143,11 @@ export default function FounderStory() {
                       </div>
 
                       <div className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.08] bg-black/20 text-neutral-400 sm:flex">
-                        <Icon size={17} />
+                        <Icon
+                          size={17}
+                          strokeWidth={1.7}
+                          aria-hidden="true"
+                        />
                       </div>
                     </div>
 
@@ -151,22 +159,48 @@ export default function FounderStory() {
               })}
             </div>
 
-            {/* Current vision */}
+            {/* Current position */}
             <div className="mt-5 rounded-3xl border border-[#FFC400]/15 bg-[#FFC400]/[0.035] p-6 sm:p-8">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#FFC400]">
-                Today
-              </p>
+              <div className="flex items-center gap-2">
+                <Rocket
+                  size={15}
+                  className="text-[#FFC400]"
+                  aria-hidden="true"
+                />
+
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#FFC400]">
+                  Today
+                </p>
+              </div>
 
               <h3 className="mt-3 text-2xl font-semibold tracking-[-0.035em] text-white">
-                Building Aman Digital Solutions for the long term.
+                Building digital solutions for the long term.
               </h3>
 
               <p className="mt-4 max-w-2xl text-sm leading-7 text-neutral-400 sm:text-[15px]">
-                The goal is bigger than delivering individual websites.
-                The long-term vision is to build a company capable of
-                delivering reliable digital solutions to businesses
-                worldwide.
+                With 20+ projects completed across India and Australia,
+                Aman Digital Solutions continues to grow around one
+                principle: build useful digital products that help
+                businesses operate, compete and grow online.
               </p>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                <span className="rounded-full border border-white/[0.08] bg-white/[0.025] px-3 py-1.5 text-[10px] font-medium text-neutral-400">
+                  20+ Projects
+                </span>
+
+                <span className="rounded-full border border-white/[0.08] bg-white/[0.025] px-3 py-1.5 text-[10px] font-medium text-neutral-400">
+                  India
+                </span>
+
+                <span className="rounded-full border border-white/[0.08] bg-white/[0.025] px-3 py-1.5 text-[10px] font-medium text-neutral-400">
+                  Australia
+                </span>
+
+                <span className="rounded-full border border-white/[0.08] bg-white/[0.025] px-3 py-1.5 text-[10px] font-medium text-neutral-400">
+                  Digital Solutions
+                </span>
+              </div>
             </div>
           </div>
         </div>

@@ -18,12 +18,7 @@ const SITE_URL =
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   await connectDB();
 
-  const [
-    services,
-    projects,
-    galleries,
-    blogs,
-  ] = await Promise.all([
+  const [services, projects, galleries, blogs] = await Promise.all([
     Service.find({
       published: true,
     })
@@ -70,6 +65,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${SITE_URL}/projects`,
       changeFrequency: "weekly",
       priority: 0.9,
+    },
+
+    {
+      url: `${SITE_URL}/reviews`,
+      changeFrequency: "monthly",
+      priority: 0.8,
     },
 
     {
@@ -131,81 +132,69 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
      SERVICE PAGES
   ======================================================== */
 
-  const servicePages: MetadataRoute.Sitemap =
-    services.map((service) => ({
-      url:
-        `${SITE_URL}/services/${service.slug}`,
+  const servicePages: MetadataRoute.Sitemap = services.map((service) => ({
+    url: `${SITE_URL}/services/${service.slug}`,
 
-      ...(service.updatedAt
-        ? {
-            lastModified:
-              new Date(service.updatedAt),
-          }
-        : {}),
+    ...(service.updatedAt
+      ? {
+          lastModified: new Date(service.updatedAt),
+        }
+      : {}),
 
-      changeFrequency: "monthly",
-      priority: 0.8,
-    }));
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
 
   /* =======================================================
      PROJECT PAGES
   ======================================================== */
 
-  const projectPages: MetadataRoute.Sitemap =
-    projects.map((project) => ({
-      url:
-        `${SITE_URL}/projects/${project.slug}`,
+  const projectPages: MetadataRoute.Sitemap = projects.map((project) => ({
+    url: `${SITE_URL}/projects/${project.slug}`,
 
-      ...(project.updatedAt
-        ? {
-            lastModified:
-              new Date(project.updatedAt),
-          }
-        : {}),
+    ...(project.updatedAt
+      ? {
+          lastModified: new Date(project.updatedAt),
+        }
+      : {}),
 
-      changeFrequency: "monthly",
-      priority: 0.8,
-    }));
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
 
   /* =======================================================
      GALLERY PAGES
   ======================================================== */
 
-  const galleryPages: MetadataRoute.Sitemap =
-    galleries.map((gallery) => ({
-      url:
-        `${SITE_URL}/gallery/${gallery.slug}`,
+  const galleryPages: MetadataRoute.Sitemap = galleries.map((gallery) => ({
+    url: `${SITE_URL}/gallery/${gallery.slug}`,
 
-      ...(gallery.updatedAt
-        ? {
-            lastModified:
-              new Date(gallery.updatedAt),
-          }
-        : {}),
+    ...(gallery.updatedAt
+      ? {
+          lastModified: new Date(gallery.updatedAt),
+        }
+      : {}),
 
-      changeFrequency: "monthly",
-      priority: 0.6,
-    }));
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
 
   /* =======================================================
      BLOG PAGES
   ======================================================== */
 
-  const blogPages: MetadataRoute.Sitemap =
-    blogs.map((blog) => ({
-      url:
-        `${SITE_URL}/blog/${blog.slug}`,
+  const blogPages: MetadataRoute.Sitemap = blogs.map((blog) => ({
+    url: `${SITE_URL}/blog/${blog.slug}`,
 
-      ...(blog.updatedAt
-        ? {
-            lastModified:
-              new Date(blog.updatedAt),
-          }
-        : {}),
+    ...(blog.updatedAt
+      ? {
+          lastModified: new Date(blog.updatedAt),
+        }
+      : {}),
 
-      changeFrequency: "monthly",
-      priority: 0.7,
-    }));
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
 
   /* =======================================================
      FINAL SITEMAP

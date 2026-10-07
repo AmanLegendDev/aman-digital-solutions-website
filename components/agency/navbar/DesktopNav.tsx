@@ -7,15 +7,24 @@ import { ArrowUpRight } from "lucide-react";
 import {
   NAV_CTA,
   NAV_ITEMS,
-  NAV_WHATSAPP,
 } from "./NavItems";
 
 type DesktopNavProps = {
   scrolled: boolean;
+  siteName: string;
+  tagline: string;
+  logoUrl: string;
+  logoAlt: string;
+  whatsappUrl?: string;
 };
 
 export default function DesktopNav({
   scrolled,
+  siteName,
+  tagline,
+  logoUrl,
+  logoAlt,
+  whatsappUrl,
 }: DesktopNavProps) {
   return (
     <div
@@ -33,7 +42,7 @@ export default function DesktopNav({
       {/* BRAND */}
       <Link
         href="/"
-        aria-label="Aman Digital Solutions home"
+        aria-label={`${siteName} home`}
         className="
           group
           flex
@@ -46,8 +55,8 @@ export default function DesktopNav({
         "
       >
         <Image
-          src="/logo.png"
-          alt="Aman Digital Solutions"
+          src={logoUrl}
+          alt={logoAlt}
           width={170}
           height={48}
           priority
@@ -73,7 +82,7 @@ export default function DesktopNav({
               text-white
             "
           >
-            Aman Digital Solutions
+            {siteName}
           </span>
 
           <span
@@ -86,7 +95,7 @@ export default function DesktopNav({
               text-neutral-500
             "
           >
-            Digital solutions that mean business.
+            {tagline}
           </span>
         </div>
       </Link>
@@ -142,39 +151,41 @@ export default function DesktopNav({
       {/* RIGHT ACTIONS */}
       <div className="flex shrink-0 items-center gap-2">
         {/* WHATSAPP */}
-        <a
-          href={NAV_WHATSAPP}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Chat with Aman Digital Solutions on WhatsApp"
-          className="
-            inline-flex
-            h-10
-            w-10
-            items-center
-            justify-center
-            rounded-full
-            border
-            border-[#292929]
-            bg-[#111111]
-            text-[#A1A1A1]
-            transition-all
-            duration-200
-            hover:border-[#FFC400]/40
-            hover:bg-[#151515]
-            hover:text-[#FFC400]
-            focus-visible:outline-none
-            focus-visible:ring-2
-            focus-visible:ring-[#FFC400]
-          "
-        >
-          <span
-            aria-hidden="true"
-            className="text-[12px] font-bold"
+        {whatsappUrl && (
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Chat with ${siteName} on WhatsApp`}
+            className="
+              inline-flex
+              h-10
+              w-10
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-[#292929]
+              bg-[#111111]
+              text-[#A1A1A1]
+              transition-all
+              duration-200
+              hover:border-[#FFC400]/40
+              hover:bg-[#151515]
+              hover:text-[#FFC400]
+              focus-visible:outline-none
+              focus-visible:ring-2
+              focus-visible:ring-[#FFC400]
+            "
           >
-            WA
-          </span>
-        </a>
+            <span
+              aria-hidden="true"
+              className="text-[12px] font-bold"
+            >
+              WA
+            </span>
+          </a>
+        )}
 
         {/* PRIMARY CTA */}
         <Link

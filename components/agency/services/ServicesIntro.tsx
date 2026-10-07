@@ -99,7 +99,7 @@ export default function ServicesIntro() {
         </Link>
 
         <Link
-          href="#contact"
+          href="/start-a-project"
           className="text-xs font-medium text-[#555] transition-colors duration-200 hover:text-[#FFC400] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400]"
         >
           Start a conversation

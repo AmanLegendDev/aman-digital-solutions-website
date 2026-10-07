@@ -38,7 +38,7 @@ export default function BlogIntro() {
         </span>
 
         <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#FFC400]">
-          Ideas &amp; insights
+         From the blog
         </span>
       </div>
 
@@ -47,17 +47,15 @@ export default function BlogIntro() {
         id="blog-heading"
         className="mt-6 text-[clamp(2.5rem,5vw,4.7rem)] font-semibold leading-[0.94] tracking-[-0.055em] text-[#F5F5F5]"
       >
-        Practical ideas
+       Practical insights
         <span className="block text-[#FFC400]">
-          for growing businesses.
+          for better digital growth.
         </span>
       </h2>
 
       {/* DESCRIPTION */}
       <p className="mt-6 max-w-md text-sm leading-7 text-[#858585] sm:text-base sm:leading-7">
-        Explore practical insights on websites, technology, SEO,
-        digital strategy and building a stronger online presence —
-        explained clearly without unnecessary noise.
+        Useful guides on websites, SEO, e-commerce and digital growth — written to help business owners make better decisions about their online presence.
       </p>
 
       {/* SIGNAL */}
@@ -77,14 +75,14 @@ export default function BlogIntro() {
           >
             /
           </span>
-          Technology
+          E-commerce
           <span
             aria-hidden="true"
             className="mx-2 text-[#333]"
           >
             /
           </span>
-          Growth
+          Digital Growth
         </p>
       </div>
 

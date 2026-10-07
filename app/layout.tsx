@@ -3,189 +3,200 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import GlobalStructuredData from "@/components/seo/GlobalStructuredData";
+import { getSiteSettings } from "@/lib/site-settings/getSiteSettings";
+import SiteAnalytics from "@/components/analytics/SiteAnalytics";
+import CookieBannerWrapper from "@/components/cookies/CookieBannerWrapper";
 
 /* =========================================================
    SITE CONFIG
 ========================================================= */
 
-const SITE_URL = (
+const FALLBACK_SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.amandigitalsolutions.com"
 ).replace(/\/$/, "");
 
-const SITE_NAME =
+const FALLBACK_SITE_NAME =
   "Aman Digital Solutions";
 
-const DEFAULT_TITLE =
+const FALLBACK_TITLE =
   "Aman Digital Solutions | Web Development & Digital Solutions";
 
-const DEFAULT_DESCRIPTION =
+const FALLBACK_DESCRIPTION =
   "Aman Digital Solutions is a Shimla-based web development and digital solutions studio offering professional websites, e-commerce, custom web applications, SEO and digital solutions for businesses in Himachal Pradesh, across India and beyond.";
+
+const FALLBACK_OG_IMAGE =
+  "/og-image.png";
 
 /* =========================================================
    METADATA
 ========================================================= */
 
-export const metadata: Metadata = {
-  /*
-   * IMPORTANT:
-   * Keep this as a plain string.
-   *
-   * Individual pages already define their complete SEO titles.
-   * No global "| Aman Digital Solutions" template is applied.
-   */
-  title:
-    DEFAULT_TITLE,
+export async function generateMetadata(): Promise<Metadata> {
+  const settings =
+    await getSiteSettings();
 
-  description:
-    DEFAULT_DESCRIPTION,
+  const siteUrl =
+    (
+      settings?.defaultCanonicalBaseUrl ||
+      FALLBACK_SITE_URL
+    ).replace(/\/$/, "");
 
-  applicationName:
-    SITE_NAME,
+  const siteName =
+    settings?.siteName ||
+    FALLBACK_SITE_NAME;
 
-  metadataBase:
-    new URL(SITE_URL),
+  const title =
+    settings?.seoTitle ||
+    FALLBACK_TITLE;
 
-  authors: [
-    {
-      name:
-        SITE_NAME,
-      url:
-        SITE_URL,
-    },
-  ],
+  const description =
+    settings?.seoDescription ||
+    FALLBACK_DESCRIPTION;
 
-  creator:
-    SITE_NAME,
+  const ogImage =
+    settings?.defaultOgImage?.url ||
+    FALLBACK_OG_IMAGE;
 
-  publisher:
-    SITE_NAME,
+  const logo =
+    settings?.favicon?.url ||
+    "/icon.png";
 
-  category:
-    "technology",
+  return {
+    /*
+     * IMPORTANT:
+     * Keep this as a plain string.
+     *
+     * Individual pages already define their complete SEO titles.
+     * No global title template is applied.
+     */
+    title,
 
-  alternates: {
-    canonical:
-      SITE_URL,
-  },
+    description,
 
-  robots: {
-    index: true,
-    follow: true,
+    applicationName:
+      siteName,
 
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview":
-        "large",
-      "max-snippet":
-        -1,
-      "max-video-preview":
-        -1,
-    },
-  },
+    metadataBase:
+      new URL(siteUrl),
 
-  icons: {
-    icon:
-      "/icon.png",
-
-    apple:
-      "/apple-icon.png",
-  },
-
-  openGraph: {
-    title:
-      DEFAULT_TITLE,
-
-    description:
-      DEFAULT_DESCRIPTION,
-
-    url:
-      SITE_URL,
-
-    siteName:
-      SITE_NAME,
-
-    type:
-      "website",
-
-    locale:
-      "en_IN",
-
-    images: [
+    authors: [
       {
-        url:
-          "/og-image.png",
-
-        width:
-          1200,
-
-        height:
-          630,
-
-        alt:
-          "Aman Digital Solutions | Web Development & Digital Solutions",
+        name: siteName,
+        url: siteUrl,
       },
     ],
-  },
 
-  twitter: {
-    card:
-      "summary_large_image",
+    creator: siteName,
 
-    title:
-      DEFAULT_TITLE,
+    publisher: siteName,
 
-    description:
-      DEFAULT_DESCRIPTION,
+    category: "technology",
 
-    images: [
-      "/og-image.png",
-    ],
-  },
+    alternates: {
+      canonical: siteUrl,
+    },
 
-  formatDetection: {
-    telephone:
-      true,
+    robots: {
+      index: true,
+      follow: true,
 
-    email:
-      true,
+      googleBot: {
+        index: true,
+        follow: true,
 
-    address:
-      true,
-  },
+        "max-image-preview":
+          "large",
 
-  referrer:
-    "strict-origin-when-cross-origin",
-};
+        "max-snippet": -1,
+
+        "max-video-preview":
+          -1,
+      },
+    },
+
+    icons: {
+      icon: logo,
+
+      apple:
+        "/apple-icon.png",
+    },
+
+    openGraph: {
+      title,
+
+      description,
+
+      url: siteUrl,
+
+      siteName,
+
+      type: "website",
+
+      locale: "en_IN",
+
+      images: [
+        {
+          url: ogImage,
+
+          width: 1200,
+
+          height: 630,
+
+          alt: title,
+        },
+      ],
+    },
+
+    twitter: {
+      card:
+        "summary_large_image",
+
+      title,
+
+      description,
+
+      images: [ogImage],
+    },
+
+    formatDetection: {
+      telephone: true,
+
+      email: true,
+
+      address: true,
+    },
+
+    referrer:
+      "strict-origin-when-cross-origin",
+  };
+}
 
 /* =========================================================
    VIEWPORT
 ========================================================= */
 
 export const viewport = {
-  width:
-    "device-width",
+  width: "device-width",
 
-  initialScale:
-    1,
+  initialScale: 1,
 
-  themeColor:
-    "#050505",
+  themeColor: "#050505",
 
-  colorScheme:
-    "dark",
+  colorScheme: "dark",
 };
 
 /* =========================================================
    ROOT LAYOUT
 ========================================================= */
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSiteSettings();
+
   return (
     <html lang="en">
       <body>
@@ -195,6 +206,22 @@ export default function RootLayout({
 
         <GlobalStructuredData />
 
+        {/* =================================================
+            ANALYTICS & TRACKING
+        ================================================= */}
+
+        <SiteAnalytics
+          googleAnalyticsId={
+            settings?.googleAnalyticsId
+          }
+          googleTagManagerId={
+            settings?.googleTagManagerId
+          }
+          facebookPixelId={
+            settings?.facebookPixelId
+          }
+        />
+<CookieBannerWrapper />
         {/* =================================================
             APPLICATION
         ================================================= */}

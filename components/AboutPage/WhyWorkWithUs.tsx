@@ -2,46 +2,53 @@ import {
   Blocks,
   MessageSquareText,
   Sparkles,
-  UserRound,
+  ShieldCheck,
 } from "lucide-react";
 
 const REASONS = [
   {
-    icon: UserRound,
-    title: "Direct founder involvement",
-    description:
-      "As a solo founder, Aman remains directly involved in the work instead of passing the project through layers of account managers and teams.",
-  },
-  {
     icon: Blocks,
     title: "One connected system",
     description:
-      "Design, frontend, backend, CMS, integrations and deployment are considered together so the final product feels like one coherent experience.",
+      "Design, frontend, backend, CMS, integrations and deployment are considered together so the final product feels like one coherent digital experience.",
   },
   {
     icon: MessageSquareText,
     title: "Clear communication",
     description:
-      "Clients should understand what is being built, why it matters and what comes next. Communication stays practical and straightforward.",
+      "Clients should understand what is being built, why it matters and what comes next. Communication stays practical, clear and straightforward.",
   },
   {
     icon: Sparkles,
     title: "Built around the business",
     description:
-      "There is no fixed template for every client. The structure, features and experience are shaped around the business and its customers.",
+      "There is no fixed template for every project. The structure, features and experience are shaped around the business, its customers and its goals.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Built with long-term thinking",
+    description:
+      "We consider performance, maintainability, future improvements and business growth so the digital product can continue to evolve after launch.",
   },
 ];
 
 export default function WhyWorkWithUs() {
   return (
-    <section className="relative overflow-hidden bg-[#080808] py-20 sm:py-24 lg:py-32">
+    <section
+      className="relative overflow-hidden bg-[#080808] py-20 sm:py-24 lg:py-32"
+      aria-labelledby="why-work-heading"
+    >
       <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+        {/* HEADER */}
         <div className="mx-auto max-w-3xl text-center">
           <span className="text-xs font-semibold uppercase tracking-[0.17em] text-[#FFC400]">
             Why work with us
           </span>
 
-          <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.045em] text-white sm:text-4xl lg:text-5xl">
+          <h2
+            id="why-work-heading"
+            className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.045em] text-white sm:text-4xl lg:text-5xl"
+          >
             Small by design.
             <span className="block text-neutral-500">
               Serious about the work.
@@ -49,13 +56,13 @@ export default function WhyWorkWithUs() {
           </h2>
 
           <p className="mt-6 text-sm leading-7 text-neutral-500 sm:text-base">
-            Aman Digital Solutions is currently founder-led. That means
-            clients work closely with the person responsible for the
-            product, rather than becoming another project in a large
-            production pipeline.
+            Aman Digital Solutions keeps the work focused, connected and
+            business-oriented — bringing design, development and digital
+            thinking together around what each project actually needs.
           </p>
         </div>
 
+        {/* REASONS */}
         <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {REASONS.map((item) => {
             const Icon = item.icon;
@@ -86,7 +93,11 @@ export default function WhyWorkWithUs() {
                     group-hover:text-[#FFC400]
                   "
                 >
-                  <Icon size={18} />
+                  <Icon
+                    size={18}
+                    strokeWidth={1.8}
+                    aria-hidden="true"
+                  />
                 </div>
 
                 <h3 className="mt-7 text-lg font-semibold tracking-[-0.025em] text-white">

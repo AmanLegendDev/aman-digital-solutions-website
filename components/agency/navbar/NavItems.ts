@@ -41,6 +41,3 @@ export const NAV_CTA = {
   label: "Let's Talk",
   href: "/start-a-project",
 } as const;
-
-export const NAV_WHATSAPP =
-  "https://wa.me/918219174058";

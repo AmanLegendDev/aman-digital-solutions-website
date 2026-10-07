@@ -81,7 +81,7 @@ export default function FeaturedServices({
               />
 
               <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#FFC400]">
-                Featured
+                Featured services
               </span>
             </div>
 

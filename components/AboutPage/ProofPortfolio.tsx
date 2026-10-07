@@ -9,7 +9,7 @@ const PROJECTS = [
     location: "Australia",
     type: "Real client project",
     description:
-      "A modern automotive service platform designed to help vehicle owners discover relevant mechanics and automotive services.",
+      "A mobile-focused automotive service platform designed to help customers discover services, understand available options and submit service enquiries online.",
     image:
       "https://res.cloudinary.com/du8kmbwz1/image/upload/v1787304177/aman-digital-solutions/hohpmqyl843n95gla81p.jpg",
     href: "/projects/mechanic-near-you",
@@ -18,10 +18,10 @@ const PROJECTS = [
   {
     title: "GR Pest Control",
     client: "GR Pest Control",
-    location: "Sydney, Australia",
+    location: "Australia",
     type: "Real client project",
     description:
-      "A professional service website created to present pest control services, locations and customer-focused information through a clear digital experience.",
+      "A professional service website built to present pest control services, service areas and customer-focused information through a clear and accessible digital experience.",
     image: "",
     href: "/projects/gr-pest-control",
     liveUrl: "https://www.grpestscontrol.com.au/",
@@ -32,7 +32,7 @@ const PROJECTS = [
     location: "Panthaghati, Shimla",
     type: "Real client project",
     description:
-      "A complete e-commerce experience for a local gift store with product discovery, categories, cart, ordering and a CMS-powered product catalogue.",
+      "An e-commerce experience for a local gift business with product discovery, categories, cart, ordering and a CMS-powered product catalogue.",
     image: "",
     href: "/projects/aarav-gift-gallery",
     liveUrl: "https://www.aaravgiftgallery.com/",
@@ -41,7 +41,10 @@ const PROJECTS = [
 
 export default function ProofPortfolio() {
   return (
-    <section className="relative overflow-hidden bg-[#080808] py-20 sm:py-24 lg:py-32">
+    <section
+      className="relative overflow-hidden bg-[#080808] py-20 sm:py-24 lg:py-32"
+      aria-labelledby="proof-heading"
+    >
       <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
         {/* HEADER */}
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
@@ -50,7 +53,10 @@ export default function ProofPortfolio() {
               Work in the real world
             </span>
 
-            <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.045em] text-white sm:text-4xl lg:text-5xl">
+            <h2
+              id="proof-heading"
+              className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.045em] text-white sm:text-4xl lg:text-5xl"
+            >
               Built for businesses.
               <span className="block text-neutral-500">
                 Not just for a portfolio.
@@ -58,9 +64,10 @@ export default function ProofPortfolio() {
             </h2>
 
             <p className="mt-6 max-w-2xl text-sm leading-7 text-neutral-500 sm:text-base">
-              A few examples of work delivered for real businesses. Each
-              project has different requirements, which is exactly why we
-              approach every build around the business behind it.
+              A selection of work delivered for real businesses across
+              different industries and markets. Each project has different
+              requirements, which is why every build is approached around
+              the business behind it.
             </p>
           </div>
 
@@ -76,6 +83,7 @@ export default function ProofPortfolio() {
 
             <ArrowUpRight
               size={15}
+              aria-hidden="true"
               className="
                 text-[#FFC400]
                 transition-transform duration-200
@@ -106,7 +114,7 @@ export default function ProofPortfolio() {
                 {project.image ? (
                   <Image
                     src={project.image}
-                    alt={`${project.title} project preview`}
+                    alt={`${project.title} website project`}
                     fill
                     sizes="(max-width: 1024px) 100vw, 33vw"
                     className="
@@ -123,7 +131,10 @@ export default function ProofPortfolio() {
                   </div>
                 )}
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
+                />
 
                 <span
                   className="
@@ -170,7 +181,10 @@ export default function ProofPortfolio() {
                       hover:text-[#FFC400]
                     "
                   >
-                    <ExternalLink size={14} />
+                    <ExternalLink
+                      size={14}
+                      aria-hidden="true"
+                    />
                   </a>
                 </div>
 
@@ -183,13 +197,14 @@ export default function ProofPortfolio() {
                   className="
                     group/link mt-6 inline-flex items-center gap-2
                     text-sm font-medium text-neutral-300
-                    hover:text-white
+                    transition-colors hover:text-white
                   "
                 >
                   View case study
 
                   <ArrowUpRight
                     size={14}
+                    aria-hidden="true"
                     className="
                       text-[#FFC400]
                       transition-transform duration-200

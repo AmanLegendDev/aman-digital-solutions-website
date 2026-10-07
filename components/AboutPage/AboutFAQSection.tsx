@@ -9,27 +9,27 @@ const aboutFAQs = [
   {
     question: "What is Aman Digital Solutions?",
     answer:
-      "Aman Digital Solutions is a founder-led web development and digital solutions company based in Shimla, Himachal Pradesh. The company builds websites, e-commerce stores, custom web applications and other digital solutions for businesses.",
+      "Aman Digital Solutions is a web development and digital solutions studio based in Shimla, Himachal Pradesh. We build professional websites, e-commerce stores, custom web applications and digital systems for businesses.",
   },
   {
     question: "Where is Aman Digital Solutions based?",
     answer:
-      "Aman Digital Solutions is based in Shimla, Himachal Pradesh, India and works with businesses across Himachal Pradesh, throughout India and with remote clients beyond the region.",
+      "Aman Digital Solutions is based in Shimla, Himachal Pradesh, India, and works with businesses across Himachal Pradesh, throughout India and remotely with clients beyond the region.",
   },
   {
     question: "What does Aman Digital Solutions build?",
     answer:
-      "Aman Digital Solutions builds modern business websites, e-commerce stores, custom web applications, admin systems and other digital experiences based on the requirements of each project.",
+      "We build modern business websites, e-commerce stores, custom web applications, business systems and other digital experiences based on the requirements and goals of each project.",
   },
   {
     question: "Who does Aman Digital Solutions work with?",
     answer:
-      "Aman Digital Solutions works with businesses and organizations that need a professional website, e-commerce solution, custom web application or other digital system to support their goals.",
+      "We work with businesses and organizations that need a professional website, e-commerce solution, custom web application or digital system to support their business goals.",
   },
   {
     question: "What makes Aman Digital Solutions different?",
     answer:
-      "Projects are approached around the client's business goals, user experience, functionality and long-term requirements rather than using a one-size-fits-all approach. The focus is on building practical digital solutions that are designed for the specific project.",
+      "Our projects are approached around business goals, user experience, functionality, performance and long-term requirements rather than a one-size-fits-all approach. The focus is on creating practical digital solutions built around the needs of each business.",
   },
   {
     question: "Can Aman Digital Solutions work with clients remotely?",
@@ -37,14 +37,14 @@ const aboutFAQs = [
       "Yes. Although Aman Digital Solutions is based in Shimla, projects can be handled remotely with businesses across India and with clients beyond India.",
   },
   {
-    question: "Can I see examples of work completed by Aman Digital Solutions?",
+    question: "Can I see examples of Aman Digital Solutions' work?",
     answer:
-      "Yes. The Projects and Gallery sections showcase selected websites, digital experiences and other work created by Aman Digital Solutions.",
+      "Yes. Our Projects and Gallery sections showcase selected websites, e-commerce experiences, digital products and other work created by Aman Digital Solutions.",
   },
   {
     question: "How can I start a project with Aman Digital Solutions?",
     answer:
-      "You can contact Aman Digital Solutions to discuss your business, project requirements, goals and preferred features. The scope and next steps can then be defined before development begins.",
+      "You can start by sharing your business, project requirements, goals and preferred features through our project enquiry form. We can then understand the scope and discuss the right approach before development begins.",
   },
 ];
 
@@ -114,7 +114,7 @@ export default function AboutFAQSection() {
 
           <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-neutral-500 sm:text-base sm:leading-8">
             Find clear answers about Aman Digital Solutions, our
-            work, approach, capabilities and how we work with
+            services, capabilities, approach and how we work with
             businesses.
           </p>
         </div>
@@ -174,7 +174,7 @@ export default function AboutFAQSection() {
             </Link>
 
             <Link
-              href="/contact"
+              href="/start-a-project"
               className="group inline-flex items-center gap-2.5 rounded-full bg-[#FFC400] px-5 py-3 text-[9px] font-semibold uppercase tracking-[0.16em] text-black transition-all duration-300 hover:bg-[#FFD84D]"
             >
               Start a project

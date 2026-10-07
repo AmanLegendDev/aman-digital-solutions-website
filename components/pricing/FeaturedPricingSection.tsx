@@ -69,18 +69,16 @@ export default function FeaturedPricingSection({
             </div>
 
             <h2 className="mt-5 text-3xl font-semibold leading-[1.05] tracking-[-0.045em] text-white sm:text-4xl lg:text-[3.2rem]">
-              One plan.
+              A practical
               <br />
               <span className="text-neutral-500">
-                Built to move you forward.
+               place to start.
               </span>
             </h2>
           </div>
 
           <p className="max-w-md text-sm leading-7 text-neutral-600 sm:text-right">
-            A balanced option for businesses that want
-            professional execution without unnecessary
-            complexity.
+           A balanced option for businesses that want professional execution without unnecessary complexity — with room to grow as their needs evolve.
           </p>
         </div>
 

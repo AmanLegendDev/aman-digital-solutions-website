@@ -14,70 +14,77 @@ const CAPABILITIES = [
     icon: CodeXml,
     title: "Modern Full-Stack Development",
     description:
-      "From polished frontends to secure backend systems, we build complete digital products rather than isolated interfaces.",
+      "We build complete digital products across the frontend and backend, combining polished interfaces, application logic, APIs and reliable data systems.",
     tags: ["Next.js", "React", "Node.js"],
   },
   {
     icon: LayoutDashboard,
     title: "Custom CMS & Admin Systems",
     description:
-      "Business owners can manage products, services, content, orders and other important information through purpose-built admin experiences.",
+      "Purpose-built admin systems make it easier to manage products, services, content, orders and other important business information from one place.",
     tags: ["CMS", "CRUD", "Dashboards"],
   },
   {
     icon: BrainCircuit,
     title: "AI-Powered Experiences",
     description:
-      "AI can be integrated where it provides practical value, from intelligent assistance to content-driven experiences and business workflows.",
+      "AI can be integrated where it creates practical value, from intelligent assistance and content workflows to smarter product experiences and business automation.",
     tags: ["AI", "Automation", "Smart UX"],
   },
   {
     icon: SearchCheck,
     title: "SEO-Ready Architecture",
     description:
-      "Search visibility is considered from the foundation through structured content, metadata, performance and crawl-friendly architecture.",
+      "Search visibility is considered from the foundation through structured content, metadata, technical SEO, performance and crawl-friendly architecture.",
     tags: ["SEO", "Metadata", "Performance"],
   },
   {
     icon: Database,
     title: "Data & Application Architecture",
     description:
-      "Scalable data structures and application architecture designed around the actual requirements of each digital product.",
+      "We structure databases, application logic and APIs around the actual requirements of each digital product, with room for future growth.",
     tags: ["MongoDB", "Mongoose", "APIs"],
   },
   {
     icon: Workflow,
-    title: "Business Workflows",
+    title: "Business Workflows & Automation",
     description:
-      "Digital workflows can connect forms, orders, notifications, content and internal processes into a system that saves manual effort.",
+      "Digital workflows can connect forms, orders, notifications, content and internal processes to reduce repetitive work and improve how a business operates.",
     tags: ["Workflows", "Integrations", "Automation"],
   },
   {
     icon: Gauge,
     title: "Performance & Responsive UX",
     description:
-      "Interfaces are designed to remain fast, usable and visually consistent across phones, tablets and desktop devices.",
+      "Interfaces are designed to be fast, accessible and consistent across phones, tablets and desktop devices, with performance treated as part of the product.",
     tags: ["Responsive", "UX", "Performance"],
   },
   {
     icon: ServerCog,
     title: "Deployment & Infrastructure",
     description:
-      "We handle the practical side of getting a digital product online and keeping its technical foundation ready for ongoing development.",
+      "We handle the practical technical foundation behind getting digital products online, including deployment, assets, hosting configuration and ongoing improvements.",
     tags: ["Cloudinary", "Vercel", "Deployment"],
   },
 ];
 
 export default function Capabilities() {
   return (
-    <section className="relative overflow-hidden bg-[#080808] py-20 sm:py-24 lg:py-32">
+    <section
+      className="relative overflow-hidden bg-[#080808] py-20 sm:py-24 lg:py-32"
+      aria-labelledby="capabilities-heading"
+    >
       <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+        {/* Header */}
         <div className="max-w-3xl">
           <span className="text-xs font-semibold uppercase tracking-[0.17em] text-[#FFC400]">
             Capabilities
           </span>
 
-          <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.045em] text-white sm:text-4xl lg:text-5xl">
+          <h2
+            id="capabilities-heading"
+            className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.045em] text-white sm:text-4xl lg:text-5xl"
+          >
             The technology is important.
             <span className="block text-neutral-500">
               Knowing where to use it matters more.
@@ -86,11 +93,12 @@ export default function Capabilities() {
 
           <p className="mt-6 max-w-2xl text-sm leading-7 text-neutral-500 sm:text-base">
             Our capabilities cover the development, design and digital
-            infrastructure needed to turn a business requirement into a
-            usable product.
+            infrastructure needed to turn real business requirements into
+            useful, scalable digital products.
           </p>
         </div>
 
+        {/* Capabilities */}
         <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {CAPABILITIES.map((item) => {
             const Icon = item.icon;
@@ -120,7 +128,11 @@ export default function Capabilities() {
                     group-hover:text-[#FFC400]
                   "
                 >
-                  <Icon size={18} />
+                  <Icon
+                    size={18}
+                    strokeWidth={1.7}
+                    aria-hidden="true"
+                  />
                 </div>
 
                 <h3 className="mt-7 text-base font-semibold tracking-[-0.02em] text-white">

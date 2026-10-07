@@ -102,7 +102,7 @@ const TestimonialSchema = new Schema<ITestimonial>(
       type: String,
       required: true,
       trim: true,
-      maxlength: 1000,
+      maxlength: 2000,
     },
 
     image: {

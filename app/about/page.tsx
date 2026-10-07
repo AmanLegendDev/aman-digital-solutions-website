@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     "About Aman Digital Solutions",
 
   description:
-    "Learn about Aman Digital Solutions, a founder-led web development and digital solutions company based in Shimla, serving businesses across Himachal Pradesh, India and beyond.",
+  "Learn about Aman Digital Solutions, a web development and digital solutions studio based in Shimla, serving businesses across Himachal Pradesh, India and beyond.",
 
   alternates: {
     canonical:
@@ -69,36 +69,36 @@ export const metadata: Metadata = {
     },
   },
 
-  openGraph: {
-    title:
-      "About Aman Digital Solutions | Web Development in Shimla",
+openGraph: {
+  title:
+    "About Aman Digital Solutions | Web Development in Shimla",
 
-    description:
-      "Discover the story, approach, capabilities and vision behind Aman Digital Solutions, a Shimla-based digital solutions company.",
+  description:
+    "Discover the approach, capabilities and vision behind Aman Digital Solutions, a Shimla-based web development and digital solutions studio.",
 
-    url:
-      ABOUT_URL,
+  url:
+    ABOUT_URL,
 
-    type:
-      "website",
+  type:
+    "website",
 
-    siteName:
-      SITE_NAME,
+  siteName:
+    SITE_NAME,
 
-    locale:
-      "en_IN",
-  },
+  locale:
+    "en_IN",
+},
 
-  twitter: {
-    card:
-      "summary_large_image",
+twitter: {
+  card:
+    "summary_large_image",
 
-    title:
-      "About Aman Digital Solutions | Web Development in Shimla",
+  title:
+    "About Aman Digital Solutions | Web Development in Shimla",
 
-    description:
-      "Discover the story, approach, capabilities and vision behind Aman Digital Solutions.",
-  },
+  description:
+    "Discover the approach, capabilities and vision behind Aman Digital Solutions.",
+},
 };
 
 /* =========================================================

@@ -15,6 +15,7 @@ import BlogSection from "@/components/agency/blog/BlogSection";
 import FAQSection from "@/components/agency/faq/FAQSection";
 import FinalCTA from "@/components/agency/cta/FinalCTA";
 import Footer from "@/components/agency/footer/Footer";
+import ReviewsSection from "@/components/agency/reviews/ReviewsSection";
 
 import FAQ from "@/models/FAQ";
 import { connectDB } from "@/lib/db/connect";
@@ -261,6 +262,8 @@ export default async function HomePage() {
         <ServicesSection />
 
         <ProjectsSection />
+
+        <ReviewsSection />
 
         <WhyUsSection />
 

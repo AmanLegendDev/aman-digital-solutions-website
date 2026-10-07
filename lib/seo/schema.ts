@@ -1,54 +1,80 @@
-const SITE_URL =
+const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ||
-  "https://www.amandigitalsolutions.com";
+  "https://www.amandigitalsolutions.com"
+).replace(/\/$/, "");
 
-const SITE_NAME = "Aman Digital Solutions";
+const ORGANIZATION_ID =
+  `${SITE_URL}/#organization`;
 
-const LOGO_URL = `${SITE_URL}/icon.png`;
+const WEBSITE_ID =
+  `${SITE_URL}/#website`;
 
-const ORGANIZATION_ID = `${SITE_URL}/#organization`;
-const WEBSITE_ID = `${SITE_URL}/#website`;
 const PROFESSIONAL_SERVICE_ID =
   `${SITE_URL}/#professional-service`;
+
+const DEFAULT_SITE_NAME =
+  "Aman Digital Solutions";
+
+const DEFAULT_DESCRIPTION =
+  "Aman Digital Solutions builds modern websites, web applications, e-commerce platforms, SEO strategies and business systems for businesses worldwide.";
+
+const DEFAULT_LOGO_URL =
+  `${SITE_URL}/icon.png`;
 
 /* =========================================================
    ORGANIZATION
 ========================================================= */
 
-export function getOrganizationSchema() {
-  return {
+export function getOrganizationSchema({
+  siteName = DEFAULT_SITE_NAME,
+  description = DEFAULT_DESCRIPTION,
+  logo,
+  sameAs = [],
+}: {
+  siteName?: string;
+  description?: string;
+  logo?: string;
+  sameAs?: string[];
+} = {}) {
+  const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Organization",
 
     "@id": ORGANIZATION_ID,
 
-    name: SITE_NAME,
+    name: siteName,
 
     url: SITE_URL,
 
-    description:
-      "Aman Digital Solutions builds modern websites, web applications, e-commerce platforms, SEO strategies and business systems for businesses in India and worldwide.",
-
-    logo: {
-      "@type": "ImageObject",
-
-      "@id": `${SITE_URL}/#logo`,
-
-      url: LOGO_URL,
-
-      contentUrl: LOGO_URL,
-    },
-
-    sameAs: [
-      "https://www.instagram.com/amandigital.solutions/",
-      "https://www.linkedin.com/in/amancodes60/",
-    ],
+    description,
 
     areaServed: {
       "@type": "Place",
       name: "Worldwide",
     },
   };
+
+  const logoUrl =
+    logo || DEFAULT_LOGO_URL;
+
+  if (logoUrl) {
+    schema.logo = {
+      "@type": "ImageObject",
+
+      "@id":
+        `${SITE_URL}/#logo`,
+
+      url: logoUrl,
+
+      contentUrl: logoUrl,
+    };
+  }
+
+  if (sameAs.length > 0) {
+    schema.sameAs = sameAs;
+  }
+
+  return schema;
 }
 
 /* =========================================================
@@ -56,6 +82,8 @@ export function getOrganizationSchema() {
 ========================================================= */
 
 export function getProfessionalServiceSchema({
+  siteName = DEFAULT_SITE_NAME,
+  description = DEFAULT_DESCRIPTION,
   telephone,
   email,
   address,
@@ -63,28 +91,30 @@ export function getProfessionalServiceSchema({
   state,
   country,
 }: {
+  siteName?: string;
+  description?: string;
   telephone?: string;
   email?: string;
   address?: string;
   city?: string;
   state?: string;
   country?: string;
-}) {
+} = {}) {
   const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
 
     "@type": "ProfessionalService",
 
-    "@id": PROFESSIONAL_SERVICE_ID,
+    "@id":
+      PROFESSIONAL_SERVICE_ID,
 
-    name: SITE_NAME,
+    name: siteName,
 
     url: SITE_URL,
 
-    description:
-      "Aman Digital Solutions provides website development, web applications, e-commerce solutions, SEO, digital marketing and business systems for businesses in India and worldwide.",
+    description,
 
-    image: LOGO_URL,
+    image: DEFAULT_LOGO_URL,
 
     provider: {
       "@id": ORGANIZATION_ID,
@@ -104,7 +134,11 @@ export function getProfessionalServiceSchema({
     schema.email = email;
   }
 
-  if (address && city && country) {
+  if (
+    address &&
+    city &&
+    country
+  ) {
     schema.address = {
       "@type": "PostalAddress",
 
@@ -129,7 +163,13 @@ export function getProfessionalServiceSchema({
    WEBSITE
 ========================================================= */
 
-export function getWebsiteSchema() {
+export function getWebsiteSchema({
+  siteName = DEFAULT_SITE_NAME,
+  description = DEFAULT_DESCRIPTION,
+}: {
+  siteName?: string;
+  description?: string;
+} = {}) {
   return {
     "@context": "https://schema.org",
 
@@ -137,12 +177,11 @@ export function getWebsiteSchema() {
 
     "@id": WEBSITE_ID,
 
-    name: SITE_NAME,
+    name: siteName,
 
     url: SITE_URL,
 
-    description:
-      "Aman Digital Solutions builds modern websites, web applications, e-commerce platforms, SEO strategies and business systems for businesses worldwide.",
+    description,
 
     publisher: {
       "@id": ORGANIZATION_ID,
@@ -312,27 +351,30 @@ export function getItemListSchema({
 
     numberOfItems: items.length,
 
-    itemListElement: items.map((item, index) => ({
-      "@type": "ListItem",
+    itemListElement: items.map(
+      (item, index) => ({
+        "@type": "ListItem",
 
-      position: index + 1,
+        position: index + 1,
 
-      name: item.name,
+        name: item.name,
 
-      url: item.url,
+        url: item.url,
 
-      ...(item.image
-        ? {
-            image: item.image,
-          }
-        : {}),
+        ...(item.image
+          ? {
+              image: item.image,
+            }
+          : {}),
 
-      ...(item.description
-        ? {
-            description: item.description,
-          }
-        : {}),
-    })),
+        ...(item.description
+          ? {
+              description:
+                item.description,
+            }
+          : {}),
+      })
+    ),
   };
 }
 

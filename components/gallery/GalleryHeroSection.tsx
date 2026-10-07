@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   ArrowDown,
   ArrowRight,
+  ArrowUpRight,
   Camera,
   ChevronRight,
   Images,
@@ -137,17 +138,18 @@ export default function GalleryHeroSection({
               </span>
             </div>
 
-            <Link
-              href="/projects"
-              className="group inline-flex items-center gap-2 rounded-full border border-white/[0.07] bg-white/[0.015] px-3.5 py-2 text-[8px] font-medium uppercase tracking-[0.13em] text-neutral-600 transition-all duration-300 hover:border-[#FFC400]/20 hover:text-white"
-            >
-              Explore projects
+           <Link
+  href="/projects"
+  className="group inline-flex items-center gap-2 rounded-full border border-white/[0.07] bg-white/[0.015] px-3.5 py-2 text-[8px] font-medium uppercase tracking-[0.13em] text-neutral-600 transition-all duration-300 hover:border-[#FFC400]/20 hover:text-white"
+>
+  Explore projects
 
-              <ArrowRight
-                size={11}
-                className="transition-transform duration-300 group-hover:translate-x-0.5"
-              />
-            </Link>
+  <ArrowUpRight
+    size={11}
+    strokeWidth={1.8}
+    className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+  />
+</Link>
           </div>
         </div>
 

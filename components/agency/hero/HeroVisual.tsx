@@ -4,7 +4,17 @@ import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function HeroVisual() {
+type HeroVisualProps = {
+  siteName: string;
+  tagline: string;
+  city: string;
+};
+
+export default function HeroVisual({
+  siteName,
+  tagline,
+  city,
+}: HeroVisualProps) {
   return (
     <div className="relative mx-auto w-full max-w-2xl">
       {/* Ambient glow */}
@@ -36,7 +46,7 @@ export default function HeroVisual() {
         <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[5/6] lg:aspect-[4/5]">
           <Image
             src="/hero.jpg"
-            alt="Aman Digital Solutions web development and digital solutions for businesses in Shimla"
+            alt={`${siteName} ${tagline} services in ${city}`}
             fill
             priority
             sizes="(max-width: 1024px) 90vw, 52vw"
@@ -81,7 +91,8 @@ export default function HeroVisual() {
           <div className="flex items-end justify-between gap-4 rounded-2xl border border-white/10 bg-black/45 p-4 backdrop-blur-xl sm:p-5">
             <div>
               <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#FFC400]">
-                Aman Digital Solutions · Shimla
+                {siteName}
+                {city ? ` · ${city}` : ""}
               </p>
 
               <p className="mt-1.5 max-w-xs text-sm font-medium leading-5 text-white sm:text-base">

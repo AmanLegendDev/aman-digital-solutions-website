@@ -12,12 +12,16 @@ import {
 import {
   NAV_CTA,
   NAV_ITEMS,
-  NAV_WHATSAPP,
 } from "./NavItems";
 
 type MobileNavProps = {
   open: boolean;
   onClose: () => void;
+  siteName: string;
+  tagline: string;
+  logoUrl: string;
+  logoAlt: string;
+  whatsappUrl?: string;
 };
 
 const drawerVariants = {
@@ -25,6 +29,7 @@ const drawerVariants = {
     opacity: 0,
     y: -8,
   },
+
   open: {
     opacity: 1,
     y: 0,
@@ -34,6 +39,11 @@ const drawerVariants = {
 export default function MobileNav({
   open,
   onClose,
+  siteName,
+  tagline,
+  logoUrl,
+  logoAlt,
+  whatsappUrl,
 }: MobileNavProps) {
   return (
     <AnimatePresence>
@@ -91,7 +101,6 @@ export default function MobileNav({
             "
           >
             <div className="flex h-full min-h-0 flex-col px-4 py-4">
-
               {/* =================================================
                   TOP BAR
               ================================================= */}
@@ -102,7 +111,7 @@ export default function MobileNav({
                 <Link
                   href="/"
                   onClick={onClose}
-                  aria-label="Aman Digital Solutions home"
+                  aria-label={`${siteName} home`}
                   className="
                     flex
                     min-w-0
@@ -114,8 +123,8 @@ export default function MobileNav({
                   "
                 >
                   <Image
-                    src="/logo.png"
-                    alt="Aman Digital Solutions"
+                    src={logoUrl}
+                    alt={logoAlt}
                     width={145}
                     height={42}
                     priority
@@ -130,11 +139,11 @@ export default function MobileNav({
 
                   <div className="ml-2.5 min-w-0">
                     <span className="block truncate text-[12px] font-semibold leading-tight tracking-[-0.015em] text-white">
-                      Aman Digital Solutions
+                      {siteName}
                     </span>
 
                     <span className="mt-1 block truncate text-[7px] font-medium leading-none tracking-[0.025em] text-neutral-500">
-                      Digital solutions that mean business.
+                      {tagline}
                     </span>
                   </div>
                 </Link>
@@ -264,45 +273,46 @@ export default function MobileNav({
 
               <div className="shrink-0 border-t border-[#202020] pt-3">
                 <div className="grid grid-cols-2 gap-2">
-
                   {/* WHATSAPP */}
 
-                  <a
-                    href={NAV_WHATSAPP}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={onClose}
-                    aria-label="Chat with Aman Digital Solutions on WhatsApp"
-                    className="
-                      flex
-                      h-11
-                      items-center
-                      justify-center
-                      gap-2
-                      rounded-xl
-                      border
-                      border-[#292929]
-                      bg-[#111111]
-                      px-3
-                      text-[11px]
-                      font-semibold
-                      text-neutral-300
-                      transition-colors
-                      duration-150
-                      hover:border-[#FFC400]/40
-                      hover:text-[#FFC400]
-                      focus-visible:outline-none
-                      focus-visible:ring-2
-                      focus-visible:ring-[#FFC400]
-                    "
-                  >
-                    <MessageCircle
-                      aria-hidden="true"
-                      size={15}
-                    />
+                  {whatsappUrl && (
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={onClose}
+                      aria-label={`Chat with ${siteName} on WhatsApp`}
+                      className="
+                        flex
+                        h-11
+                        items-center
+                        justify-center
+                        gap-2
+                        rounded-xl
+                        border
+                        border-[#292929]
+                        bg-[#111111]
+                        px-3
+                        text-[11px]
+                        font-semibold
+                        text-neutral-300
+                        transition-colors
+                        duration-150
+                        hover:border-[#FFC400]/40
+                        hover:text-[#FFC400]
+                        focus-visible:outline-none
+                        focus-visible:ring-2
+                        focus-visible:ring-[#FFC400]
+                      "
+                    >
+                      <MessageCircle
+                        aria-hidden="true"
+                        size={15}
+                      />
 
-                    <span>WhatsApp</span>
-                  </a>
+                      <span>WhatsApp</span>
+                    </a>
+                  )}
 
                   {/* START A PROJECT */}
 

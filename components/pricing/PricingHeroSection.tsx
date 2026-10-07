@@ -53,9 +53,7 @@ export default function PricingHeroSection() {
           </h1>
 
           <p className="mt-7 max-w-2xl text-base leading-7 text-neutral-500 sm:text-lg sm:leading-8">
-            Clear pricing for high-quality digital solutions.
-            Pick the plan that fits your business today and
-            scale when you are ready.
+           Clear pricing for high-quality digital solutions. Choose the approach that fits your business today and scale when you're ready.
           </p>
         </div>
 

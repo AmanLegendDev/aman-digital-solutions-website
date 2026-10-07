@@ -130,10 +130,10 @@ export default function BlogHeroSection() {
               </p>
 
               <Link
-                href="/contact"
+                href="/start-a-project"
                 className="group mt-7 inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/60 transition-colors hover:text-[#FFC400]"
               >
-                Work with us
+                Start a project
 
                 <ArrowRight
                   size={13}

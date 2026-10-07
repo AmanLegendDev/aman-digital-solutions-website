@@ -45,7 +45,7 @@ export const testimonialSchema = z.object({
     .string()
     .trim()
     .min(10)
-    .max(1000),
+    .max(2000),
 
   image: imageSchema.optional(),
 

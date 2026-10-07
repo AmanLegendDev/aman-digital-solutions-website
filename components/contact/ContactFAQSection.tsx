@@ -5,6 +5,8 @@ import {
   CircleHelp,
 } from "lucide-react";
 
+import { getSiteSettings } from "@/lib/site-settings/getSiteSettings";
+
 const contactFAQs = [
   {
     question: "How can I contact Aman Digital Solutions?",
@@ -38,20 +40,56 @@ const contactFAQs = [
   },
 ];
 
-export const contactFAQSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: contactFAQs.map((faq) => ({
-    "@type": "Question",
-    name: faq.question,
-    acceptedAnswer: {
-      "@type": "Answer",
-      text: faq.answer,
-    },
-  })),
-};
+export default async function ContactFAQSection() {
+  const settings = await getSiteSettings();
 
-export default function ContactFAQSection() {
+  const siteName =
+    settings?.siteName?.trim() ||
+    "Aman Digital Solutions";
+
+  const city =
+    settings?.contact?.city?.trim() ||
+    "Shimla";
+
+  const state =
+    settings?.contact?.state?.trim() ||
+    "Himachal Pradesh";
+
+  const country =
+    settings?.contact?.country?.trim() ||
+    "India";
+
+  const faqs = contactFAQs.map((faq) => ({
+    ...faq,
+    question: faq.question.replace(
+      "Aman Digital Solutions",
+      siteName
+    ),
+    answer: faq.answer
+      .replaceAll("Aman Digital Solutions", siteName)
+      .replaceAll(
+        "Shimla, Himachal Pradesh",
+        `${city}, ${state}`
+      )
+      .replaceAll(
+        "throughout India",
+        `throughout ${country}`
+      ),
+  }));
+
+  const contactFAQSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+
   return (
     <section
       id="contact-faq"
@@ -61,13 +99,30 @@ export default function ContactFAQSection() {
       {/* Ambient glow */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-[-180px] h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-[#FFC400]/[0.025] blur-[140px]"
+        className="
+          pointer-events-none absolute
+          left-1/2 top-[-180px]
+          h-[420px] w-[720px]
+          -translate-x-1/2
+          rounded-full
+          bg-[#FFC400]/[0.025]
+          blur-[140px]
+        "
       />
 
       <div className="relative mx-auto max-w-5xl">
-        {/* Header */}
+        {/* HEADER */}
         <div className="mx-auto max-w-2xl text-center">
-          <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl border border-[#FFC400]/15 bg-[#FFC400]/[0.04] text-[#FFC400]">
+          <div
+            className="
+              mx-auto flex h-11 w-11
+              items-center justify-center
+              rounded-2xl
+              border border-[#FFC400]/15
+              bg-[#FFC400]/[0.04]
+              text-[#FFC400]
+            "
+          >
             <CircleHelp
               size={19}
               strokeWidth={1.5}
@@ -93,7 +148,15 @@ export default function ContactFAQSection() {
 
           <h2
             id="contact-faq-heading"
-            className="mt-5 text-3xl font-semibold leading-[1.05] tracking-[-0.045em] text-white sm:text-4xl lg:text-5xl"
+            className="
+              mt-5
+              text-3xl font-semibold
+              leading-[1.05]
+              tracking-[-0.045em]
+              text-white
+              sm:text-4xl
+              lg:text-5xl
+            "
           >
             Before you reach out,
             <br />
@@ -105,23 +168,44 @@ export default function ContactFAQSection() {
           <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-neutral-500 sm:text-base sm:leading-8">
             Find answers about starting a project, sharing your
             requirements, working remotely and getting support
-            from Aman Digital Solutions.
+            from {siteName}.
           </p>
         </div>
 
-        {/* FAQ list */}
+        {/* FAQ LIST */}
         <div className="mx-auto mt-12 max-w-4xl overflow-hidden rounded-[28px] border border-white/[0.07] bg-[#080808]">
-          {contactFAQs.map((faq) => (
+          {faqs.map((faq) => (
             <details
               key={faq.question}
               className="group border-b border-white/[0.06] last:border-b-0"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 px-5 py-5 text-left sm:px-7 sm:py-6">
+              <summary
+                className="
+                  flex cursor-pointer list-none
+                  items-center justify-between
+                  gap-6
+                  px-5 py-5
+                  text-left
+                  sm:px-7 sm:py-6
+                "
+              >
                 <span className="text-sm font-medium leading-6 text-neutral-300 transition-colors duration-200 group-open:text-white sm:text-base">
                   {faq.question}
                 </span>
 
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/[0.07] text-neutral-600 transition-all duration-300 group-open:border-[#FFC400]/25 group-open:bg-[#FFC400]/[0.06] group-open:text-[#FFC400]">
+                <span
+                  className="
+                    flex h-8 w-8 shrink-0
+                    items-center justify-center
+                    rounded-full
+                    border border-white/[0.07]
+                    text-neutral-600
+                    transition-all duration-300
+                    group-open:border-[#FFC400]/25
+                    group-open:bg-[#FFC400]/[0.06]
+                    group-open:text-[#FFC400]
+                  "
+                >
                   <ChevronDown
                     size={15}
                     strokeWidth={1.7}
@@ -150,7 +234,22 @@ export default function ContactFAQSection() {
 
           <Link
             href="/faq"
-            className="group inline-flex items-center gap-2.5 rounded-full border border-white/[0.08] bg-white/[0.025] px-5 py-3 text-[9px] font-semibold uppercase tracking-[0.16em] text-neutral-400 transition-all duration-300 hover:border-[#FFC400]/25 hover:bg-[#FFC400]/[0.05] hover:text-[#FFC400]"
+            className="
+              group inline-flex items-center gap-2.5
+              rounded-full
+              border border-white/[0.08]
+              bg-white/[0.025]
+              px-5 py-3
+              text-[9px]
+              font-semibold
+              uppercase
+              tracking-[0.16em]
+              text-neutral-400
+              transition-all duration-300
+              hover:border-[#FFC400]/25
+              hover:bg-[#FFC400]/[0.05]
+              hover:text-[#FFC400]
+            "
           >
             View all FAQs
 
@@ -158,13 +257,16 @@ export default function ContactFAQSection() {
               size={13}
               strokeWidth={1.7}
               aria-hidden="true"
-              className="transition-transform duration-300 group-hover:translate-x-0.5"
+              className="
+                transition-transform duration-300
+                group-hover:translate-x-0.5
+              "
             />
           </Link>
         </div>
       </div>
 
-      {/* FAQ structured data */}
+      {/* FAQ STRUCTURED DATA */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

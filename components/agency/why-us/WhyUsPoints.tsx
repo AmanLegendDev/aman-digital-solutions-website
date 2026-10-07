@@ -5,6 +5,7 @@ import {
   Gauge,
   Layers3,
   Search,
+  ShieldCheck,
   Target,
 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -37,6 +38,13 @@ const WHY_US_POINTS = [
     title: "Ready to be discovered",
     description:
       "We build with SEO-friendly structure, meaningful content and solid technical foundations that give your business a stronger starting point online.",
+  },
+   {
+    number: "05",
+    icon: ShieldCheck,
+    title: "Built for the long term",
+    description:
+      "From launch and deployment to ongoing maintenance and improvements, we build websites with the long-term needs of your business in mind.",
   },
 ] as const;
 

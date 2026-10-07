@@ -3,22 +3,32 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
-const STATS = [
-  {
-    value: "Shimla",
-    label: "Based in Himachal Pradesh",
-  },
-  {
-    value: "India",
-    label: "Serving Businesses Nationwide",
-  },
-  {
-    value: "Beyond",
-    label: "Remote International Projects",
-  },
-];
+type HeroStatsProps = {
+  city: string;
+  state: string;
+  country: string;
+};
 
-export default function HeroStats() {
+export default function HeroStats({
+  city,
+  state,
+  country,
+}: HeroStatsProps) {
+  const stats = [
+    {
+      value: city,
+      label: `Based in ${state}`,
+    },
+    {
+      value: country,
+      label: "Serving Businesses Across India",
+    },
+    {
+      value: "Beyond",
+      label: "Remote International Projects",
+    },
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 14 }}
@@ -30,7 +40,7 @@ export default function HeroStats() {
       }}
       className="grid border-y border-[#202020] sm:grid-cols-3"
     >
-      {STATS.map((stat, index) => (
+      {stats.map((stat, index) => (
         <div
           key={stat.label}
           className={[

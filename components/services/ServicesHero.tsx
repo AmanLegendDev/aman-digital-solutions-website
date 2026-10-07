@@ -65,7 +65,7 @@ export default function ServicesHero({
             href="#all-services"
             className="group inline-flex w-fit items-center gap-3 rounded-full border border-[#292929] bg-[#0A0A0A] px-5 py-3 text-xs font-medium text-white transition-all duration-200 hover:border-[#FFC400]/40 hover:bg-[#101010]"
           >
-            Explore services
+            Explore All services
 
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#FFC400] text-black transition-transform duration-200 group-hover:translate-x-0.5 group-hover:translate-y-0.5">
               <ArrowDownRight size={14} />
