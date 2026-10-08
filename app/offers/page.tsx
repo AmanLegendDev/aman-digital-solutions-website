@@ -86,7 +86,9 @@ async function getOffers() {
       ? {
           url: offer.cardImage.url,
           publicId: offer.cardImage.publicId ?? null,
-          alt: offer.cardImage.alt ?? offer.title,
+          alt:
+            offer.cardImage.alt ??
+            offer.title,
         }
       : null,
 
@@ -94,11 +96,30 @@ async function getOffers() {
 
     ctaLabel: offer.ctaLabel,
 
-    startDate: new Date(offer.startDate).toISOString(),
-    endDate: new Date(offer.endDate).toISOString(),
+    startDate: new Date(
+      offer.startDate,
+    ).toISOString(),
+
+    endDate: new Date(
+      offer.endDate,
+    ).toISOString(),
+
+    isClaimLimitEnabled:
+      Boolean(offer.isClaimLimitEnabled),
+
+    claimLimit:
+      typeof offer.claimLimit === "number"
+        ? offer.claimLimit
+        : null,
+
+    claimedCount:
+      typeof offer.claimedCount === "number"
+        ? offer.claimedCount
+        : 0,
 
     featured: Boolean(offer.featured),
-    displayOrder: offer.displayOrder ?? 0,
+    displayOrder:
+      offer.displayOrder ?? 0,
   }));
 }
 
@@ -121,12 +142,14 @@ export default async function OffersPage() {
     },
     mainEntity: {
       "@type": "ItemList",
-      itemListElement: offers.map((offer, index) => ({
-        "@type": "ListItem",
-        position: index + 1,
-        name: offer.title,
-        url: `${SITE_URL}/offers/${offer.slug}`,
-      })),
+      itemListElement: offers.map(
+        (offer, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: offer.title,
+          url: `${SITE_URL}/offers/${offer.slug}`,
+        }),
+      ),
     },
   };
 
@@ -150,30 +173,40 @@ export default async function OffersPage() {
   };
 
   return (
-    <>    <Navbar/>
-    <main className="min-h-screen overflow-x-clip bg-[#050505] text-white">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(collectionPageSchema),
-        }}
-      />
+    <>
+      <Navbar />
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbSchema),
-        }}
-      />
+      <main className="min-h-screen overflow-x-clip bg-[#050505] text-white">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html:
+              JSON.stringify(
+                collectionPageSchema,
+              ),
+          }}
+        />
 
-      <OffersHero />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html:
+              JSON.stringify(
+                breadcrumbSchema,
+              ),
+          }}
+        />
 
-      <OffersGrid offers={offers} />
+        <OffersHero />
 
-      <OffersCTA />
-    </main>
-    <Footer/>
+        <OffersGrid
+          offers={offers}
+        />
+
+        <OffersCTA />
+      </main>
+
+      <Footer />
     </>
-
   );
 }

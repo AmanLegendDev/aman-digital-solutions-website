@@ -72,20 +72,18 @@ export async function createOffer(
         string[]
       > = {};
 
-      parsed.error.issues.forEach(
-        (issue) => {
-          const field =
-            issue.path.join(".") || "form";
+      for (const issue of parsed.error.issues) {
+        const field =
+          issue.path.join(".") || "form";
 
-          if (!fieldErrors[field]) {
-            fieldErrors[field] = [];
-          }
+        if (!fieldErrors[field]) {
+          fieldErrors[field] = [];
+        }
 
-          fieldErrors[field].push(
-            issue.message,
-          );
-        },
-      );
+        fieldErrors[field].push(
+          issue.message,
+        );
+      }
 
       return {
         success: false,
@@ -128,22 +126,46 @@ export async function createOffer(
     }
 
     /* =====================================================
-       05. CREATE OFFER
+       05. NORMALIZE CLAIM LIMIT DATA
+       
+       If claim limit is disabled:
+       - claimLimit is removed
+       - claimedCount is preserved as historical count
+
+       If claim limit is enabled:
+       - claimLimit must already be valid
+       - claimedCount is preserved
+    ===================================================== */
+
+    const offerData: OfferInput = {
+      ...values,
+      slug,
+
+      claimLimit:
+        values.isClaimLimitEnabled
+          ? values.claimLimit
+          : undefined,
+
+      claimedCount:
+        values.claimedCount ?? 0,
+    };
+
+    /* =====================================================
+       06. CREATE OFFER
     ===================================================== */
 
     const offer =
-      await Offer.create({
-        ...values,
-        slug,
-      });
+      await Offer.create(
+        offerData,
+      );
 
     /* =====================================================
-       06. DERIVE LIFECYCLE
+       07. DERIVE LIFECYCLE
        
        IMPORTANT:
-       No lifecycle status is stored in MongoDB.
+       Lifecycle status is NOT stored in MongoDB.
 
-       Status is always calculated from:
+       It is always calculated from:
 
        published
        startDate
@@ -173,7 +195,7 @@ export async function createOffer(
       );
 
     /* =====================================================
-       07. CACHE REVALIDATION
+       08. CACHE REVALIDATION
     ===================================================== */
 
     revalidatePath("/offers");
@@ -186,8 +208,14 @@ export async function createOffer(
       "/sitemap.xml",
     );
 
+    /*
+     * Homepage may later contain active featured offers.
+     * Revalidating it now is safe and future-proof.
+     */
+    revalidatePath("/");
+
     /* =====================================================
-       08. SUCCESS
+       09. SUCCESS
     ===================================================== */
 
     return {
@@ -198,10 +226,10 @@ export async function createOffer(
     };
   } catch (error: unknown) {
     /* =====================================================
-       09. DUPLICATE KEY SAFETY
+       10. DUPLICATE KEY SAFETY
        
-       MongoDB can still throw E11000 if two requests
-       attempt to create the same slug simultaneously.
+       MongoDB unique index is the final protection
+       against simultaneous duplicate slug creation.
     ===================================================== */
 
     if (
@@ -224,7 +252,7 @@ export async function createOffer(
     }
 
     /* =====================================================
-       10. UNKNOWN ERROR
+       11. UNKNOWN ERROR
     ===================================================== */
 
     console.error(

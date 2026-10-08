@@ -46,6 +46,13 @@ export type ProjectRequestStatus =
   | "CLOSED"
   | "REJECTED";
 
+  export type LeadSource =
+  | "WEBSITE"
+  | "OFFER"
+  | "GOOGLE"
+  | "WHATSAPP"
+  | "REFERRAL"
+  | "DIRECT";
 /* =========================================================
    PROJECT REQUEST DOCUMENT
 ========================================================= */
@@ -60,6 +67,31 @@ export interface IProjectRequest
 
   serviceIds: Types.ObjectId[];
 
+
+  
+
+ 
+
+    /* -------------------------------------------------------
+     OFFER / CAMPAIGN
+  ------------------------------------------------------- */
+
+  offerId?: Types.ObjectId;
+
+  offerSlug?: string;
+
+  offerTitle?: string;
+
+  offerCouponCode?: string;
+
+  offerDiscountLabel?: string;
+
+  offerOriginalPrice?: number;
+
+  offerPrice?: number;
+
+  offerClaimedAt?: Date;
+
   projectType: ProjectType;
 
   projectDescription: string;
@@ -71,6 +103,8 @@ export interface IProjectRequest
   timeline: Timeline;
 
   budgetRange: BudgetRange;
+
+   leadSource: LeadSource;
 
   /* -------------------------------------------------------
      CLIENT DETAILS
@@ -200,23 +234,90 @@ const ProjectRequestSchema =
         required: true,
       },
 
-      budgetRange: {
-        type: String,
-        enum: [
-          "UNDER_15000",
-          "15000_30000",
-          "30000_60000",
-          "60000_100000",
-          "100000_PLUS",
-          "NOT_SURE",
-        ],
-        required: true,
-      },
+    budgetRange: {
+  type: String,
+  enum: [
+    "UNDER_15000",
+    "15000_30000",
+    "30000_60000",
+    "60000_100000",
+    "100000_PLUS",
+    "NOT_SURE",
+  ],
+  required: true,
+},
 
-      /* ===================================================
-         CLIENT DETAILS
-      =================================================== */
+/* ===================================================
+   OFFER / CAMPAIGN
+=================================================== */
 
+offerId: {
+  type: Schema.Types.ObjectId,
+  ref: "Offer",
+  index: true,
+},
+
+offerSlug: {
+  type: String,
+  trim: true,
+  maxlength: 200,
+  index: true,
+},
+
+offerTitle: {
+  type: String,
+  trim: true,
+  maxlength: 250,
+},
+
+offerCouponCode: {
+  type: String,
+  trim: true,
+  uppercase: true,
+  maxlength: 100,
+},
+
+offerDiscountLabel: {
+  type: String,
+  trim: true,
+  maxlength: 100,
+},
+
+offerOriginalPrice: {
+  type: Number,
+  min: 0,
+},
+
+offerPrice: {
+  type: Number,
+  min: 0,
+},
+
+offerClaimedAt: {
+  type: Date,
+},
+
+/* ===================================================
+   LEAD SOURCE
+=================================================== */
+
+leadSource: {
+  type: String,
+  enum: [
+    "WEBSITE",
+    "OFFER",
+    "GOOGLE",
+    "WHATSAPP",
+    "REFERRAL",
+    "DIRECT",
+  ],
+  required: true,
+  default: "WEBSITE",
+},
+
+/* ===================================================
+   CLIENT DETAILS
+=================================================== */
       fullName: {
         type: String,
         required: true,
@@ -344,6 +445,16 @@ ProjectRequestSchema.index({
 ProjectRequestSchema.index({
   serviceIds: 1,
   status: 1,
+});
+
+ProjectRequestSchema.index({
+  offerId: 1,
+  createdAt: -1,
+});
+
+ProjectRequestSchema.index({
+  leadSource: 1,
+  createdAt: -1,
 });
 
 /* =========================================================

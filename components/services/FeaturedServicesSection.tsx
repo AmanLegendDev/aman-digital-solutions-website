@@ -237,20 +237,20 @@ export default function FeaturedServices({
                         </Link>
 
                         {/* BOOKING */}
-                        <Link
-                          href="/start-a-project"
-                          onClick={(event) =>
-                            event.stopPropagation()
-                          }
-                          className="group/quote inline-flex w-fit items-center gap-2 rounded-full bg-[#FFC400] px-5 py-3 text-xs font-semibold text-black transition-all duration-300 hover:bg-[#FFD43B] hover:shadow-[0_0_30px_rgba(255,196,0,0.14)]"
-                        >
-                          Get a Free Quote
+<Link
+  href={`/start-a-project?service=${encodeURIComponent(service.slug)}`}
+  onClick={(event) =>
+    event.stopPropagation()
+  }
+  className="group/quote inline-flex w-fit items-center gap-2 rounded-full bg-[#FFC400] px-5 py-3 text-xs font-semibold text-black transition-all duration-300 hover:bg-[#FFD43B] hover:shadow-[0_0_30px_rgba(255,196,0,0.14)]"
+>
+  Get a Free Quote
 
-                          <ArrowUpRight
-                            size={15}
-                            className="transition-transform duration-300 group-hover/quote:-translate-y-0.5 group-hover/quote:translate-x-0.5"
-                          />
-                        </Link>
+  <ArrowUpRight
+    size={15}
+    className="transition-transform duration-300 group-hover/quote:-translate-y-0.5 group-hover/quote:translate-x-0.5"
+  />
+</Link>
                       </div>
                     </div>
                   </div>

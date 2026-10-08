@@ -5,17 +5,29 @@ import { z } from "zod";
 ========================================================= */
 
 const optionalText = (max: number) =>
-  z.string().trim().max(max).optional().or(z.literal(""));
+  z
+    .string()
+    .trim()
+    .max(max)
+    .optional()
+    .or(z.literal(""));
 
 const optionalNumber = z.preprocess(
   (value) => {
-    if (value === "" || value === null || value === undefined) {
+    if (
+      value === "" ||
+      value === null ||
+      value === undefined
+    ) {
       return undefined;
     }
 
     return value;
   },
-  z.coerce.number().min(0).optional(),
+  z.coerce
+    .number()
+    .min(0)
+    .optional(),
 );
 
 const imageSchema = z
@@ -23,7 +35,9 @@ const imageSchema = z
     url: z
       .string()
       .trim()
-      .url("Please provide a valid image URL."),
+      .url(
+        "Please provide a valid image URL.",
+      ),
 
     publicId: z
       .string()
@@ -48,16 +62,26 @@ const imageSchema = z
 
 export const offerSchema = z
   .object({
+    /* -------------------------------------------------------
+       IDENTITY
+    ------------------------------------------------------- */
+
     title: z
       .string()
       .trim()
-      .min(2, "Offer title is required.")
+      .min(
+        2,
+        "Offer title is required.",
+      )
       .max(160),
 
     slug: z
       .string()
       .trim()
-      .min(2, "Slug is required.")
+      .min(
+        2,
+        "Slug is required.",
+      )
       .max(180)
       .regex(
         /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
@@ -69,14 +93,24 @@ export const offerSchema = z
     shortDescription: z
       .string()
       .trim()
-      .min(10, "Short description is required.")
+      .min(
+        10,
+        "Short description is required.",
+      )
       .max(320),
 
     description: z
       .string()
       .trim()
-      .min(20, "Offer description is required.")
+      .min(
+        20,
+        "Offer description is required.",
+      )
       .max(20000),
+
+    /* -------------------------------------------------------
+       OFFER TYPE / VALUE
+    ------------------------------------------------------- */
 
     offerType: z.enum([
       "discount",
@@ -108,16 +142,37 @@ export const offerSchema = z
       .optional()
       .or(z.literal("")),
 
+    /* -------------------------------------------------------
+       SERVICE ASSOCIATION
+    ------------------------------------------------------- */
+
+    serviceId: z
+      .string()
+      .trim()
+      .optional()
+      .or(z.literal("")),
+
+    /* -------------------------------------------------------
+       VISUALS
+    ------------------------------------------------------- */
+
     heroImage: imageSchema,
 
     cardImage: imageSchema,
+
+    /* -------------------------------------------------------
+       CONTENT
+    ------------------------------------------------------- */
 
     highlights: z
       .array(
         z
           .string()
           .trim()
-          .min(1)
+          .min(
+            1,
+            "Highlight cannot be empty.",
+          )
           .max(240),
       )
       .max(12)
@@ -128,33 +183,105 @@ export const offerSchema = z
         z
           .string()
           .trim()
-          .min(1)
+          .min(
+            1,
+            "Feature cannot be empty.",
+          )
           .max(240),
       )
       .max(20)
       .default([]),
 
+    /* -------------------------------------------------------
+       CTA
+    ------------------------------------------------------- */
+
     ctaLabel: z
       .string()
       .trim()
-      .min(2)
+      .min(
+        2,
+        "CTA label is required.",
+      )
       .max(80),
 
     ctaLink: z
       .string()
       .trim()
-      .min(1)
+      .min(
+        1,
+        "CTA link is required.",
+      )
       .max(500),
 
-    secondaryCtaLabel: optionalText(80),
+    secondaryCtaLabel:
+      optionalText(80),
 
-    secondaryCtaLink: optionalText(500),
+    secondaryCtaLink:
+      optionalText(500),
 
-    termsAndConditions: optionalText(10000),
+    /* -------------------------------------------------------
+       TERMS
+    ------------------------------------------------------- */
+
+    termsAndConditions:
+      optionalText(10000),
+
+    /* -------------------------------------------------------
+       SCHEDULING
+    ------------------------------------------------------- */
 
     startDate: z.coerce.date(),
 
     endDate: z.coerce.date(),
+
+    /* -------------------------------------------------------
+       CLAIM LIMIT
+    ------------------------------------------------------- */
+
+    isClaimLimitEnabled:
+      z.boolean(),
+
+    claimLimit:
+      z.preprocess(
+        (value) => {
+          if (
+            value === "" ||
+            value === null ||
+            value === undefined
+          ) {
+            return undefined;
+          }
+
+          return value;
+        },
+        z.coerce
+          .number()
+          .int(
+            "Claim limit must be a whole number.",
+          )
+          .min(
+            1,
+            "Claim limit must be at least 1.",
+          )
+          .optional(),
+      ),
+
+    claimedCount:
+      z.coerce
+        .number()
+        .int(
+          "Claimed count must be a whole number.",
+        )
+        .min(
+          0,
+          "Claimed count cannot be negative.",
+        )
+        .default(0),
+
+    /* -------------------------------------------------------
+       PUBLISHING / DISPLAY
+    ------------------------------------------------------- */
 
     published: z.boolean(),
 
@@ -167,9 +294,14 @@ export const offerSchema = z
       .min(0)
       .max(9999),
 
+    /* -------------------------------------------------------
+       SEO
+    ------------------------------------------------------- */
+
     seoTitle: optionalText(70),
 
-    seoDescription: optionalText(170),
+    seoDescription:
+      optionalText(170),
 
     canonicalUrl: z
       .string()
@@ -180,12 +312,20 @@ export const offerSchema = z
 
     ogTitle: optionalText(120),
 
-    ogDescription: optionalText(200),
+    ogDescription:
+      optionalText(200),
 
     ogImage: imageSchema,
   })
+
+  /* =========================================================
+     CROSS-FIELD VALIDATION
+  ========================================================= */
+
   .superRefine((data, ctx) => {
-    /* DATE */
+    /* -------------------------------------------------------
+       DATE VALIDATION
+    ------------------------------------------------------- */
 
     if (
       data.endDate.getTime() <=
@@ -199,11 +339,42 @@ export const offerSchema = z
       });
     }
 
-    /* PERCENTAGE */
+    /* -------------------------------------------------------
+       DISCOUNT VALIDATION
+    ------------------------------------------------------- */
 
     if (
-      data.discountType === "percentage" &&
-      data.discountValue !== undefined &&
+      data.discountType ===
+        "percentage" &&
+      data.discountValue ===
+        undefined
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["discountValue"],
+        message:
+          "Percentage discount value is required.",
+      });
+    }
+
+    if (
+      data.discountType === "fixed" &&
+      data.discountValue ===
+        undefined
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["discountValue"],
+        message:
+          "Fixed discount value is required.",
+      });
+    }
+
+    if (
+      data.discountType ===
+        "percentage" &&
+      data.discountValue !==
+        undefined &&
       data.discountValue > 100
     ) {
       ctx.addIssue({
@@ -214,12 +385,30 @@ export const offerSchema = z
       });
     }
 
-    /* PRICE */
+    if (
+      data.discountType === "none" &&
+      data.discountValue !==
+        undefined
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["discountValue"],
+        message:
+          "Discount value should be empty when discount type is none.",
+      });
+    }
+
+    /* -------------------------------------------------------
+       PRICE VALIDATION
+    ------------------------------------------------------- */
 
     if (
-      data.originalPrice !== undefined &&
-      data.offerPrice !== undefined &&
-      data.offerPrice > data.originalPrice
+      data.originalPrice !==
+        undefined &&
+      data.offerPrice !==
+        undefined &&
+      data.offerPrice >
+        data.originalPrice
     ) {
       ctx.addIssue({
         code: "custom",
@@ -229,7 +418,77 @@ export const offerSchema = z
       });
     }
 
-    /* LINKS */
+    if (
+      data.discountType !== "none" &&
+      data.originalPrice ===
+        undefined
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["originalPrice"],
+        message:
+          "Original price is required when an offer discount is used.",
+      });
+    }
+
+    if (
+      data.discountType !== "none" &&
+      data.offerPrice ===
+        undefined
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["offerPrice"],
+        message:
+          "Offer price is required when an offer discount is used.",
+      });
+    }
+
+    /* -------------------------------------------------------
+       CLAIM LIMIT VALIDATION
+    ------------------------------------------------------- */
+
+    if (
+      data.isClaimLimitEnabled
+    ) {
+      if (
+        data.claimLimit ===
+        undefined
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["claimLimit"],
+          message:
+            "Claim limit is required when limited claims are enabled.",
+        });
+      }
+
+      if (
+        data.claimLimit !==
+          undefined &&
+        data.claimedCount >
+          data.claimLimit
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["claimedCount"],
+          message:
+            "Claimed count cannot exceed the claim limit.",
+        });
+      }
+    }
+
+    /*
+     * If the limit is disabled, claimedCount is still allowed
+     * because it represents historical successful claims.
+     *
+     * claimLimit itself is simply ignored by the application
+     * while the limit is disabled.
+     */
+
+    /* -------------------------------------------------------
+       LINK VALIDATION
+    ------------------------------------------------------- */
 
     const validateLink = (
       value: string | undefined,
@@ -237,12 +496,20 @@ export const offerSchema = z
         | "ctaLink"
         | "secondaryCtaLink",
     ) => {
-      if (!value) return;
+      if (!value) {
+        return;
+      }
 
-      if (value.startsWith("/")) return;
+      /*
+       * Internal application route.
+       */
+      if (value.startsWith("/")) {
+        return;
+      }
 
       try {
-        const parsed = new URL(value);
+        const parsed =
+          new URL(value);
 
         if (
           ![
@@ -250,7 +517,9 @@ export const offerSchema = z
             "https:",
             "mailto:",
             "tel:",
-          ].includes(parsed.protocol)
+          ].includes(
+            parsed.protocol,
+          )
         ) {
           throw new Error();
         }
@@ -264,23 +533,32 @@ export const offerSchema = z
       }
     };
 
-    validateLink(data.ctaLink, "ctaLink");
+    validateLink(
+      data.ctaLink,
+      "ctaLink",
+    );
 
     validateLink(
       data.secondaryCtaLink,
       "secondaryCtaLink",
     );
 
-    /* CANONICAL */
+    /* -------------------------------------------------------
+       CANONICAL VALIDATION
+    ------------------------------------------------------- */
 
     if (data.canonicalUrl) {
       try {
-        const parsed = new URL(
-          data.canonicalUrl,
-        );
+        const parsed =
+          new URL(
+            data.canonicalUrl,
+          );
 
         if (
-          !["http:", "https:"].includes(
+          ![
+            "http:",
+            "https:",
+          ].includes(
             parsed.protocol,
           )
         ) {
@@ -289,7 +567,9 @@ export const offerSchema = z
       } catch {
         ctx.addIssue({
           code: "custom",
-          path: ["canonicalUrl"],
+          path: [
+            "canonicalUrl",
+          ],
           message:
             "Canonical URL must be a valid HTTP or HTTPS URL.",
         });
@@ -297,6 +577,9 @@ export const offerSchema = z
     }
   });
 
-export type OfferInput = z.infer<
-  typeof offerSchema
->;
+/* =========================================================
+   TYPE
+========================================================= */
+
+export type OfferInput =
+  z.infer<typeof offerSchema>;

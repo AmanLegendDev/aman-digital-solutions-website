@@ -41,6 +41,10 @@ export type OfferCardData = {
   startDate: string;
   endDate: string;
 
+  isClaimLimitEnabled: boolean;
+  claimLimit: number | null;
+  claimedCount: number;
+
   featured: boolean;
   displayOrder: number;
 };

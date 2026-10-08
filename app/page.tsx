@@ -19,6 +19,7 @@ import ReviewsSection from "@/components/agency/reviews/ReviewsSection";
 
 import FAQ from "@/models/FAQ";
 import { connectDB } from "@/lib/db/connect";
+import AMI from "@/components/ami/AMI";
 
 /* =========================================================
    SITE CONFIG
@@ -283,6 +284,7 @@ export default async function HomePage() {
       {/* ===================================================
           FOOTER
       =================================================== */}
+      <AMI />
 
       <Footer />
     </>

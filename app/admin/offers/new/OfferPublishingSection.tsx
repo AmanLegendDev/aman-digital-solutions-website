@@ -14,14 +14,20 @@ const SITE_URL = "https://www.amandigitalsolutions.com";
 
 type Props = CommonSectionProps & {
   published: boolean;
+  isClaimLimitEnabled: boolean;
+  claimedCount: number;
+  claimLimit?: number;
 };
 
 export default function OfferPublishingSection(props: Props) {
   const {
-    register,
-    errors,
-    published,
-  } = props;
+  register,
+  errors,
+  published,
+  isClaimLimitEnabled,
+  claimedCount,
+  claimLimit,
+} = props;
 
   return (
       <Section
@@ -273,6 +279,81 @@ export default function OfferPublishingSection(props: Props) {
               <h3 className="text-base font-semibold text-white">Publishing</h3>
               <p className="mt-1 text-sm text-white/35">Choose whether the offer is public, featured and where it appears in listings.</p>
             </div>
+
+
+            <div className="space-y-5 border-t border-[#252525] pt-8">
+  <div>
+    <h3 className="text-base font-semibold text-white">
+      Offer availability
+    </h3>
+
+    <p className="mt-1 text-sm text-white/35">
+      Control when the offer runs and how many customers can claim it.
+    </p>
+  </div>
+
+ 
+
+  {/* CLAIM LIMIT */}
+  <div className="space-y-4 rounded-xl border border-[#252525] bg-[#080808] p-4">
+    <label className="flex cursor-pointer items-center gap-3">
+      <input
+        type="checkbox"
+        {...register("isClaimLimitEnabled")}
+        className="h-4 w-4 accent-[#FFC400]"
+      />
+
+      <div>
+        <p className="text-sm font-medium text-white">
+          Limit total claims
+        </p>
+
+        <p className="mt-1 text-xs text-white/30">
+          Automatically stop accepting claims after the limit is reached.
+        </p>
+      </div>
+    </label>
+
+    {isClaimLimitEnabled && (
+      <div className="grid gap-5 md:grid-cols-2">
+        {/* MAXIMUM CLAIMS */}
+        <div>
+          <label className={labelClass}>
+            Maximum claims
+          </label>
+
+          <input
+            type="number"
+            min="1"
+            step="1"
+            {...register("claimLimit")}
+            placeholder="e.g. 5"
+            className={inputClass}
+          />
+
+          <FieldError
+            message={errors.claimLimit?.message}
+          />
+        </div>
+
+        {/* CLAIMS USED */}
+        <div>
+          <label className={labelClass}>
+            Claims used
+          </label>
+
+          <div className="flex h-11 items-center rounded-xl border border-[#252525] bg-[#111] px-4 text-sm text-white/70">
+            {claimedCount} / {claimLimit || 0}
+          </div>
+
+          <p className="mt-2 text-xs text-white/25">
+            Claims are updated automatically when customers successfully claim the offer.
+          </p>
+        </div>
+      </div>
+    )}
+  </div>
+</div>
 <div className="grid gap-4 md:grid-cols-3">
 
 

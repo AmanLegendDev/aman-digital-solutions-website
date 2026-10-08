@@ -32,10 +32,10 @@ export default function OfferStatusBadge({
         "text-[11px] font-semibold tracking-wide",
         "backdrop-blur-md",
         isActive
-          ? "border-[#FFD400]/30 bg-[#FFD400]/10 text-[#FFD400]"
+          ? "border-[#FFD400]/30 bg-black/65 text-[#FFD400]"
           : isScheduled
-            ? "border-[#FFD400]/20 bg-black/60 text-[#FFD400]"
-            : "border-white/10 bg-black/60 text-[#71717A]",
+            ? "border-white/10 bg-black/65 text-[#F8FAFC]"
+            : "border-white/10 bg-black/65 text-[#71717A]",
       ].join(" ")}
     >
       {isActive ? (

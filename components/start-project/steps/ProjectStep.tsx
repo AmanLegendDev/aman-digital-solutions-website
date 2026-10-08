@@ -23,12 +23,33 @@ import type {
   UpdateForm,
 } from "../types";
 
+type OfferContext = {
+  _id: string;
+  title: string;
+  slug: string;
+  badge: string;
+  shortDescription: string;
+  discountLabel: string;
+  originalPrice: number | null;
+  offerPrice: number | null;
+  couponCode: string;
+  serviceId: string;
+  startDate: string | null;
+  endDate: string | null;
+  isClaimLimitEnabled: boolean;
+  claimLimit: number | null;
+  claimedCount: number;
+};
+
 type Props = {
   data: FormData;
   errors: FormErrors;
   services: ServiceOption[];
   update: UpdateForm;
   toggleArray: ToggleArray;
+  servicePrefilled?: boolean;
+  offerApplied?: boolean;
+  offer?: OfferContext | null;
 };
 
 export default function ProjectStep({
@@ -37,6 +58,9 @@ export default function ProjectStep({
   services,
   update,
   toggleArray,
+  servicePrefilled = false,
+  offerApplied = false,
+  offer = null,
 }: Props) {
 
 
@@ -64,12 +88,23 @@ export default function ProjectStep({
 
 <div className="overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0A0A0A]">
   {/* HEADER */}
-  <button
-    type="button"
-    onClick={() =>
-      setServicesOpen((current) => !current)
+ <button
+  type="button"
+  onClick={() => {
+    if (offerApplied) {
+      return;
     }
-    aria-expanded={servicesOpen}
+
+    setServicesOpen(
+      (current) => !current,
+    );
+  }}
+  aria-expanded={
+    offerApplied
+      ? false
+      : servicesOpen
+  }
+  aria-disabled={offerApplied}
     className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left transition hover:bg-white/[0.02] sm:px-5"
   >
     <div className="min-w-0">
@@ -85,15 +120,28 @@ export default function ProjectStep({
         )}
       </div>
 
-      <p className="mt-1 text-xs text-neutral-600">
-        {data.serviceIds.length > 0
-          ? `${data.serviceIds.length} service${
-              data.serviceIds.length !== 1
-                ? "s"
-                : ""
-            } selected`
-          : "Choose one or more services"}
-      </p>
+   <p className="mt-1 text-xs text-neutral-600">
+  {data.serviceIds.length > 0 ? (
+    <>
+      {data.serviceIds.length === 1
+        ? (() => {
+            const selectedService =
+              services.find(
+                (service) =>
+                  service._id ===
+                  data.serviceIds[0],
+              );
+
+            return selectedService
+              ? selectedService.title
+              : "1 service selected";
+          })()
+        : `${data.serviceIds.length} services selected`}
+    </>
+  ) : (
+    "Choose one or more services"
+  )}
+</p>
     </div>
 
     <ChevronDown
@@ -107,8 +155,40 @@ export default function ProjectStep({
     />
   </button>
 
+  
+
+   {/* AUTO-SELECTED SERVICE NOTICE */}
+ {servicePrefilled &&
+  data.serviceIds.length > 0 && (
+    <div className="border-t border-white/[0.06] bg-[#FFC400]/[0.025] px-4 py-3 sm:px-5">
+      <div className="flex items-start gap-3">
+        <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#FFC400] text-black">
+          <Check
+            size={11}
+            strokeWidth={3}
+          />
+        </div>
+
+        <div className="min-w-0">
+          <p className="text-xs font-medium text-[#EAEAEA]">
+            {offerApplied
+              ? "Offer service selected"
+              : "Service selected for you"}
+          </p>
+
+          <p className="mt-0.5 text-[11px] leading-5 text-neutral-500">
+            {offerApplied
+              ? "This service is included with your selected offer and cannot be changed while the offer is applied."
+              : "We selected this based on the service you were viewing. You can change it anytime."}
+          </p>
+        </div>
+      </div>
+    </div>
+  )}
+
   {/* SERVICES LIST */}
-  {servicesOpen && (
+  {servicesOpen &&
+  !offerApplied && (
     <div className="border-t border-white/[0.06] px-4 pb-4 pt-3 sm:px-5">
       <div className="grid gap-2 sm:grid-cols-2">
         {services.map((service) => {
@@ -196,6 +276,76 @@ export default function ProjectStep({
     </div>
   )}
 </div>
+
+{offerApplied && offer && (
+  <div className="mt-5 overflow-hidden rounded-2xl border border-[#FFC400]/20 bg-[#FFC400]/[0.035]">
+    <div className="border-b border-[#FFC400]/10 px-4 py-3 sm:px-5">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#FFC400]">
+            {offer.badge || "Special Offer"}
+          </p>
+
+          <p className="mt-1 text-sm font-semibold text-white">
+            {offer.title}
+          </p>
+        </div>
+
+        {offer.discountLabel && (
+          <span className="shrink-0 rounded-full bg-[#FFC400] px-2.5 py-1 text-[10px] font-bold text-black">
+            {offer.discountLabel}
+          </span>
+        )}
+      </div>
+    </div>
+
+    <div className="px-4 py-4 sm:px-5">
+      <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
+        {offer.originalPrice !== null && (
+          <span className="text-sm text-neutral-600 line-through">
+            ₹
+            {offer.originalPrice.toLocaleString(
+              "en-IN",
+            )}
+          </span>
+        )}
+
+        {offer.offerPrice !== null && (
+          <span className="text-2xl font-semibold text-white">
+            ₹
+            {offer.offerPrice.toLocaleString(
+              "en-IN",
+            )}
+          </span>
+        )}
+
+        {offer.couponCode && (
+          <span className="rounded-lg border border-white/[0.08] bg-black/30 px-2.5 py-1 text-[10px] font-semibold tracking-[0.12em] text-neutral-300">
+            {offer.couponCode}
+          </span>
+        )}
+      </div>
+
+      <p className="mt-3 text-xs leading-5 text-neutral-500">
+        {offer.shortDescription}
+      </p>
+
+      {offer.isClaimLimitEnabled &&
+        offer.claimLimit !== null && (
+          <div className="mt-4 flex items-center justify-between border-t border-white/[0.06] pt-3">
+            <span className="text-[11px] text-neutral-600">
+              Limited offer
+            </span>
+
+            <span className="text-[11px] font-medium text-[#FFC400]">
+              {offer.claimedCount} /{" "}
+              {offer.claimLimit} claimed
+            </span>
+          </div>
+        )}
+    </div>
+  </div>
+)}
 
       {/* PROJECT TYPE */}
 

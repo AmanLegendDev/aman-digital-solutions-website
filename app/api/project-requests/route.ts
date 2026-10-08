@@ -1,10 +1,15 @@
 import { NextResponse } from "next/server";
 
+import mongoose from "mongoose";
+
 import { connectDB } from "@/lib/db/connect";
 
-import ProjectRequest from "@/models/ProjectRequest";
+import ProjectRequest, {
+  IProjectRequest,
+} from "@/models/ProjectRequest";
 import Counter from "@/models/Counter";
 import Service from "@/models/Service";
+import Offer from "@/models/Offer";
 
 import {
   resend,
@@ -68,9 +73,7 @@ function detailRow(
   `;
 }
 
-function tagList(
-  items: string[],
-) {
+function tagList(items: string[]) {
   if (!items.length) {
     return `
       <span style="
@@ -102,6 +105,10 @@ function tagList(
     .join("");
 }
 
+/* =========================================================
+   EMAIL
+========================================================= */
+
 function projectRequestEmail({
   requestId,
   fullName,
@@ -119,6 +126,12 @@ function projectRequestEmail({
   timeline,
   budgetRange,
   createdAt,
+  leadSource,
+  offerTitle,
+  offerCouponCode,
+  offerDiscountLabel,
+  offerOriginalPrice,
+  offerPrice,
 }: {
   requestId: string;
 
@@ -143,6 +156,14 @@ function projectRequestEmail({
   budgetRange: string;
 
   createdAt?: Date;
+
+  leadSource: string;
+
+  offerTitle?: string;
+  offerCouponCode?: string;
+  offerDiscountLabel?: string;
+  offerOriginalPrice?: number;
+  offerPrice?: number;
 }) {
   const receivedAt = createdAt
     ? new Intl.DateTimeFormat("en-IN", {
@@ -151,6 +172,59 @@ function projectRequestEmail({
         timeZone: "Asia/Kolkata",
       }).format(createdAt)
     : "Just now";
+
+  const offerSection =
+    offerTitle
+      ? `
+        <div style="
+          margin-bottom:24px;
+          padding:22px;
+          border-radius:16px;
+          background:#fff9df;
+          border:1px solid #f0d56a;
+        ">
+          <div style="
+            margin-bottom:12px;
+            color:#806100;
+            font-size:10px;
+            font-weight:700;
+            letter-spacing:1.5px;
+            text-transform:uppercase;
+          ">
+            Offer claim
+          </div>
+
+          ${detailRow(
+            "Offer",
+            offerTitle,
+          )}
+
+          ${detailRow(
+            "Coupon",
+            offerCouponCode,
+          )}
+
+          ${detailRow(
+            "Discount",
+            offerDiscountLabel,
+          )}
+
+          ${detailRow(
+            "Original price",
+            typeof offerOriginalPrice === "number"
+              ? `₹${offerOriginalPrice.toLocaleString("en-IN")}`
+              : undefined,
+          )}
+
+          ${detailRow(
+            "Offer price",
+            typeof offerPrice === "number"
+              ? `₹${offerPrice.toLocaleString("en-IN")}`
+              : undefined,
+          )}
+        </div>
+      `
+      : "";
 
   return `
 <!DOCTYPE html>
@@ -195,8 +269,6 @@ function projectRequestEmail({
   "
 >
 
-<!-- HEADER -->
-
 <tr>
 <td style="
   padding:30px 32px;
@@ -225,8 +297,6 @@ function projectRequestEmail({
 </td>
 </tr>
 
-<!-- CONTENT -->
-
 <tr>
 <td style="padding:32px;">
 
@@ -239,8 +309,13 @@ function projectRequestEmail({
     font-size:10px;
     font-weight:700;
     letter-spacing:.5px;
+    text-transform:uppercase;
   ">
-    NEW PROJECT
+    ${escapeHtml(
+      leadSource === "OFFER"
+        ? "OFFER CLAIM"
+        : "NEW PROJECT",
+    )}
   </div>
 
   <h1 style="
@@ -265,7 +340,7 @@ function projectRequestEmail({
     </strong>
   </p>
 
-  <!-- CLIENT DETAILS -->
+  ${offerSection}
 
   <div style="
     margin-bottom:24px;
@@ -302,12 +377,11 @@ function projectRequestEmail({
         "Preferred contact",
         preferredContactMethod,
       )}
+      ${detailRow("Lead source", leadSource)}
       ${detailRow("Received", receivedAt)}
     </table>
 
   </div>
-
-  <!-- PROJECT DETAILS -->
 
   <div style="
     margin-bottom:24px;
@@ -352,8 +426,6 @@ function projectRequestEmail({
 
   </div>
 
-  <!-- SERVICES -->
-
   <div style="
     margin-bottom:24px;
     padding:20px;
@@ -375,8 +447,6 @@ function projectRequestEmail({
     ${tagList(serviceNames)}
 
   </div>
-
-  <!-- PAGES -->
 
   <div style="
     margin-bottom:24px;
@@ -400,8 +470,6 @@ function projectRequestEmail({
 
   </div>
 
-  <!-- FEATURES -->
-
   <div style="
     margin-bottom:24px;
     padding:20px;
@@ -423,8 +491,6 @@ function projectRequestEmail({
     ${tagList(requiredFeatures)}
 
   </div>
-
-  <!-- DESCRIPTION -->
 
   <div style="
     padding:22px;
@@ -454,8 +520,6 @@ function projectRequestEmail({
 
   </div>
 
-  <!-- ACTION -->
-
   <a
     href="mailto:${escapeHtml(email)}"
     style="
@@ -475,8 +539,6 @@ function projectRequestEmail({
 
 </td>
 </tr>
-
-<!-- FOOTER -->
 
 <tr>
 <td style="
@@ -510,9 +572,11 @@ function projectRequestEmail({
 export async function POST(
   request: Request,
 ) {
+  let session: mongoose.ClientSession | null =
+    null;
+
   try {
-    const body =
-      await request.json();
+    const body = await request.json();
 
     /* =====================================================
        VALIDATION
@@ -525,10 +589,8 @@ export async function POST(
       return NextResponse.json(
         {
           success: false,
-
           error:
             "Please check the submitted information.",
-
           fields:
             parsed.error.flatten()
               .fieldErrors,
@@ -539,260 +601,497 @@ export async function POST(
       );
     }
 
-    /* =====================================================
-       DATABASE
-    ===================================================== */
-
     await connectDB();
 
-    /* =====================================================
-       ATOMIC REQUEST COUNTER
-    ===================================================== */
+    session =
+      await mongoose.startSession();
 
-    const counter =
-      await Counter.findOneAndUpdate(
-        {
-          _id: "project-request",
-        },
-        {
-          $inc: {
-            sequence: 1,
-          },
-        },
-        {
-          new: true,
-          upsert: true,
-          setDefaultsOnInsert: true,
-        },
-      );
-
-    if (!counter) {
-      throw new Error(
-        "Unable to generate request number.",
-      );
-    }
+ 
+    let serviceNames: string[] = [];
 
     /* =====================================================
-       REQUEST ID
+       TRANSACTION
     ===================================================== */
 
-    const requestId =
-      `ADS-${counter.sequence}`;
+   const transactionResult =
+  await session.withTransaction(
+    async () => {
+        const now = new Date();
 
-    /* =====================================================
-       SAVE REQUEST
-    ===================================================== */
+        const {
+          offerSlug,
+          serviceIds,
+        } = parsed.data;
 
-    const projectRequest =
-      await ProjectRequest.create({
-        requestId,
+        let offer: any = null;
 
         /* =================================================
-           CLIENT
+           OFFER RESOLUTION
         ================================================= */
 
-        fullName:
-          parsed.data.fullName,
+        if (
+          offerSlug &&
+          offerSlug.trim()
+        ) {
+          offer =
+            await Offer.findOne({
+              slug: offerSlug
+                .trim()
+                .toLowerCase(),
+              published: true,
+            })
+              .session(session)
+              .lean();
 
-        companyName:
-          parsed.data.companyName ||
-          undefined,
+          if (!offer) {
+            throw new Error(
+              "OFFER_NOT_FOUND",
+            );
+          }
 
-        email:
-          parsed.data.email,
+          /* ===============================================
+             OFFER DATE VALIDATION
+          =============================================== */
 
-        phone:
-          parsed.data.phone,
+          if (
+            now < offer.startDate
+          ) {
+            throw new Error(
+              "OFFER_NOT_STARTED",
+            );
+          }
 
-        location:
-          parsed.data.location,
+          if (
+            now > offer.endDate
+          ) {
+            throw new Error(
+              "OFFER_EXPIRED",
+            );
+          }
 
-        currentWebsite:
-          parsed.data.currentWebsite ||
-          undefined,
+          /* ===============================================
+             DUPLICATE OFFER CLAIM CHECK
+          =============================================== */
 
-        preferredContactMethod:
-          parsed.data.preferredContactMethod,
+          const existingClaim =
+            await ProjectRequest.exists({
+              offerId: offer._id,
+              email:
+                parsed.data.email
+                  .trim()
+                  .toLowerCase(),
+            }).session(session);
 
-        /* =================================================
-           PROJECT
-        ================================================= */
+          if (existingClaim) {
+            throw new Error(
+              "OFFER_ALREADY_CLAIMED",
+            );
+          }
 
-        serviceIds:
-          parsed.data.serviceIds,
-
-        projectType:
-          parsed.data.projectType,
-
-        projectDescription:
-          parsed.data.projectDescription,
-
-        requiredPages:
-          parsed.data.requiredPages,
-
-        requiredFeatures:
-          parsed.data.requiredFeatures,
-
-        timeline:
-          parsed.data.timeline,
-
-        budgetRange:
-          parsed.data.budgetRange,
-
-        /* =================================================
-           CONSENT
-        ================================================= */
-
-        privacyConsent:
-          parsed.data.privacyConsent,
-
-        /* =================================================
-           ADMIN
-        ================================================= */
-
-        status: "NEW",
-      });
-
-    /* =====================================================
-       GET SERVICE NAMES FOR EMAIL
-    ===================================================== */
-
-    const services =
-      await Service.find({
-        _id: {
-          $in: projectRequest.serviceIds,
-        },
-      })
-        .select("title")
-        .lean();
-
-    const serviceNames =
-      services.map(
-        (service) => service.title,
-      );
-
-    /* =====================================================
-       ADMIN EMAIL NOTIFICATION
-    ===================================================== */
-
-  /* =====================================================
-   ADMIN EMAIL NOTIFICATION
-===================================================== */
-
-console.log(
-  "PROJECT_REQUEST_EMAIL_ATTEMPT:",
+          /* ===============================================
+             ATOMIC OFFER CLAIM
+          =============================================== */
+const claimedOffer = await Offer.findOneAndUpdate(
   {
-    requestId: projectRequest.requestId,
-    from: EMAIL_FROM,
-    to: ADMIN_EMAIL,
+    _id: offer._id,
+    ...(offer.isClaimLimitEnabled
+      ? {
+          $expr: {
+            $lt: [
+              { $ifNull: ["$claimedCount", 0] },
+              { $ifNull: ["$claimLimit", 0] },
+            ],
+          },
+        }
+      : {}),
+  },
+  {
+    $inc: {
+      claimedCount: 1,
+    },
+  },
+  {
+    new: true,
+    session,
   },
 );
 
-const { data: emailData, error: emailError } =
-  await resend.emails.send(
-    {
-      from: EMAIL_FROM,
+if (!claimedOffer) {
+  throw new Error("OFFER_FULLY_CLAIMED");
+}
+          /* ===============================================
+             SERVICE LOCK
+          =============================================== */
 
-      to: [ADMIN_EMAIL],
+          if (offer.serviceId) {
+            parsed.data.serviceIds = [
+              offer.serviceId.toString(),
+            ];
+          }
+        }
 
-      subject:
-        `🚀 New Project Request — ${projectRequest.requestId}`,
+        /* =================================================
+           VERIFY SERVICES
+        ================================================= */
 
-      html: projectRequestEmail({
-        requestId:
-          projectRequest.requestId,
+        const validServices =
+          await Service.find({
+            _id: {
+              $in: parsed.data.serviceIds,
+            },
+            published: true,
+          })
+            .select("_id title")
+            .session(session)
+            .lean();
 
-        fullName:
-          projectRequest.fullName,
+        if (
+          validServices.length !==
+          parsed.data.serviceIds.length
+        ) {
+          throw new Error(
+            "INVALID_SERVICE_SELECTION",
+          );
+        }
 
-        companyName:
-          projectRequest.companyName,
+        serviceNames =
+          validServices.map(
+            (service) =>
+              service.title,
+          );
 
-        email:
-          projectRequest.email,
+        /* =================================================
+           ATOMIC REQUEST COUNTER
+        ================================================= */
 
-        phone:
-          projectRequest.phone,
+        const counter =
+          await Counter.findOneAndUpdate(
+            {
+              _id: "project-request",
+            },
+            {
+              $inc: {
+                sequence: 1,
+              },
+            },
+            {
+              new: true,
+              upsert: true,
+              setDefaultsOnInsert:
+                true,
+              session,
+            },
+          );
 
-        location:
-          projectRequest.location,
+        if (!counter) {
+          throw new Error(
+            "REQUEST_COUNTER_FAILED",
+          );
+        }
+        
 
-        currentWebsite:
-          projectRequest.currentWebsite,
+        const requestId =
+          `ADS-${counter.sequence}`;
 
-        preferredContactMethod:
-          projectRequest.preferredContactMethod,
+        /* =================================================
+           CREATE REQUEST
+        ================================================= */
 
-        projectType:
-          projectRequest.projectType,
+        const offerData =
+          offer
+            ? {
+                offerId: offer._id,
+                offerSlug:
+                  offer.slug,
+                offerTitle:
+                  offer.title,
+                offerCouponCode:
+                  offer.couponCode,
+                offerDiscountLabel:
+                  offer.discountLabel,
+                offerOriginalPrice:
+                  offer.originalPrice,
+                offerPrice:
+                  offer.offerPrice,
+                offerClaimedAt:
+                  now,
+              }
+            : {};
 
-        projectDescription:
-          projectRequest.projectDescription,
+        const requestDocs =
+          await ProjectRequest.create(
+            [
+              {
+                requestId,
 
-        serviceNames,
+                /* CLIENT */
 
-        requiredPages:
-          projectRequest.requiredPages,
+                fullName:
+                  parsed.data.fullName,
 
-        requiredFeatures:
-          projectRequest.requiredFeatures,
+                companyName:
+                  parsed.data
+                    .companyName ||
+                  undefined,
 
-        timeline:
-          projectRequest.timeline,
+                email:
+                  parsed.data.email
+                    .trim()
+                    .toLowerCase(),
 
-        budgetRange:
-          projectRequest.budgetRange,
+                phone:
+                  parsed.data.phone,
 
-        createdAt:
-          projectRequest.createdAt,
-      }),
+                location:
+                  parsed.data.location,
 
-      replyTo:
-        projectRequest.email,
+                currentWebsite:
+                  parsed.data
+                    .currentWebsite ||
+                  undefined,
 
-      tags: [
-        {
-          name: "event",
-          value:
-            "project-request-created",
-        },
+                preferredContactMethod:
+                  parsed.data
+                    .preferredContactMethod,
 
-        {
-          name: "request_id",
-          value:
-            projectRequest.requestId,
-        },
-      ],
-    },
-    {
-      idempotencyKey:
-        `project-request-admin/${projectRequest._id}`,
-    },
-  );
+                /* PROJECT */
 
-if (emailError) {
-  console.error(
-    "PROJECT_REQUEST_EMAIL_NOTIFICATION_FAILED:",
-    {
-      requestId:
-        projectRequest.requestId,
+                serviceIds:
+                  parsed.data
+                    .serviceIds,
 
-      error:
-        emailError,
-    },
-  );
-} else {
-  console.log(
-    "PROJECT_REQUEST_EMAIL_SENT_SUCCESSFULLY:",
-    {
-      requestId:
-        projectRequest.requestId,
+                projectType:
+                  parsed.data
+                    .projectType,
 
-      emailId:
-        emailData?.id,
-    },
+                projectDescription:
+                  parsed.data
+                    .projectDescription,
+
+                requiredPages:
+                  parsed.data
+                    .requiredPages,
+
+                requiredFeatures:
+                  parsed.data
+                    .requiredFeatures,
+
+                timeline:
+                  parsed.data.timeline,
+
+                budgetRange:
+                  parsed.data
+                    .budgetRange,
+
+                /* OFFER */
+
+                ...offerData,
+
+                /* SOURCE */
+
+                leadSource:
+                  offer
+                    ? "OFFER"
+                    : "WEBSITE",
+
+                /* CONSENT */
+
+                privacyConsent:
+                  parsed.data
+                    .privacyConsent,
+
+                /* CRM */
+
+                status: "NEW",
+              },
+            ],
+            {
+              session,
+            },
+          );
+          
+
+       const createdRequest =
+  requestDocs[0] as unknown as IProjectRequest;
+
+if (!createdRequest) {
+  throw new Error(
+    "PROJECT_REQUEST_CREATE_FAILED",
   );
 }
+
+return {
+  createdRequest,
+  serviceNames,
+};
+      },
+    );
+
+    const createdRequest =
+  transactionResult.createdRequest;
+
+serviceNames =
+  transactionResult.serviceNames;
+
+    /* =====================================================
+       SESSION END
+    ===================================================== */
+
+    if (session) {
+      await session.endSession();
+      session = null;
+    }
+
+  
+
+    /* =====================================================
+       ADMIN EMAIL
+    ===================================================== */
+
+    console.log(
+      "PROJECT_REQUEST_EMAIL_ATTEMPT:",
+      {
+        requestId:
+          createdRequest.requestId,
+        from: EMAIL_FROM,
+        to: ADMIN_EMAIL,
+      },
+    );
+
+    const {
+      data: emailData,
+      error: emailError,
+    } =
+      await resend.emails.send({
+        from: EMAIL_FROM,
+        to: [ADMIN_EMAIL],
+
+        subject:
+          createdRequest.leadSource ===
+          "OFFER"
+            ? `🎟️ Offer Claim — ${createdRequest.requestId}`
+            : `🚀 New Project Request — ${createdRequest.requestId}`,
+
+        html:
+          projectRequestEmail({
+            requestId:
+              createdRequest.requestId,
+
+            fullName:
+              createdRequest.fullName,
+
+            companyName:
+              createdRequest.companyName,
+
+            email:
+              createdRequest.email,
+
+            phone:
+              createdRequest.phone,
+
+            location:
+              createdRequest.location,
+
+            currentWebsite:
+              createdRequest.currentWebsite,
+
+            preferredContactMethod:
+              createdRequest.preferredContactMethod,
+
+            projectType:
+              createdRequest.projectType,
+
+            projectDescription:
+              createdRequest.projectDescription,
+
+            serviceNames,
+
+            requiredPages:
+              createdRequest.requiredPages,
+
+            requiredFeatures:
+              createdRequest.requiredFeatures,
+
+            timeline:
+              createdRequest.timeline,
+
+            budgetRange:
+              createdRequest.budgetRange,
+
+            createdAt:
+              createdRequest.createdAt,
+
+            leadSource:
+              createdRequest.leadSource,
+
+            offerTitle:
+              createdRequest.offerTitle,
+
+            offerCouponCode:
+              createdRequest.offerCouponCode,
+
+            offerDiscountLabel:
+              createdRequest.offerDiscountLabel,
+
+            offerOriginalPrice:
+              createdRequest
+                .offerOriginalPrice,
+
+            offerPrice:
+              createdRequest.offerPrice,
+          }),
+
+        replyTo:
+          createdRequest.email,
+
+        tags: [
+          {
+            name: "event",
+            value:
+              createdRequest.leadSource ===
+              "OFFER"
+                ? "offer-claim-created"
+                : "project-request-created",
+          },
+          {
+            name: "request_id",
+            value:
+              createdRequest.requestId,
+          },
+          ...(createdRequest
+            .offerSlug
+            ? [
+                {
+                  name: "offer_slug",
+                  value:
+                    createdRequest
+                      .offerSlug,
+                },
+              ]
+            : []),
+        ],
+      });
+
+    if (emailError) {
+      console.error(
+        "PROJECT_REQUEST_EMAIL_NOTIFICATION_FAILED:",
+        {
+          requestId:
+            createdRequest.requestId,
+          error: emailError,
+        },
+      );
+    } else {
+      console.log(
+        "PROJECT_REQUEST_EMAIL_SENT_SUCCESSFULLY:",
+        {
+          requestId:
+            createdRequest.requestId,
+          emailId:
+            emailData?.id,
+        },
+      );
+    }
 
     /* =====================================================
        RESPONSE
@@ -801,24 +1100,155 @@ if (emailError) {
     return NextResponse.json(
       {
         success: true,
-
         requestId:
-          projectRequest.requestId,
+          createdRequest.requestId,
+
+        offerClaimed:
+          createdRequest.leadSource ===
+          "OFFER",
+
+        offerTitle:
+          createdRequest.offerTitle ||
+          null,
+
+        offerPrice:
+          createdRequest.offerPrice ??
+          null,
       },
       {
         status: 201,
       },
     );
   } catch (error) {
+    if (session) {
+      await session.endSession();
+    }
+
     console.error(
       "PROJECT REQUEST ERROR:",
       error,
     );
 
+    const errorCode =
+      error instanceof Error
+        ? error.message
+        : "";
+
+    /* =====================================================
+       OFFER-SPECIFIC ERRORS
+    ===================================================== */
+
+    if (
+      errorCode ===
+      "OFFER_NOT_FOUND"
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "OFFER_NOT_FOUND",
+          error:
+            "This offer is no longer available.",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+
+    if (
+      errorCode ===
+      "OFFER_NOT_STARTED"
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "OFFER_NOT_STARTED",
+          error:
+            "This offer is not available yet.",
+        },
+        {
+          status: 409,
+        },
+      );
+    }
+
+    if (
+      errorCode ===
+      "OFFER_EXPIRED"
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "OFFER_EXPIRED",
+          error:
+            "This offer has expired.",
+        },
+        {
+          status: 410,
+        },
+      );
+    }
+
+    if (
+      errorCode ===
+      "OFFER_FULLY_CLAIMED"
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "OFFER_FULLY_CLAIMED",
+          error:
+            "All available offer slots have already been claimed.",
+        },
+        {
+          status: 409,
+        },
+      );
+    }
+
+    if (
+      errorCode ===
+      "OFFER_ALREADY_CLAIMED"
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          code:
+            "OFFER_ALREADY_CLAIMED",
+          error:
+            "This offer has already been claimed using this email address.",
+        },
+        {
+          status: 409,
+        },
+      );
+    }
+
+    if (
+      errorCode ===
+      "INVALID_SERVICE_SELECTION"
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          code:
+            "INVALID_SERVICE_SELECTION",
+          error:
+            "Please select a valid service.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    /* =====================================================
+       GENERIC ERROR
+    ===================================================== */
+
     return NextResponse.json(
       {
         success: false,
-
         error:
           "Something went wrong while submitting your request.",
       },

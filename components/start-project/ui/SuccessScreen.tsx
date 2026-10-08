@@ -1,10 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Gift } from "lucide-react";
+
+type OfferClaim = {
+  title: string;
+  price: number | null;
+  discountLabel?: string | null;
+  couponCode?: string | null;
+};
 
 type Props = {
   requestId: string;
+  offerClaimed?: boolean;
+  offer?: OfferClaim | null;
 };
 
 const STEPS = [
@@ -30,6 +39,8 @@ const STEPS = [
 
 export default function SuccessScreen({
   requestId,
+  offerClaimed = false,
+  offer = null,
 }: Props) {
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#050505] px-5 py-10 text-white">
@@ -72,6 +83,94 @@ export default function SuccessScreen({
           Your request has been safely submitted and
           our team will review it.
         </p>
+
+        {/* =====================================================
+            OFFER CLAIMED
+        ===================================================== */}
+
+        {offerClaimed && offer && (
+          <div className="mx-auto mt-7 max-w-xl overflow-hidden rounded-2xl border border-[#FFC400]/25 bg-[#FFC400]/[0.05] text-left">
+            {/* Accent */}
+            <div className="h-1 bg-[#FFC400]" />
+
+            <div className="p-5 sm:p-6">
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFC400]/10">
+                  <Gift
+                    size={19}
+                    className="text-[#FFC400]"
+                  />
+                </div>
+
+                <div className="min-w-0">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#FFC400]">
+                    Offer successfully claimed
+                  </p>
+
+                  <h2 className="mt-1 text-sm font-semibold text-white sm:text-base">
+                    {offer.title}
+                  </h2>
+
+                  <p className="mt-1 text-xs leading-5 text-neutral-500">
+                    Your special offer has been attached to this
+                    project request and is now reserved for you.
+                  </p>
+                </div>
+              </div>
+
+              {/* Offer details */}
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                {offer.price !== null && (
+                  <div className="rounded-xl border border-white/[0.07] bg-black/20 p-3">
+                    <p className="text-[8px] font-medium uppercase tracking-wider text-neutral-600">
+                      Offer Price
+                    </p>
+
+                    <p className="mt-1 text-base font-bold text-white">
+                      ₹{offer.price.toLocaleString("en-IN")}
+                    </p>
+                  </div>
+                )}
+
+                {offer.discountLabel && (
+                  <div className="rounded-xl border border-white/[0.07] bg-black/20 p-3">
+                    <p className="text-[8px] font-medium uppercase tracking-wider text-neutral-600">
+                      Discount
+                    </p>
+
+                    <p className="mt-1 text-sm font-bold text-[#FFC400]">
+                      {offer.discountLabel}
+                    </p>
+                  </div>
+                )}
+
+                {offer.couponCode && (
+                  <div className="rounded-xl border border-dashed border-[#FFC400]/25 bg-black/20 p-3">
+                    <p className="text-[8px] font-medium uppercase tracking-wider text-neutral-600">
+                      Coupon Code
+                    </p>
+
+                    <p className="mt-1 font-mono text-sm font-bold tracking-wider text-[#FFC400]">
+                      {offer.couponCode}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-4 flex items-center gap-2 border-t border-white/[0.07] pt-4">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#FFC400]" />
+
+                <p className="text-[10px] text-neutral-500">
+                  Your offer has been recorded with Request ID{" "}
+                  <span className="font-mono text-neutral-300">
+                    {requestId}
+                  </span>
+                  .
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* =====================================================
             REQUEST ID

@@ -35,6 +35,18 @@ async function getOffer(slug: string) {
   }).lean();
 }
 
+function toISOStringSafe(value: Date | string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    throw new Error(
+      `Invalid offer date: ${String(value)}`,
+    );
+  }
+
+  return date.toISOString();
+}
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
@@ -44,7 +56,8 @@ export async function generateMetadata({
 
   if (!offer) {
     return {
-      title: "Offer Not Found | Aman Digital Solutions",
+      title:
+        "Offer Not Found | Aman Digital Solutions",
       robots: {
         index: false,
         follow: false,
@@ -52,7 +65,8 @@ export async function generateMetadata({
     };
   }
 
-  const canonicalUrl = `${SITE_URL}/offers/${offer.slug}`;
+  const canonicalUrl =
+    `${SITE_URL}/offers/${offer.slug}`;
 
   const title =
     offer.seoTitle ||
@@ -81,10 +95,14 @@ export async function generateMetadata({
     },
 
     openGraph: {
-      title: offer.ogTitle || title,
-      description: offer.ogDescription || description,
+      title:
+        offer.ogTitle || title,
+      description:
+        offer.ogDescription ||
+        description,
       url: canonicalUrl,
-      siteName: "Aman Digital Solutions",
+      siteName:
+        "Aman Digital Solutions",
       type: "website",
       images: [
         {
@@ -99,8 +117,11 @@ export async function generateMetadata({
 
     twitter: {
       card: "summary_large_image",
-      title: offer.ogTitle || title,
-      description: offer.ogDescription || description,
+      title:
+        offer.ogTitle || title,
+      description:
+        offer.ogDescription ||
+        description,
       images: [ogImage],
     },
   };
@@ -119,26 +140,50 @@ export default async function OfferDetailPage({
 
   const now = new Date();
 
-  const lifecycleStatus = getOfferLifecycleStatus(
-    {
-      published: offer.published,
-      startDate: offer.startDate,
-      endDate: offer.endDate,
-    },
-    now,
-  );
+  const lifecycleStatus =
+    getOfferLifecycleStatus(
+      {
+        published: offer.published,
+        startDate: offer.startDate,
+        endDate: offer.endDate,
+      },
+      now,
+    );
 
-  const canonicalUrl = `${SITE_URL}/offers/${offer.slug}`;
+  const claimedCount =
+    typeof offer.claimedCount ===
+    "number"
+      ? Math.max(
+          0,
+          offer.claimedCount,
+        )
+      : 0;
 
-  /*
-   * Claiming is only possible while the offer
-   * is genuinely active.
-   */
-  const claimUrl = `/start-a-project?offer=${encodeURIComponent(
-    offer.slug,
-  )}`;
+  const claimLimit =
+    offer.isClaimLimitEnabled &&
+    typeof offer.claimLimit ===
+      "number"
+      ? offer.claimLimit
+      : null;
 
-  const collectionUrl = `${SITE_URL}/offers`;
+  const isFullyClaimed =
+    claimLimit !== null &&
+    claimedCount >= claimLimit;
+
+  const canClaim =
+    lifecycleStatus === "active" &&
+    !isFullyClaimed;
+
+  const canonicalUrl =
+    `${SITE_URL}/offers/${offer.slug}`;
+
+  const claimUrl =
+    `/start-a-project?offer=${encodeURIComponent(
+      offer.slug,
+    )}`;
+
+  const collectionUrl =
+    `${SITE_URL}/offers`;
 
   const webpageSchema = {
     "@context": "https://schema.org",
@@ -195,43 +240,54 @@ export default async function OfferDetailPage({
     "@type": "Offer",
     url: canonicalUrl,
     name: offer.title,
-    description: offer.shortDescription,
+    description:
+      offer.shortDescription,
     priceCurrency: "INR",
 
-    ...(offer.offerPrice !== undefined &&
+    ...(offer.offerPrice !==
+      undefined &&
     offer.offerPrice !== null
       ? {
-          price: offer.offerPrice,
+          price:
+            offer.offerPrice,
         }
       : {}),
 
-    ...(offer.originalPrice !== undefined &&
+    ...(offer.originalPrice !==
+      undefined &&
     offer.originalPrice !== null
       ? {
           priceSpecification: {
-            "@type": "PriceSpecification",
-            price: offer.offerPrice ?? offer.originalPrice,
-            priceCurrency: "INR",
+            "@type":
+              "PriceSpecification",
+            price:
+              offer.offerPrice ??
+              offer.originalPrice,
+            priceCurrency:
+              "INR",
           },
         }
       : {}),
 
-    priceValidUntil: new Date(offer.endDate)
-      .toISOString()
-      .split("T")[0],
+    priceValidUntil:
+      toISOStringSafe(
+        offer.endDate,
+      ).split("T")[0],
 
     availability:
-      lifecycleStatus === "active"
+      canClaim
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
 
-    validFrom: new Date(
-      offer.startDate,
-    ).toISOString(),
+    validFrom:
+      toISOStringSafe(
+        offer.startDate,
+      ),
 
     seller: {
       "@type": "Organization",
-      name: "Aman Digital Solutions",
+      name:
+        "Aman Digital Solutions",
       url: SITE_URL,
     },
   };
@@ -244,96 +300,137 @@ export default async function OfferDetailPage({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(webpageSchema),
+            __html:
+              JSON.stringify(
+                webpageSchema,
+              ),
           }}
         />
 
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(breadcrumbSchema),
+            __html:
+              JSON.stringify(
+                breadcrumbSchema,
+              ),
           }}
         />
 
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(offerSchema),
+            __html:
+              JSON.stringify(
+                offerSchema,
+              ),
           }}
         />
 
         <OfferDetailHero
           offer={{
             title: offer.title,
-            badge: offer.badge ?? null,
+            badge:
+              offer.badge ?? null,
+
             shortDescription:
               offer.shortDescription,
 
-            heroImage: offer.heroImage
-              ? {
-                  url: offer.heroImage.url,
-                  alt:
-                    offer.heroImage.alt ||
-                    offer.title,
-                }
-              : null,
+            heroImage:
+              offer.heroImage
+                ? {
+                    url:
+                      offer.heroImage
+                        .url,
+                    alt:
+                      offer.heroImage
+                        .alt ||
+                      offer.title,
+                  }
+                : null,
 
             offerPrice:
-              offer.offerPrice ?? null,
+              offer.offerPrice ??
+              null,
 
             originalPrice:
-              offer.originalPrice ?? null,
+              offer.originalPrice ??
+              null,
 
             discountType:
               offer.discountType,
 
             discountValue:
-              offer.discountValue ?? null,
+              offer.discountValue ??
+              null,
 
             discountLabel:
-              offer.discountLabel ?? null,
+              offer.discountLabel ??
+              null,
 
             couponCode:
-              offer.couponCode ?? null,
+              offer.couponCode ??
+              null,
 
             ctaLabel:
               offer.ctaLabel,
 
             secondaryCtaLabel:
-              offer.secondaryCtaLabel ?? null,
+              offer.secondaryCtaLabel ??
+              null,
 
             secondaryCtaLink:
-              offer.secondaryCtaLink ?? null,
+              offer.secondaryCtaLink ??
+              null,
 
             startDate:
-              new Date(
+              toISOStringSafe(
                 offer.startDate,
-              ).toISOString(),
+              ),
 
             endDate:
-              new Date(
+              toISOStringSafe(
                 offer.endDate,
-              ).toISOString(),
+              ),
 
             termsAndConditions:
-              offer.termsAndConditions ?? null,
+              offer.termsAndConditions ??
+              null,
 
             lifecycleStatus,
             claimUrl,
+
+            isClaimLimitEnabled:
+              Boolean(
+                offer.isClaimLimitEnabled,
+              ),
+
+            claimLimit,
+            claimedCount,
           }}
         />
 
         <OfferDetailHighlights
-          highlights={offer.highlights ?? []}
-          description={offer.description}
+          highlights={
+            offer.highlights ?? []
+          }
+          description={
+            offer.description
+          }
         />
 
         <OfferDetailFeatures
-          features={offer.includedFeatures ?? []}
+          features={
+            offer.includedFeatures ??
+            []
+          }
         />
 
         <OfferDetailTerms
-          terms={offer.termsAndConditions ?? ""}
+          terms={
+            offer.termsAndConditions ??
+            ""
+          }
         />
 
         <OfferDetailCTA
@@ -342,17 +439,28 @@ export default async function OfferDetailPage({
           claimUrl={claimUrl}
           ctaLabel={offer.ctaLabel}
           secondaryCtaLabel={
-            offer.secondaryCtaLabel ?? "Talk to us"
+            offer.secondaryCtaLabel ??
+            "Talk to us"
           }
           secondaryCtaLink={
-            offer.secondaryCtaLink ?? "/contact"
+            offer.secondaryCtaLink ??
+            "/contact"
           }
-          startDate={new Date(
+          startDate={toISOStringSafe(
             offer.startDate,
-          ).toISOString()}
-          endDate={new Date(
+          )}
+          endDate={toISOStringSafe(
             offer.endDate,
-          ).toISOString()}
+          )}
+          isFullyClaimed={
+            isFullyClaimed
+          }
+          claimedCount={
+            claimedCount
+          }
+          claimLimit={
+            claimLimit
+          }
         />
       </main>
 

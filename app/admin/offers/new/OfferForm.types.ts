@@ -3,7 +3,16 @@
 import type { z } from "zod";
 import { offerSchema } from "@/schemas/offer.schema";
 
-export type FormValues = z.input<typeof offerSchema>;
+/* =========================================================
+   FORM VALUES
+========================================================= */
+
+export type FormValues =
+  z.input<typeof offerSchema>;
+
+/* =========================================================
+   IMAGE VALUE
+========================================================= */
 
 export type ImageValue = {
   url: string;

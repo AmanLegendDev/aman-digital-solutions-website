@@ -6,6 +6,7 @@ import {
   Loader2,
   Send,
   Sparkles,
+  Tag,
 } from "lucide-react";
 
 import { useEffect, useRef, useState } from "react";
@@ -27,12 +28,142 @@ import type {
   ServiceOption,
 } from "./types";
 
-type Props = {
-  services: ServiceOption[];
+type OfferContext = {
+  _id: string;
+  title: string;
+  slug: string;
+  badge: string;
+  shortDescription: string;
+  discountLabel: string;
+  originalPrice: number | null;
+  offerPrice: number | null;
+  couponCode: string;
+  serviceId: string;
+  startDate: string | null;
+  endDate: string | null;
+  isClaimLimitEnabled: boolean;
+  claimLimit: number | null;
+  claimedCount: number;
 };
 
+function OfferAppliedBanner({
+  offer,
+}: {
+  offer: OfferContext;
+}) {
+  const hasPrice =
+    typeof offer.offerPrice === "number" &&
+    typeof offer.originalPrice === "number";
+
+  return (
+    <div className="mb-6 overflow-hidden rounded-2xl border border-[#FFC400]/20 bg-[#FFC400]/[0.05]">
+      {/* Top accent */}
+      <div className="h-1 bg-[#FFC400]" />
+
+      <div className="p-4 sm:p-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          {/* Left */}
+          <div className="min-w-0">
+            <div className="mb-2 flex items-center gap-2">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FFC400]/10">
+                <Tag
+                  size={15}
+                  className="text-[#FFC400]"
+                />
+              </div>
+
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#FFC400]">
+                {offer.badge || "Special Offer"}
+              </span>
+
+              <span className="rounded-full border border-[#FFC400]/20 bg-[#FFC400]/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-[#FFC400]">
+                Offer Applied
+              </span>
+            </div>
+
+            <h2 className="text-sm font-semibold text-white sm:text-base">
+              {offer.title}
+            </h2>
+
+            <p className="mt-1 max-w-2xl text-xs leading-5 text-neutral-500">
+              {offer.shortDescription}
+            </p>
+          </div>
+
+          {/* Right pricing */}
+          <div className="shrink-0 sm:text-right">
+            {hasPrice ? (
+              <>
+                <div className="flex items-center gap-2 sm:justify-end">
+                  <span className="text-xs text-neutral-600 line-through">
+                    ₹{offer.originalPrice!.toLocaleString("en-IN")}
+                  </span>
+
+                  <span className="text-xl font-bold text-white">
+                    ₹{offer.offerPrice!.toLocaleString("en-IN")}
+                  </span>
+                </div>
+
+                {offer.discountLabel && (
+                  <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-[#FFC400]">
+                    {offer.discountLabel}
+                  </p>
+                )}
+              </>
+            ) : (
+              offer.discountLabel && (
+                <p className="text-sm font-bold text-[#FFC400]">
+                  {offer.discountLabel}
+                </p>
+              )
+            )}
+          </div>
+        </div>
+
+        {/* Bottom information */}
+        <div className="mt-4 flex flex-col gap-3 border-t border-white/[0.07] pt-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-2">
+            {offer.couponCode && (
+              <div className="inline-flex items-center gap-2 rounded-lg border border-dashed border-[#FFC400]/30 bg-black/30 px-3 py-2">
+                <span className="text-[9px] font-medium uppercase tracking-wider text-neutral-600">
+                  Coupon
+                </span>
+
+                <span className="font-mono text-[11px] font-bold tracking-wider text-[#FFC400]">
+                  {offer.couponCode}
+                </span>
+              </div>
+            )}
+
+            {offer.isClaimLimitEnabled &&
+              typeof offer.claimLimit === "number" && (
+                <span className="text-[10px] text-neutral-500">
+                  Limited offer ·{" "}
+                  <span className="font-semibold text-neutral-300">
+                    {offer.claimedCount} / {offer.claimLimit}
+                  </span>{" "}
+                  claimed
+                </span>
+              )}
+          </div>
+
+          <div className="flex items-center gap-2 text-[10px] text-neutral-600">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#FFC400]" />
+            This offer is locked to your selected service
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+type Props = {
+  services: ServiceOption[];
+  offer: OfferContext | null;
+};
 export default function StartProjectClient({
   services,
+  offer,
 }: Props) {
   const [step, setStep] =
     useState<FormStep>(1);
@@ -58,6 +189,136 @@ export default function StartProjectClient({
 
   const [submitError, setSubmitError] =
     useState("");
+
+    const [claimedOffer, setClaimedOffer] =
+  useState<OfferContext | null>(null);
+
+const [offerClaimed, setOfferClaimed] =
+  useState(false);
+
+
+
+ 
+
+    /*
+   * Preselect service from the URL.
+   *
+   * Example:
+   * /start-a-project?service=seo-search-growth
+   *
+   * The selected service remains fully editable.
+   */
+  const [servicePrefilled, setServicePrefilled] =
+  useState(false);
+
+const [offerApplied, setOfferApplied] =
+  useState(false);
+
+const servicePrefillApplied = useRef(false);
+
+useEffect(() => {
+  if (servicePrefillApplied.current) {
+    return;
+  }
+
+  if (!services.length) {
+    return;
+  }
+
+  const params = new URLSearchParams(
+    window.location.search,
+  );
+
+  const serviceSlug =
+    params.get("service");
+
+  /*
+   * =======================================================
+   * OFFER FLOW
+   * =======================================================
+   *
+   * Offer serviceId is authoritative.
+   * We do NOT trust a service query parameter
+   * when an offer is active.
+   */
+
+  if (
+    offer &&
+    offer.serviceId
+  ) {
+    const matchedService =
+      services.find(
+        (service) =>
+          service._id ===
+          offer.serviceId,
+      );
+
+    if (matchedService) {
+      setData((current) => ({
+        ...current,
+        serviceIds: [
+          matchedService._id,
+        ],
+      }));
+
+      setServicePrefilled(true);
+      setOfferApplied(true);
+
+      servicePrefillApplied.current =
+        true;
+
+      return;
+    }
+  }
+
+  /*
+   * =======================================================
+   * NORMAL SERVICE FLOW
+   * =======================================================
+   *
+   * /start-a-project?service=service-slug
+   */
+
+  if (!serviceSlug) {
+    servicePrefillApplied.current =
+      true;
+
+    return;
+  }
+
+  const matchedService =
+    services.find(
+      (service) =>
+        service.slug.toLowerCase() ===
+        serviceSlug.toLowerCase(),
+    );
+
+  if (!matchedService) {
+    servicePrefillApplied.current =
+      true;
+
+    return;
+  }
+
+  setData((current) => {
+    if (current.serviceIds.length > 0) {
+      return current;
+    }
+
+    return {
+      ...current,
+      serviceIds: [
+        matchedService._id,
+      ],
+    };
+  });
+
+  setServicePrefilled(true);
+
+  servicePrefillApplied.current =
+    true;
+}, [services, offer]);
+
 
   function update<K extends keyof FormData>(
     key: K,
@@ -204,6 +465,13 @@ export default function StartProjectClient({
     try {
       setSubmitting(true);
 
+      console.log("FINAL OFFER SUBMIT:", {
+  offerProp: offer,
+  offerSlugFromProp: offer?.slug,
+  offerSlugFromUrl:
+    new URLSearchParams(window.location.search).get("offer"),
+});
+
       const response = await fetch(
         "/api/project-requests",
         {
@@ -212,7 +480,13 @@ export default function StartProjectClient({
             "Content-Type":
               "application/json",
           },
-          body: JSON.stringify(data),
+ body: JSON.stringify({
+  ...data,
+  offerSlug:
+    offer?.slug ||
+    new URLSearchParams(window.location.search).get("offer") ||
+    "",
+}),
         },
       );
 
@@ -238,11 +512,25 @@ export default function StartProjectClient({
         );
       }
 
-      setRequestId(
-        result.requestId,
-      );
+     setRequestId(result.requestId);
 
-      setStep(4);
+if (result.offerClaimed && offer) {
+  setOfferClaimed(true);
+
+  setClaimedOffer({
+    ...offer,
+    title: result.offerTitle || offer.title,
+    offerPrice:
+      typeof result.offerPrice === "number"
+        ? result.offerPrice
+        : offer.offerPrice,
+  });
+} else {
+  setOfferClaimed(false);
+  setClaimedOffer(null);
+}
+
+setStep(4);
     } catch (error) {
       setSubmitError(
         error instanceof Error
@@ -254,13 +542,26 @@ export default function StartProjectClient({
     }
   }
 
-  if (step === 4) {
-    return (
-      <SuccessScreen
-        requestId={requestId}
-      />
-    );
-  }
+if (step === 4) {
+  return (
+    <SuccessScreen
+      requestId={requestId}
+      offerClaimed={offerClaimed}
+      offer={
+        claimedOffer
+          ? {
+              title: claimedOffer.title,
+              price: claimedOffer.offerPrice,
+              discountLabel:
+                claimedOffer.discountLabel,
+              couponCode:
+                claimedOffer.couponCode,
+            }
+          : null
+      }
+    />
+  );
+}
 
   return (
     <div className="min-h-screen bg-[#050505] px-4 py-10 text-white sm:px-6 lg:px-8">
@@ -295,9 +596,15 @@ export default function StartProjectClient({
           </p>
         </div>
 
-        {/* STEPPER */}
+      {/* OFFER BANNER */}
 
-        <div className="mb-8 flex items-center justify-center gap-2 sm:gap-4">
+{offerApplied && offer && (
+  <OfferAppliedBanner offer={offer} />
+)}
+
+{/* STEPPER */}
+
+<div className="mb-8 flex items-center justify-center gap-2 sm:gap-4">
           {[
             [1, "Your Details"],
             [2, "Project"],
@@ -363,13 +670,16 @@ export default function StartProjectClient({
           )}
 
           {step === 2 && (
-            <ProjectStep
-              data={data}
-              errors={errors}
-              services={services}
-              update={update}
-              toggleArray={toggleArray}
-            />
+ <ProjectStep
+  data={data}
+  errors={errors}
+  services={services}
+  update={update}
+  toggleArray={toggleArray}
+  servicePrefilled={servicePrefilled}
+  offerApplied={offerApplied}
+  offer={offer}
+/>
           )}
 
           {step === 3 && (

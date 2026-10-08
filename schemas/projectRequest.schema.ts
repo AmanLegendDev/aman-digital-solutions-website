@@ -37,6 +37,36 @@ export const contactMethodSchema = z.enum([
 ]);
 
 /* =========================================================
+   OFFER CONTEXT
+========================================================= */
+
+/**
+ * This is only the public offer context coming from the URL.
+ *
+ * IMPORTANT:
+ * Do NOT accept offer price, discount, coupon, claimedCount,
+ * serviceId, or any other offer-controlled value from the client.
+ *
+ * The server will resolve the actual offer from the database
+ * using offerSlug.
+ */
+export const offerContextSchema = z.object({
+  offerSlug: z
+    .string()
+    .trim()
+    .min(
+      1,
+      "Invalid offer.",
+    )
+    .max(
+      200,
+      "Offer reference is too long.",
+    )
+    .optional()
+    .or(z.literal("")),
+});
+
+/* =========================================================
    STEP 1 — CLIENT DETAILS
 ========================================================= */
 
@@ -44,37 +74,67 @@ export const clientDetailsSchema = z.object({
   fullName: z
     .string()
     .trim()
-    .min(2, "Please enter your full name.")
-    .max(120, "Name is too long."),
+    .min(
+      2,
+      "Please enter your full name.",
+    )
+    .max(
+      120,
+      "Name is too long.",
+    ),
 
   companyName: z
     .string()
     .trim()
-    .max(150, "Business name is too long.")
+    .max(
+      150,
+      "Business name is too long.",
+    )
     .optional()
     .or(z.literal("")),
 
   email: z
     .string()
     .trim()
-    .email("Please enter a valid email address."),
+    .email(
+      "Please enter a valid email address.",
+    )
+    .max(
+      180,
+      "Email address is too long.",
+    ),
 
   phone: z
     .string()
     .trim()
-    .min(7, "Please enter a valid phone number.")
-    .max(30, "Phone number is too long."),
+    .min(
+      7,
+      "Please enter a valid phone number.",
+    )
+    .max(
+      30,
+      "Phone number is too long.",
+    ),
 
   location: z
     .string()
     .trim()
-    .min(2, "Please enter your business location.")
-    .max(150, "Location is too long."),
+    .min(
+      2,
+      "Please enter your business location.",
+    )
+    .max(
+      150,
+      "Location is too long.",
+    ),
 
   currentWebsite: z
     .string()
     .trim()
-    .max(500, "Website URL is too long.")
+    .max(
+      500,
+      "Website URL is too long.",
+    )
     .optional()
     .or(z.literal("")),
 
@@ -89,7 +149,7 @@ export const clientDetailsSchema = z.object({
 export const projectRequirementsSchema =
   z.object({
     serviceIds: z
-      .array(z.string())
+      .array(z.string().trim().min(1))
       .min(
         1,
         "Please select at least one service.",
@@ -111,11 +171,23 @@ export const projectRequirementsSchema =
       ),
 
     requiredPages: z
-      .array(z.string())
+      .array(
+        z
+          .string()
+          .trim()
+          .min(1)
+          .max(120),
+      )
       .default([]),
 
     requiredFeatures: z
-      .array(z.string())
+      .array(
+        z
+          .string()
+          .trim()
+          .min(1)
+          .max(150),
+      )
       .default([]),
 
     timeline:
@@ -132,12 +204,17 @@ export const projectRequirementsSchema =
 export const projectRequestSchema =
   clientDetailsSchema
     .merge(projectRequirementsSchema)
+    .merge(offerContextSchema)
     .extend({
       privacyConsent: z.literal(true, {
         error:
           "Please accept the privacy policy.",
       }),
     });
+
+/* =========================================================
+   TYPE
+========================================================= */
 
 export type ProjectRequestInput =
   z.infer<

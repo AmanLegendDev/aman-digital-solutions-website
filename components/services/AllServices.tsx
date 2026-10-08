@@ -72,8 +72,7 @@ export default function AllServices({
     activeCategory === "all"
       ? services
       : services.filter(
-          (service) =>
-            service.category === activeCategory
+          (service) => service.category === activeCategory
         );
 
   return (
@@ -83,6 +82,7 @@ export default function AllServices({
       className="relative overflow-hidden bg-[#050505] py-24 sm:py-32"
     >
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+
         {/* SECTION HEADER */}
         <div className="mb-12 border-b border-white/[0.07] pb-8 sm:mb-14 sm:flex sm:items-end sm:justify-between sm:gap-10">
           <div>
@@ -114,9 +114,7 @@ export default function AllServices({
           <div className="mt-5 max-w-sm sm:mt-0">
             {activeCategory !== "all" ? (
               <p className="text-sm leading-6 text-neutral-500">
-                {categoryDescriptions[
-                  activeCategory
-                ]}
+                {categoryDescriptions[activeCategory]}
               </p>
             ) : (
               <p className="text-sm leading-6 text-neutral-500">
@@ -140,10 +138,7 @@ export default function AllServices({
             <span className="h-px w-6 bg-white/[0.1]" />
 
             <span className="text-[10px] tabular-nums text-neutral-700">
-              {String(filteredServices.length).padStart(
-                2,
-                "0"
-              )}{" "}
+              {String(filteredServices.length).padStart(2, "0")}{" "}
               {filteredServices.length === 1
                 ? "service"
                 : "services"}
@@ -179,6 +174,10 @@ export default function AllServices({
               const visibleFeatures =
                 service.features.slice(0, 3);
 
+              const quoteHref = `/start-a-project?service=${encodeURIComponent(
+                service.slug
+              )}`;
+
               return (
                 <article
                   key={service.id}
@@ -212,19 +211,14 @@ export default function AllServices({
                     {/* CATEGORY */}
                     <div className="absolute left-5 top-5">
                       <span className="rounded-full border border-white/10 bg-black/45 px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.15em] text-white/75 backdrop-blur-xl">
-                        {categoryLabels[
-                          service.category
-                        ]}
+                        {categoryLabels[service.category]}
                       </span>
                     </div>
 
                     {/* NUMBER */}
                     <div className="absolute right-5 top-5">
                       <span className="text-[9px] font-medium tabular-nums tracking-[0.16em] text-white/40">
-                        {String(index + 1).padStart(
-                          2,
-                          "0"
-                        )}
+                        {String(index + 1).padStart(2, "0")}
                       </span>
                     </div>
                   </div>
@@ -255,8 +249,7 @@ export default function AllServices({
                                 key={feature.title}
                                 className="flex items-center gap-2.5"
                               >
-                                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/[0.04]"
-                                >
+                                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/[0.04]">
                                   <Check
                                     size={10}
                                     className="text-[#FFC400]"
@@ -278,16 +271,15 @@ export default function AllServices({
                     <div className="mt-auto pt-7">
                       <div className="mb-5 h-px bg-white/[0.06]" />
 
-                      <div className="flex items-end justify-between gap-4">
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                        {/* PRICE */}
                         <div>
                           <p className="text-[9px] font-medium uppercase tracking-[0.15em] text-neutral-700">
-                            {service.priceLabel ??
-                              "Pricing"}
+                            {service.priceLabel ?? "Pricing"}
                           </p>
 
                           <p className="mt-1 text-base font-semibold text-white">
-                            {service.startingPrice !==
-                            undefined
+                            {service.startingPrice !== undefined
                               ? `₹${service.startingPrice.toLocaleString(
                                   "en-IN"
                                 )}`
@@ -295,16 +287,36 @@ export default function AllServices({
                           </p>
                         </div>
 
-                        <Link
-                          href={`/services/${service.slug}`}
-                          className="group/link flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.1] bg-white/[0.025] text-neutral-300 transition-all duration-300 hover:border-[#FFC400] hover:bg-[#FFC400] hover:text-black"
-                          aria-label={`View ${service.title}`}
-                        >
-                          <ArrowUpRight
-                            size={16}
-                            className="transition-transform duration-300 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5"
-                          />
-                        </Link>
+                        {/* ACTIONS */}
+                        <div className="flex items-center gap-2.5">
+                          {/* VIEW DETAILS */}
+                          <Link
+                            href={`/services/${service.slug}`}
+                            className="group/details inline-flex h-10 items-center gap-1.5 rounded-full border border-white/[0.1] bg-white/[0.025] px-3.5 text-[10px] font-medium uppercase tracking-[0.08em] text-neutral-300 transition-all duration-300 hover:border-white/[0.2] hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0A]"
+                            aria-label={`View details for ${service.title}`}
+                          >
+                            Details
+
+                            <ArrowUpRight
+                              size={13}
+                              className="transition-transform duration-300 group-hover/details:-translate-y-0.5 group-hover/details:translate-x-0.5"
+                            />
+                          </Link>
+
+                          {/* GET A FREE QUOTE */}
+                          <Link
+                            href={quoteHref}
+                            className="group/quote inline-flex h-10 items-center gap-1.5 rounded-full bg-[#FFC400] px-4 text-[10px] font-semibold uppercase tracking-[0.08em] text-black transition-all duration-300 hover:bg-[#FFD43B] hover:shadow-[0_0_30px_rgba(255,196,0,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC400] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0A]"
+                            aria-label={`Get a free quote for ${service.title}`}
+                          >
+                            Get a Free Quote
+
+                            <ArrowUpRight
+                              size={13}
+                              className="transition-transform duration-300 group-hover/quote:-translate-y-0.5 group-hover/quote:translate-x-0.5"
+                            />
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>

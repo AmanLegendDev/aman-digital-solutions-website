@@ -3,6 +3,7 @@ import type { ProjectRequestInput } from "@/schemas/projectRequest.schema";
 export type ServiceOption = {
   _id: string;
   title: string;
+  slug: string;
   shortDescription: string;
 };
 

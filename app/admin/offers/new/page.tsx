@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth/auth";
+import { connectDB } from "@/lib/db/connect";
+import Service from "@/models/Service";
 
 import OfferCreateForm from "./OfferCreateForm";
 
@@ -10,6 +12,10 @@ export const metadata = {
 };
 
 export default async function AddOfferPage() {
+  /* =========================================================
+     01. AUTHENTICATION
+  ========================================================= */
+
   const session =
     await getServerSession(authOptions);
 
@@ -19,6 +25,54 @@ export default async function AddOfferPage() {
   ) {
     redirect("/admin/login");
   }
+
+  /* =========================================================
+     02. DATABASE
+  ========================================================= */
+
+  await connectDB();
+
+  /* =========================================================
+     03. FETCH SERVICES
+     
+     Only published services are available for
+     offer targeting.
+  ========================================================= */
+
+  const services = await Service.find({
+    published: true,
+  })
+    .select("_id title slug shortDescription")
+    .sort({
+      displayOrder: 1,
+      title: 1,
+    })
+    .lean();
+
+  /* =========================================================
+     04. SERIALIZE SERVICES
+     
+     MongoDB ObjectIds cannot be passed directly to a
+     Client Component.
+  ========================================================= */
+
+  const serviceOptions = services
+    .filter(
+      (service) =>
+        service.title &&
+        service.slug,
+    )
+    .map((service) => ({
+      _id: service._id.toString(),
+      title: service.title,
+      slug: service.slug,
+      shortDescription:
+        service.shortDescription || "",
+    }));
+
+  /* =========================================================
+     05. RENDER
+  ========================================================= */
 
   return (
     <main className="min-h-screen bg-[#050505] text-white">
@@ -39,7 +93,9 @@ export default async function AddOfferPage() {
           </p>
         </div>
 
-        <OfferCreateForm />
+        <OfferCreateForm
+          services={serviceOptions}
+        />
       </div>
     </main>
   );

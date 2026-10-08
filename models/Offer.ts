@@ -53,6 +53,14 @@ export interface IOffer extends Document {
   discountLabel?: string;
   couponCode?: string;
 
+  /*
+   * Service this offer applies to.
+   *
+   * Example:
+   * Diwali website offer -> Website Development
+   */
+  serviceId?: mongoose.Types.ObjectId;
+
   heroImage?: IOfferImage;
   cardImage?: IOfferImage;
 
@@ -67,12 +75,46 @@ export interface IOffer extends Document {
 
   termsAndConditions?: string;
 
+  /* -------------------------------------------------------
+     SCHEDULING
+  ------------------------------------------------------- */
+
   startDate: Date;
   endDate: Date;
+
+  /* -------------------------------------------------------
+     CLAIM LIMIT
+  ------------------------------------------------------- */
+
+  isClaimLimitEnabled: boolean;
+
+  /*
+   * Maximum number of successful offer claims.
+   *
+   * Example:
+   * claimLimit = 5
+   */
+  claimLimit?: number;
+
+  /*
+   * Number of successfully claimed/submitted offers.
+   *
+   * This must be incremented server-side when the
+   * offer is successfully claimed.
+   */
+  claimedCount: number;
+
+  /* -------------------------------------------------------
+     PUBLISHING / DISPLAY
+  ------------------------------------------------------- */
 
   published: boolean;
   featured: boolean;
   displayOrder: number;
+
+  /* -------------------------------------------------------
+     SEO
+  ------------------------------------------------------- */
 
   seoTitle?: string;
   seoDescription?: string;
@@ -218,6 +260,16 @@ const OfferSchema = new Schema<IOffer>(
     },
 
     /* -------------------------------------------------------
+       SERVICE ASSOCIATION
+    ------------------------------------------------------- */
+
+    serviceId: {
+      type: Schema.Types.ObjectId,
+      ref: "Service",
+      index: true,
+    },
+
+    /* -------------------------------------------------------
        VISUALS
     ------------------------------------------------------- */
 
@@ -305,10 +357,74 @@ const OfferSchema = new Schema<IOffer>(
       index: true,
     },
 
-    endDate: {
-      type: Date,
-      required: true,
+  endDate: {
+  type: Date,
+  required: true,
+},
+    /* -------------------------------------------------------
+       CLAIM LIMIT
+    ------------------------------------------------------- */
+
+    isClaimLimitEnabled: {
+      type: Boolean,
+      default: false,
       index: true,
+    },
+
+    claimLimit: {
+      type: Number,
+      min: 1,
+      validate: {
+        validator: function (
+          value?: number,
+        ) {
+          /*
+           * claimLimit is optional when the
+           * limit feature is disabled.
+           */
+          if (
+            !this.isClaimLimitEnabled
+          ) {
+            return true;
+          }
+
+          return (
+            typeof value === "number" &&
+            Number.isInteger(value) &&
+            value >= 1
+          );
+        },
+        message:
+          "Claim limit must be a positive whole number when claim limits are enabled.",
+      },
+    },
+
+    claimedCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+      validate: {
+        validator: function (
+          value: number,
+        ) {
+          /*
+           * When a claim limit exists,
+           * claimedCount cannot exceed it.
+           */
+          if (
+            this.isClaimLimitEnabled &&
+            typeof this.claimLimit === "number"
+          ) {
+            return (
+              value <= this.claimLimit
+            );
+          }
+
+          return true;
+        },
+        message:
+          "Claimed count cannot exceed the claim limit.",
+      },
     },
 
     /* -------------------------------------------------------
@@ -394,7 +510,18 @@ OfferSchema.index({
 });
 
 OfferSchema.index({
+  serviceId: 1,
+  published: 1,
+});
+
+OfferSchema.index({
   endDate: 1,
+});
+
+OfferSchema.index({
+  isClaimLimitEnabled: 1,
+  claimLimit: 1,
+  claimedCount: 1,
 });
 
 /* =========================================================

@@ -12,6 +12,8 @@ import {
 
 import { createOffer } from "@/actions/offer.actions";
 
+
+
 import type {
   FormValues,
   ImageValue,
@@ -48,7 +50,18 @@ function slugify(value?: string | null) {
    COMPONENT
 ========================================================= */
 
-export default function OfferCreateForm() {
+type ServiceOption = {
+  _id: string;
+  title: string;
+  slug: string;
+  shortDescription: string;
+};
+
+export default function OfferCreateForm({
+  services,
+}: {
+  services: ServiceOption[];
+}) {
   const router = useRouter();
 
   /* =======================================================
@@ -123,6 +136,7 @@ export default function OfferCreateForm() {
 
       discountLabel: "",
       couponCode: "",
+      serviceId: "",
 
       heroImage: undefined,
       cardImage: undefined,
@@ -138,13 +152,16 @@ export default function OfferCreateForm() {
 
       termsAndConditions: "",
 
-      startDate: "",
-      endDate: "",
+  startDate: "",
+endDate: "",
 
-      published: false,
-      featured: false,
-      displayOrder: 0,
+isClaimLimitEnabled: false,
+claimLimit: undefined,
+claimedCount: 0,
 
+published: false,
+featured: false,
+displayOrder: 0,
       seoTitle: "",
       seoDescription: "",
       canonicalUrl: "",
@@ -154,6 +171,8 @@ export default function OfferCreateForm() {
       ogImage: undefined,
     },
   });
+
+  
 
   /* =======================================================
      WATCH
@@ -171,6 +190,17 @@ export default function OfferCreateForm() {
 
   const heroImage =
     watch("heroImage");
+
+ const isClaimLimitEnabled =
+  watch("isClaimLimitEnabled");
+
+const claimedCount =
+  watch("claimedCount") as number;
+
+const claimLimit =
+  watch("claimLimit") as
+    | number
+    | undefined;
 
   const cardImage =
     watch("cardImage");
@@ -503,34 +533,22 @@ export default function OfferCreateForm() {
           SECTION 01
       ================================================= */}
 
-    <OfferDetailsSection
+<OfferDetailsSection
   register={register}
   errors={errors}
   setValue={setValue}
   discountType={discountType}
-
   slug={slug}
   setSlugManuallyEdited={
     setSlugManuallyEdited
   }
-
+  services={services}
   heroImage={normalizeImageValue(heroImage)}
-
   cardImage={normalizeImageValue(cardImage)}
-
   ogImage={normalizeImageValue(ogImage)}
-
-  updateHeroImage={
-    updateHeroImage
-  }
-
-  updateCardImage={
-    updateCardImage
-  }
-
-  updateOgImage={
-    updateOgImage
-  }
+  updateHeroImage={updateHeroImage}
+  updateCardImage={updateCardImage}
+  updateOgImage={updateOgImage}
 />
 
       {/* =================================================
@@ -576,12 +594,15 @@ export default function OfferCreateForm() {
           SECTION 03
       ================================================= */}
 
-      <OfferPublishingSection
-        register={register}
-        errors={errors}
-        setValue={setValue}
-        published={published}
-      />
+   <OfferPublishingSection
+  register={register}
+  errors={errors}
+  setValue={setValue}
+  published={published}
+  isClaimLimitEnabled={isClaimLimitEnabled}
+  claimedCount={claimedCount}
+  claimLimit={claimLimit}
+/>
 
       {/* =================================================
           ACTIONS
