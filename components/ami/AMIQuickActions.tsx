@@ -1,6 +1,7 @@
+
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight, Check, MessageCircle } from "lucide-react";
 import type { AMIAction } from "@/lib/ami/types";
 
 type AMIQuickActionsProps = {
@@ -8,29 +9,64 @@ type AMIQuickActionsProps = {
   onAction?: (action: AMIAction) => void;
 };
 
+function getActionIcon(type: AMIAction["type"]) {
+  switch (type) {
+    case "WHATSAPP":
+    case "CONTACT":
+      return MessageCircle;
+
+    case "NONE":
+      return Check;
+
+    default:
+      return ArrowUpRight;
+  }
+}
+
 export default function AMIQuickActions({
   actions,
   onAction,
 }: AMIQuickActionsProps) {
-  if (!actions?.length) return null;
+  if (!Array.isArray(actions) || actions.length === 0) {
+    return null;
+  }
 
   return (
-    <div className="mt-4 flex flex-wrap gap-2">
-      {actions.map((action, index) => (
-        <button
-          key={`${action.type}-${action.label}-${index}`}
-          type="button"
-          onClick={() => onAction?.(action)}
-          className="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-white transition hover:border-[#FFD400]/40 hover:bg-[#FFD400]/10 hover:text-[#FFD400] focus:outline-none focus:ring-2 focus:ring-[#FFD400]/40"
-        >
-          <span>{action.label}</span>
+    <div
+      className="mt-4 flex flex-wrap gap-2"
+      aria-label="Suggested actions"
+    >
+      {actions.map((action, index) => {
+        const Icon = getActionIcon(action.type);
 
-          <ArrowRight
-            size={14}
-            className="transition-transform group-hover:translate-x-0.5"
-          />
-        </button>
-      ))}
+        return (
+          <button
+            key={`${action.type}-${action.label}-${index}`}
+            type="button"
+            onClick={() => onAction?.(action)}
+            className={[
+              "group inline-flex min-h-10 items-center justify-center gap-2",
+              "rounded-xl border px-4 py-2.5 text-sm font-semibold",
+              "transition duration-200 ease-out",
+              "focus-visible:outline-none focus-visible:ring-2",
+              "focus-visible:ring-[#FFD400] focus-visible:ring-offset-2",
+              "focus-visible:ring-offset-[#080808]",
+              "active:scale-[0.98]",
+              action.type === "START_PROJECT"
+                ? "border-[#FFD400] bg-[#FFD400] text-black hover:bg-[#ffe14d]"
+                : "border-[#FFD400]/20 bg-[#FFD400]/[0.06] text-[#FFD400] hover:border-[#FFD400]/50 hover:bg-[#FFD400]/[0.12]",
+            ].join(" ")}
+          >
+            <span>{action.label}</span>
+
+            <Icon
+              size={15}
+              aria-hidden="true"
+              className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+          </button>
+        );
+      })}
     </div>
   );
 }

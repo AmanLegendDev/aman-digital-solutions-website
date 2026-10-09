@@ -1,12 +1,10 @@
-import mongoose from "mongoose";
-
-import {connectDB} from "@/lib/db/connect";
-
+import { connectDB } from "@/lib/db/connect";
 import Service from "@/models/Service";
 import Project from "@/models/Project";
 import FAQ from "@/models/FAQ";
 import Testimonial from "@/models/Testimonial";
 import Offer from "@/models/Offer";
+import PricingPlan from "@/models/PricingPlan";
 import SiteSettings from "@/models/SiteSettings";
 
 export type AMIRetrievedData = {
@@ -17,636 +15,356 @@ export type AMIRetrievedData = {
   reviews: Array<Record<string, unknown>>;
   offers: Array<Record<string, unknown>>;
   site: Record<string, unknown> | null;
-};
-
-const EMPTY_DATA: AMIRetrievedData = {
-  services: [],
-  projects: [],
-  pricing: [],
-  faqs: [],
-  reviews: [],
-  offers: [],
-  site: null,
+  retrievalError?: boolean;
 };
 
 type RetrievalIntent =
-  | "GREETING"
-  | "SERVICE_DISCOVERY"
-  | "SERVICE_DETAILS"
-  | "PRICING"
-  | "PROJECT_DISCOVERY"
-  | "PROJECT_DETAILS"
-  | "FAQ"
-  | "OFFER"
-  | "START_PROJECT"
-  | "CONTACT"
-  | "ABOUT"
-  | "GENERAL"
-  | "UNKNOWN";
+  | "GREETING" | "SERVICE_DISCOVERY" | "SERVICE_DETAILS" | "PRICING"
+  | "PROJECT_DISCOVERY" | "PROJECT_DETAILS" | "FAQ" | "OFFER"
+  | "START_PROJECT" | "CONTACT" | "ABOUT" | "GENERAL" | "UNKNOWN";
+type DbRecord = Record<string, any>;
 
-function cleanText(value: unknown, max = 1200): string {
-  if (typeof value !== "string") return "";
+const EMPTY_DATA: AMIRetrievedData = {
+  services: [], projects: [], pricing: [], faqs: [], reviews: [], offers: [],
+  site: null, retrievalError: false,
+};
 
-  return value
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, max);
+function text(value: unknown, max = 400): string {
+  return typeof value === "string" ? value.replace(/\s+/g, " ").trim().slice(0, max) : "";
 }
+function price(value: unknown): number | null {
+  if (typeof value === "number") {
+    return Number.isFinite(value) && value >= 0
+      ? value
+      : null;
+  }
 
-function cleanArray(
-  value: unknown,
-  maxItems = 8,
-  maxLength = 300
-): string[] {
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value.trim());
+
+    return Number.isFinite(parsed) && parsed >= 0
+      ? parsed
+      : null;
+  }
+
+  return null;
+}
+function id(value: unknown): string | null {
+  if (value == null) return null;
+  const result = String(value);
+  return result && result !== "[object Object]" ? result.slice(0, 100) : null;
+}
+function slug(value: unknown): string {
+  const result = text(value, 180).toLowerCase();
+
+return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(result)
+  ? result
+  : "";
+}
+function date(value: unknown): string | null {
+  if (typeof value !== "string" && typeof value !== "number" && !(value instanceof Date)) return null;
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
+}
+function strings(value: unknown, maxItems = 8, maxLength = 120): string[] {
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === "string").map((item) => text(item, maxLength)).filter(Boolean).slice(0, maxItems)
+    : [];
+}
+function objects(value: unknown, maxItems = 6): Array<Record<string, unknown>> {
   if (!Array.isArray(value)) return [];
 
   return value
-    .filter((item): item is string => typeof item === "string")
-    .map((item) => cleanText(item, maxLength))
-    .filter(Boolean)
-    .slice(0, maxItems);
-}
-
-function serializeService(service: any) {
-  return {
-    id: service._id?.toString(),
-    title: cleanText(service.title, 150),
-    slug: cleanText(service.slug, 150),
-    shortDescription: cleanText(service.shortDescription, 400),
-    description: cleanText(service.description, 1000),
-    category: cleanText(service.category, 100),
-    startingPrice:
-      typeof service.startingPrice === "number"
-        ? service.startingPrice
-        : null,
-    priceLabel: cleanText(service.priceLabel, 100),
-    benefits: cleanArray(service.benefits),
-    features: cleanArray(service.features),
-    process: cleanArray(service.process),
-    ctaLabel: cleanText(service.ctaLabel, 100),
-    ctaLink: cleanText(service.ctaLink, 250),
-    published: Boolean(service.published),
-  };
-}
-
-function serializeProject(project: any) {
-  return {
-    id: project._id?.toString(),
-    title: cleanText(project.title, 150),
-    slug: cleanText(project.slug, 150),
-    client: cleanText(project.client, 150),
-    category: cleanText(
-      project.category || project.industry,
-      120
-    ),
-    shortDescription: cleanText(
-      project.shortDescription,
-      400
-    ),
-    description: cleanText(
-      project.description || project.overview,
-      800
-    ),
-    liveUrl: cleanText(
-      project.liveUrl || project.websiteUrl,
-      300
-    ),
-    location: cleanText(project.location, 150),
-    published: Boolean(project.published),
-  };
-}
-
-function serializeFAQ(faq: any) {
-  return {
-    id: faq._id?.toString(),
-    question: cleanText(faq.question, 300),
-    answer: cleanText(faq.answer, 1000),
-    category: cleanText(faq.category, 100),
-    published: Boolean(faq.published),
-  };
-}
-
-function serializeReview(review: any) {
-  return {
-    id: review._id?.toString(),
-    name: cleanText(
-      review.name || review.authorName || review.clientName,
-      120
-    ),
-    role: cleanText(
-      review.role || review.position,
-      120
-    ),
-    company: cleanText(
-      review.company || review.companyName,
-      150
-    ),
-    content: cleanText(
-      review.content ||
-        review.quote ||
-        review.review ||
-        review.text,
-      1200
-    ),
-    rating:
-      typeof review.rating === "number"
-        ? review.rating
-        : null,
-    location: cleanText(review.location, 150),
-    published: Boolean(review.published),
-  };
-}
-
-function serializeOffer(offer: any) {
-  return {
-    id: offer._id?.toString(),
-    title: cleanText(offer.title, 180),
-    slug: cleanText(offer.slug, 180),
-    badge: cleanText(offer.badge, 100),
-    shortDescription: cleanText(
-      offer.shortDescription,
-      500
-    ),
-    offerType: cleanText(offer.offerType, 80),
-    discountLabel: cleanText(
-      offer.discountLabel,
-      80
-    ),
-    originalPrice:
-      typeof offer.originalPrice === "number"
-        ? offer.originalPrice
-        : null,
-    offerPrice:
-      typeof offer.offerPrice === "number"
-        ? offer.offerPrice
-        : null,
-    couponCode: cleanText(
-      offer.couponCode,
-      80
-    ),
-    serviceId: offer.serviceId?.toString() || null,
-    startDate: offer.startDate
-      ? new Date(offer.startDate).toISOString()
-      : null,
-    endDate: offer.endDate
-      ? new Date(offer.endDate).toISOString()
-      : null,
-    published: Boolean(offer.published),
-    featured: Boolean(offer.featured),
-  };
-}
-
-function serializeSiteSettings(settings: any) {
-  if (!settings) return null;
-
-  return {
-    siteName: cleanText(settings.siteName, 150),
-    tagline: cleanText(settings.tagline, 250),
-    email: cleanText(settings.email, 150),
-    phone: cleanText(settings.phone, 50),
-    whatsapp: cleanText(settings.whatsapp, 200),
-    address: cleanText(settings.address, 300),
-    businessHours: settings.businessHours || null,
-  };
-}
-
-function normaliseSearchText(text: string) {
-  return text
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function getKeywords(message: string): string[] {
-  const stopWords = new Set([
-    "the",
-    "and",
-    "for",
-    "with",
-    "this",
-    "that",
-    "what",
-    "how",
-    "can",
-    "you",
-    "are",
-    "need",
-    "want",
-    "looking",
-    "please",
-    "give",
-    "show",
-    "tell",
-    "about",
-    "price",
-    "cost",
-    "website",
-    "site",
-    "business",
-  ]);
-
-  return normaliseSearchText(message)
-    .split(" ")
     .filter(
-      (word) =>
-        word.length >= 3 &&
-        !stopWords.has(word)
+      (item): item is DbRecord =>
+        Boolean(item) &&
+        typeof item === "object" &&
+        !Array.isArray(item),
     )
-    .slice(0, 8);
+    .slice(0, maxItems)
+    .map((item) => ({
+      title: text(item.title, 120),
+      description: text(item.description, 500),
+      ...(typeof item.icon === "string" && text(item.icon, 80)
+        ? { icon: text(item.icon, 80) }
+        : {}),
+      ...(typeof item.order === "number" && Number.isFinite(item.order)
+        ? { order: item.order }
+        : {}),
+    }));
+}
+function href(prefix: "/services/" | "/projects/" | "/offers/", value: unknown): string {
+  const valueSlug = slug(value);
+  return valueSlug ? `${prefix}${valueSlug}` : "";
+}
+function normalize(value: string): string {
+  return value.toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu, " ").replace(/\s+/g, " ").trim();
+}
+const STOP_WORDS = new Set(["the", "and", "for", "with", "this", "that", "what", "how", "can", "you", "are", "need", "want", "looking", "please", "give", "show", "tell", "about", "hai", "hain", "mujhe", "chahiye", "kya", "ka", "ki", "ke", "ho", "aur", "is", "me", "my", "your", "our", "services", "service", "projects", "project", "price", "pricing"]);
+function keywords(message: string): string[] {
+  return normalize(message).split(" ").filter((word) => word.length > 1 && !STOP_WORDS.has(word)).slice(0, 10);
+}
+function score(value: string, words: string[]): number {
+  const normalized = ` ${normalize(value)} `;
+  return words.reduce((sum, word) => sum + (normalized.includes(` ${word} `) ? 2 : 0), 0);
+}
+function listRequest(message: string): boolean {
+  return /\b(all|every|list|each|complete|entire|sabhi|saare|saari|puri|poori)\b/i.test(message);
 }
 
-function scoreText(
-  text: string,
-  keywords: string[]
-): number {
-  const normalized = normaliseSearchText(text);
+export function allServicesRequest(message: string): boolean {
+  const value = normalize(message);
 
-  return keywords.reduce(
-    (score, keyword) =>
-      normalized.includes(keyword)
-        ? score + 1
-        : score,
-    0
-  );
-}
-
-function scoreService(
-  service: any,
-  keywords: string[]
-) {
-  return scoreText(
-    [
-      service.title,
-      service.slug,
-      service.shortDescription,
-      service.description,
-      service.category,
-      ...(Array.isArray(service.benefits)
-        ? service.benefits
-        : []),
-      ...(Array.isArray(service.features)
-        ? service.features
-        : []),
-    ]
-      .filter(Boolean)
-      .join(" "),
-    keywords
-  );
-}
-
-function scoreProject(
-  project: any,
-  keywords: string[]
-) {
-  return scoreText(
-    [
-      project.title,
-      project.slug,
-      project.client,
-      project.category,
-      project.industry,
-      project.shortDescription,
-      project.description,
-      project.overview,
-      project.location,
-    ]
-      .filter(Boolean)
-      .join(" "),
-    keywords
-  );
-}
-
-function scoreFAQ(
-  faq: any,
-  keywords: string[]
-) {
-  return scoreText(
-    [
-      faq.question,
-      faq.answer,
-      faq.category,
-    ]
-      .filter(Boolean)
-      .join(" "),
-    keywords
-  );
-}
-
-function isActiveOffer(offer: any) {
-  if (!offer?.published) return false;
-
-  const now = Date.now();
-
-  const start = offer.startDate
-    ? new Date(offer.startDate).getTime()
-    : null;
-
-  const end = offer.endDate
-    ? new Date(offer.endDate).getTime()
-    : null;
-
-  if (start && now < start) return false;
-
-  if (end && now > end) return false;
+  const explicitAllPhrases = [
+    "all services",
+    "all the services",
+    "list all services",
+    "show all services",
+    "show me all services",
+    "display all services",
+    "every service",
+    "every single service",
+    "complete list of services",
+    "full list of services",
+    "list of all services",
+    "all offerings",
+    "all our services",
+    "all your services",
+    "saari services",
+    "saare services",
+    "sabhi services",
+    "sabhi seva",
+    "poori service list",
+    "saari service list",
+  ];
 
   if (
-    offer.isClaimLimitEnabled &&
-    typeof offer.claimLimit === "number" &&
-    typeof offer.claimedCount === "number" &&
-    offer.claimedCount >= offer.claimLimit
+    explicitAllPhrases.some((phrase) =>
+      value.includes(phrase),
+    )
   ) {
-    return false;
+    return true;
   }
 
-  return true;
+  return (
+    /\b(list|show|display|give me)\b/i.test(value) &&
+    /\b(all|every|complete|entire|full|saari|saare|sabhi|poori|puri)\b/i.test(
+      value,
+    ) &&
+    /\b(services|service|offerings|offering|seva)\b/i.test(
+      value,
+    )
+  );
 }
 
-export async function retrieveAMIData({
-  message,
-  intent,
-}: {
-  message: string;
-  intent?: RetrievalIntent;
-}): Promise<AMIRetrievedData> {
+function allProjectsRequest(message: string): boolean {
+  const value = normalize(message);
+  return ["portfolio", "gallery", "all projects", "show projects", "your projects", "your work", "all work", "completed projects", "projects dikhao", "saare projects", "sabhi projects"].some((phrase) => value.includes(phrase)) || (listRequest(message) && /\b(project|projects|portfolio|work|gallery)\b/i.test(value));
+}
+function reviewRequest(message: string): boolean { return /\b(review|reviews|testimonial|testimonials|rating|ratings|feedback)\b/i.test(message); }
+function offerRequest(message: string, intent?: RetrievalIntent): boolean { return intent === "OFFER" || /\b(offer|offers|discount|discounts|coupon|coupons|deal|deals|sale)\b/i.test(message); }
+function faqRequest(message: string, intent?: RetrievalIntent): boolean { return intent === "FAQ" || /\b(faq|faqs|frequently asked|question|questions)\b/i.test(message); }
+
+function serializeService(s: DbRecord) {
+  const serviceSlug = slug(s.slug);
+
+  const image =
+    s.image && typeof s.image === "object" && !Array.isArray(s.image)
+      ? {
+          url: text(s.image.url, 500),
+          alt: text(s.image.alt, 180),
+        }
+      : null;
+
+  return {
+    title: text(s.title, 120),
+    slug: serviceSlug,
+    href: href("/services/", serviceSlug),
+    heroEyebrow: text(s.heroEyebrow, 120),
+    shortDescription: text(s.shortDescription, 500),
+    description: text(s.description, 1800),
+    icon: text(s.icon, 80),
+    image: image?.url ? image : null,
+    category: text(s.category, 80),
+    startingPrice: price(s.startingPrice),
+    priceLabel: text(s.priceLabel, 100),
+    benefits: objects(s.benefits, 10),
+    features: objects(s.features, 12),
+    process: objects(s.process, 8),
+    keywords: strings(s.keywords, 12, 70),
+    ctaLabel: text(s.ctaLabel, 60),
+    ctaLink: text(s.ctaLink, 250),
+  };
+}
+function serializeServiceSummary(s: DbRecord) {
+  const serviceSlug = slug(s.slug);
+
+  return {
+    title: text(s.title, 120),
+    slug: serviceSlug,
+    href: href("/services/", serviceSlug),
+    shortDescription: text(s.shortDescription, 300),
+    category: text(s.category, 80),
+    startingPrice: price(s.startingPrice),
+    priceLabel: text(s.priceLabel, 100),
+  };
+}
+function serializeProject(p: DbRecord) {
+  const projectSlug = slug(p.slug);
+  return {
+    id: id(p._id), title: text(p.title, 120), slug: projectSlug,
+    href: href("/projects/", projectSlug), client: text(p.client, 100), category: text(p.industry, 80),
+    shortDescription: text(p.shortDescription, 300), description: text(p.overview, 500),
+    technologies: strings(p.technologies, 10, 70), features: objects(p.features, 6),
+    liveUrl: text(p.liveUrl, 300), githubUrl: text(p.githubUrl, 300), published: p.published === true,
+  };
+}
+function serializeFAQ(f: DbRecord) {
+  return { id: id(f._id), question: text(f.question, 180), answer: text(f.answer, 500), category: text(f.category, 60), published: f.published === true };
+}
+function serializeReview(r: DbRecord) {
+  const rating = typeof r.rating === "number" && r.rating >= 1 && r.rating <= 5 ? r.rating : null;
+  return { id: id(r._id), name: text(r.name, 80), role: text(r.role, 80), company: text(r.company, 100), content: text(r.quote, 400), rating, location: text(r.location, 80), createdAt: date(r.createdAt), published: r.published === true };
+}
+function serializeOffer(o: DbRecord) {
+  const offerSlug = slug(o.slug);
+  const limitEnabled = o.isClaimLimitEnabled === true;
+  const claimLimit = typeof o.claimLimit === "number" ? o.claimLimit : null;
+  const claimedCount = typeof o.claimedCount === "number" ? o.claimedCount : 0;
+  return {
+    id: id(o._id), title: text(o.title, 130), slug: offerSlug, href: href("/offers/", offerSlug),
+    badge: text(o.badge, 60), shortDescription: text(o.shortDescription, 300), description: text(o.description, 500),
+    offerType: text(o.offerType, 60), discountType: text(o.discountType, 40), discountValue: price(o.discountValue),
+    discountLabel: text(o.discountLabel, 80), originalPrice: price(o.originalPrice), offerPrice: price(o.offerPrice),
+    couponCode: text(o.couponCode, 60), serviceId: id(o.serviceId), highlights: strings(o.highlights, 6, 120),
+    includedFeatures: strings(o.includedFeatures, 8, 120), startDate: date(o.startDate), endDate: date(o.endDate),
+    claimLimitEnabled: limitEnabled, claimLimit, claimedCount,
+    remainingClaims: limitEnabled && claimLimit !== null ? Math.max(0, claimLimit - claimedCount) : null,
+    ctaLabel: text(o.ctaLabel, 60), ctaLink: text(o.ctaLink, 250), published: o.published === true, featured: o.featured === true,
+  };
+}
+function serializePlan(p: DbRecord) {
+  return {
+    id: id(p._id), name: text(p.name, 120), slug: slug(p.slug), shortDescription: text(p.shortDescription, 250),
+    price: price(p.price), currency: text(p.currency, 8) || "₹", pricePrefix: text(p.pricePrefix, 30),
+    priceSuffix: text(p.priceSuffix, 30), pricingType: text(p.pricingType, 40), billingPeriod: text(p.billingPeriod, 40),
+    features: strings(p.features, 10, 120), serviceId: id(p.serviceId), ctaText: text(p.ctaText, 60),
+    ctaLink: text(p.ctaLink, 250), isFeatured: p.isFeatured === true, featuredLabel: text(p.featuredLabel, 60),
+  };
+}
+function serializeSite(s: DbRecord | null) {
+  if (!s) return null;
+  const contact = s.contact && typeof s.contact === "object" ? s.contact : {};
+  return {
+    siteName: text(s.siteName, 100), tagline: text(s.tagline, 160), description: text(s.description, 400),
+    email: text(s.primaryEmail || contact.email, 150), phone: text(s.primaryPhone || contact.phone, 40),
+    whatsapp: text(s.whatsappNumber || contact.whatsapp, 80), address: text(contact.address, 180),
+    city: text(contact.city, 80), state: text(contact.state, 80), country: text(contact.country, 80),
+  };
+}
+function activeOffer(o: DbRecord, now = Date.now()): boolean {
+  if (o.published !== true) return false;
+  const start = o.startDate ? new Date(o.startDate).getTime() : NaN;
+  const end = o.endDate ? new Date(o.endDate).getTime() : NaN;
+  if (!Number.isFinite(start) || !Number.isFinite(end) || now < start || now > end) return false;
+  return !(o.isClaimLimitEnabled === true && typeof o.claimLimit === "number" && typeof o.claimedCount === "number" && o.claimedCount >= o.claimLimit);
+}
+
+export async function retrieveAMIData({ message, intent }: { message: string; intent?: RetrievalIntent }): Promise<AMIRetrievedData> {
   try {
     await connectDB();
+    const retrievalNow = new Date();
+    const words = keywords(message);
+  const wantsProjects =
+  allProjectsRequest(message) ||
+  ["PROJECT_DISCOVERY", "PROJECT_DETAILS"].includes(intent ?? "") ||
+  /\b(project|projects|portfolio|gallery|case study|case studies|work samples|client work|demo|live website)\b/i.test(
+    message,
+  );
 
-    const keywords = getKeywords(message);
+const wantsReviews = reviewRequest(message);
+const wantsOffers = offerRequest(message, intent);
+const wantsFAQs = faqRequest(message, intent);
 
-    const data: AMIRetrievedData = {
-      ...EMPTY_DATA,
-      services: [],
-      projects: [],
-      pricing: [],
-      faqs: [],
-      reviews: [],
-      offers: [],
-      site: null,
-    };
+const explicitNonServiceRequest =
+  wantsProjects ||
+  wantsReviews ||
+  wantsOffers ||
+  wantsFAQs;
 
-    const shouldLoadServices =
-      !intent ||
-      [
-        "SERVICE_DISCOVERY",
-        "SERVICE_DETAILS",
-        "PRICING",
-        "PROJECT_DISCOVERY",
-        "PROJECT_DETAILS",
-        "START_PROJECT",
-        "GENERAL",
-        "UNKNOWN",
-      ].includes(intent);
+const wantsServices =
+  allServicesRequest(message) ||
+  (!explicitNonServiceRequest &&
+    (["SERVICE_DISCOVERY", "SERVICE_DETAILS", "PRICING", "START_PROJECT"].includes(
+      intent ?? "",
+    ) ||
+      /\b(service|website|ecommerce|e-commerce|seo|marketing|automation|development|pricing|price|cost|rate|budget)\b/i.test(
+        message,
+      )));
 
-    const shouldLoadProjects =
-      !intent ||
-      [
-        "PROJECT_DISCOVERY",
-        "PROJECT_DETAILS",
-        "SERVICE_DISCOVERY",
-        "SERVICE_DETAILS",
-        "GENERAL",
-        "UNKNOWN",
-      ].includes(intent);
+const wantsPricing =
+  intent === "PRICING" ||
+  /\b(price|pricing|cost|rate|budget|how much|kitna|charges)\b/i.test(
+    message,
+  );
 
-    const shouldLoadPricing =
-      !intent ||
-      [
-        "PRICING",
-        "SERVICE_DISCOVERY",
-        "SERVICE_DETAILS",
-        "START_PROJECT",
-        "GENERAL",
-        "UNKNOWN",
-      ].includes(intent);
+const wantsSite =
+  ["CONTACT", "ABOUT", "GENERAL", "UNKNOWN", "START_PROJECT"].includes(
+    intent ?? "",
+  ) ||
+  /\b(contact|email|phone|whatsapp|address|location|about|company|business|who are you)\b/i.test(
+    message,
+  );
 
-    const shouldLoadFAQs =
-      !intent ||
-      [
-        "FAQ",
-        "GENERAL",
-        "UNKNOWN",
-      ].includes(intent);
-
-    const shouldLoadReviews =
-      !intent ||
-      [
-        "SERVICE_DISCOVERY",
-        "SERVICE_DETAILS",
-        "PROJECT_DISCOVERY",
-        "PROJECT_DETAILS",
-        "GENERAL",
-        "UNKNOWN",
-      ].includes(intent);
-
-    const shouldLoadOffers =
-      !intent ||
-      [
-        "OFFER",
-        "PRICING",
-        "SERVICE_DISCOVERY",
-        "START_PROJECT",
-        "GENERAL",
-        "UNKNOWN",
-      ].includes(intent);
-
-    const shouldLoadSite =
-      !intent ||
-      [
-        "CONTACT",
-        "ABOUT",
-        "GENERAL",
-        "UNKNOWN",
-        "START_PROJECT",
-      ].includes(intent);
-
-    const [
-      services,
-      projects,
-      faqs,
-      reviews,
-      offers,
-      siteSettings,
-    ] = await Promise.all([
-      shouldLoadServices
-        ? Service.find({ published: true })
-            .select(
-              [
-                "title",
-                "slug",
-                "heroEyebrow",
-                "shortDescription",
-                "description",
-                "benefits",
-                "features",
-                "process",
-                "startingPrice",
-                "priceLabel",
-                "category",
-                "ctaLabel",
-                "ctaLink",
-                "published",
-                "displayOrder",
-              ].join(" ")
-            )
-            .sort({ displayOrder: 1 })
-            .lean()
-        : [],
-
-      shouldLoadProjects
-        ? Project.find({ published: true })
-            .select(
-              [
-                "title",
-                "slug",
-                "client",
-                "category",
-                "industry",
-                "shortDescription",
-                "description",
-                "overview",
-                "liveUrl",
-                "websiteUrl",
-                "location",
-                "published",
-                "displayOrder",
-              ].join(" ")
-            )
-            .sort({ displayOrder: 1 })
-            .lean()
-        : [],
-
-      shouldLoadFAQs
-        ? FAQ.find({ published: true })
-            .select(
-              "question answer category published displayOrder"
-            )
-            .sort({ displayOrder: 1 })
-            .lean()
-        : [],
-
-      shouldLoadReviews
-        ? Testimonial.find({ published: true })
-            .select(
-              "name authorName clientName role position company companyName content quote review text rating location published"
-            )
-            .sort({ createdAt: -1 })
-            .lean()
-        : [],
-
-      shouldLoadOffers
-        ? Offer.find({ published: true })
-            .select(
-              [
-                "title",
-                "slug",
-                "badge",
-                "shortDescription",
-                "offerType",
-                "discountLabel",
-                "originalPrice",
-                "offerPrice",
-                "couponCode",
-                "serviceId",
-                "startDate",
-                "endDate",
-                "published",
-                "featured",
-                "isClaimLimitEnabled",
-                "claimLimit",
-                "claimedCount",
-                "displayOrder",
-              ].join(" ")
-            )
-            .sort({ featured: -1, displayOrder: 1 })
-            .lean()
-        : [],
-
-      shouldLoadSite
-        ? SiteSettings.findOne({})
-            .select(
-              "siteName tagline email phone whatsapp address businessHours"
-            )
-            .lean()
-        : null,
+    const [serviceRecords, projectRecords, faqRecords, reviewRecords, offerRecords, pricingRecords, siteRecord] = await Promise.all([
+      wantsServices ? Service.find({ published: true }).select(
+  "title slug heroEyebrow shortDescription description icon image category benefits features process keywords startingPrice priceLabel ctaLabel ctaLink published displayOrder",
+).sort({ displayOrder: 1 }).limit(allServicesRequest(message) ? 40 : 30).lean() : Promise.resolve([]),
+      wantsProjects ? Project.find({ published: true }).select("title slug client industry shortDescription overview features technologies liveUrl githubUrl published displayOrder").sort({ displayOrder: 1 }).limit(allProjectsRequest(message) ? 40 : 5).lean() : Promise.resolve([]),
+      wantsFAQs ? FAQ.find({ published: true }).select("question answer category published displayOrder").sort({ displayOrder: 1 }).limit(listRequest(message) ? 40 : 8).lean() : Promise.resolve([]),
+      wantsReviews ? Testimonial.find({ published: true }).select("name role company quote rating location published createdAt").sort({ createdAt: -1 }).limit(listRequest(message) ? 40 : 5).lean() : Promise.resolve([]),
+      wantsOffers ? 
+Offer.find({
+  published: true,
+  startDate: { $lte: retrievalNow },
+  endDate: { $gte: retrievalNow },
+})
+.select("title slug badge shortDescription description offerType discountType discountValue originalPrice offerPrice discountLabel couponCode serviceId highlights includedFeatures ctaLabel ctaLink startDate endDate published featured isClaimLimitEnabled claimLimit claimedCount displayOrder").sort({ featured: -1, displayOrder: 1 }).limit(listRequest(message) ? 40 : 10).lean() : Promise.resolve([]),
+      wantsPricing ? PricingPlan.find({ isPublished: true }).select("name slug shortDescription price currency pricePrefix priceSuffix pricingType billingPeriod features serviceId ctaText ctaLink isFeatured featuredLabel isPublished displayOrder").sort({ isFeatured: -1, displayOrder: 1 }).limit(12).lean() : Promise.resolve([]),
+      wantsSite ? SiteSettings.findOne({}).select("siteName tagline description contact primaryEmail primaryPhone whatsappNumber").lean() : Promise.resolve(null),
     ]);
 
-    const rankedServices = (services as any[])
-      .map((service) => ({
-        service,
-        score: scoreService(service, keywords),
-      }))
-      .sort((a, b) => b.score - a.score)
-      .slice(
-        0,
-        intent === "SERVICE_DETAILS" ? 3 : 5
-      )
-      .map(({ service }) =>
-        serializeService(service)
-      );
-
-    const rankedProjects = (projects as any[])
-      .map((project) => ({
-        project,
-        score: scoreProject(project, keywords),
-      }))
-      .sort((a, b) => b.score - a.score)
-      .slice(
-        0,
-        intent === "PROJECT_DETAILS" ? 3 : 5
-      )
-      .map(({ project }) =>
-        serializeProject(project)
-      );
-
-    const rankedFAQs = (faqs as any[])
-      .map((faq) => ({
-        faq,
-        score: scoreFAQ(faq, keywords),
-      }))
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 5)
-      .map(({ faq }) =>
-        serializeFAQ(faq)
-      );
-
-    const activeOffers = (offers as any[])
-      .filter(isActiveOffer)
-      .slice(0, 3)
-      .map(serializeOffer);
-
-    data.services = rankedServices;
-    data.projects = rankedProjects;
-    data.faqs = rankedFAQs;
-    data.reviews = (reviews as any[])
-      .slice(0, 5)
-      .map(serializeReview);
-    data.offers = activeOffers;
-    data.site = serializeSiteSettings(
-      siteSettings
-    );
-
-    data.pricing = rankedServices
-      .filter(
-        (service) =>
-          service.startingPrice !== null ||
-          service.priceLabel
-      )
-      .map((service) => ({
-        id: service.id,
-        title: service.title,
-        slug: service.slug,
-        startingPrice: service.startingPrice,
-        priceLabel: service.priceLabel,
+    const services = (serviceRecords as DbRecord[]).map((s) => ({ raw: s, data: serializeService(s), score: score(`${s.title ?? ""} ${s.slug ?? ""} ${s.shortDescription ?? ""} ${s.description ?? ""} ${s.category ?? ""} ${(s.keywords ?? []).join(" ")}`, words) }));
+    services.sort((a, b) => b.score - a.score || Number(a.raw.displayOrder ?? 9999) - Number(b.raw.displayOrder ?? 9999));
+const selectedServices = allServicesRequest(message)
+  ? services.map((item) => ({
+      ...item,
+      data: serializeServiceSummary(item.raw),
+    }))
+  : intent === "SERVICE_DETAILS"
+    ? services.slice(0, 1)
+    : services.slice(0, wantsPricing ? 5 : 4).map((item) => ({
+        ...item,
+        data: serializeServiceSummary(item.raw),
       }));
+    const projects = (projectRecords as DbRecord[]).map((p) => ({ raw: p, data: serializeProject(p), score: score(`${p.title ?? ""} ${p.slug ?? ""} ${p.client ?? ""} ${p.industry ?? ""} ${p.shortDescription ?? ""} ${p.overview ?? ""} ${(p.technologies ?? []).join(" ")}`, words) }));
+    projects.sort((a, b) => b.score - a.score || Number(a.raw.displayOrder ?? 9999) - Number(b.raw.displayOrder ?? 9999));
 
-    return data;
+    const plans = (pricingRecords as DbRecord[]).map(serializePlan);
+    const servicePricing = wantsPricing ? (serviceRecords as DbRecord[]).filter((s) => price(s.startingPrice) !== null || Boolean(text(s.priceLabel, 100))).map((s) => ({ id: id(s._id), title: text(s.title, 120), slug: slug(s.slug), href: href("/services/", s.slug), startingPrice: price(s.startingPrice), priceLabel: text(s.priceLabel, 100), source: "service" })) : [];
+    const pricing = [...plans.map((p) => ({ ...p, source: "pricing-plan" })), ...servicePricing];
+    const selectedOffers = (offerRecords as DbRecord[]).filter((o) => activeOffer(o)).slice(0, 6).map(serializeOffer);
+    const selectedFAQs = (faqRecords as DbRecord[]).map(serializeFAQ);
+    const selectedReviews = (reviewRecords as DbRecord[]).map(serializeReview).filter((r) => Boolean(r.content));
+
+    return {
+      services: selectedServices.map((item) => item.data),
+      projects: projects.slice(0, allProjectsRequest(message) ? 40 : 4).map((item) => item.data),
+      pricing: pricing.slice(0, 18), faqs: selectedFAQs, reviews: selectedReviews,
+      offers: selectedOffers, site: serializeSite(siteRecord as DbRecord | null), retrievalError: false,
+    };
   } catch (error) {
-    console.error(
-      "[AMI] Data retrieval failed:",
-      error
-    );
-
-    return EMPTY_DATA;
+    console.error("[AMI] Database retrieval failed:", error instanceof Error ? error.message : "Unknown retrieval error");
+    return { ...EMPTY_DATA, retrievalError: true };
   }
 }

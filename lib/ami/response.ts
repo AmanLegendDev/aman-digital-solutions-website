@@ -1,12 +1,20 @@
+
 import type {
   AMIAction,
+  AMIActionType,
   AMIConversationContext,
   AMIIntent,
   AMIResponse,
   AMIResponseBlock,
 } from "./types";
 
-const VALID_INTENTS: AMIIntent[] = [
+import { sanitizeAMIContext } from "./context";
+
+/* =========================================================
+   AMI RESPONSE VALIDATION
+========================================================= */
+
+const VALID_INTENTS = new Set<AMIIntent>([
   "GREETING",
   "SERVICE_DISCOVERY",
   "SERVICE_DETAILS",
@@ -20,9 +28,9 @@ const VALID_INTENTS: AMIIntent[] = [
   "ABOUT",
   "GENERAL",
   "UNKNOWN",
-];
+]);
 
-const VALID_ACTIONS = new Set([
+const VALID_ACTIONS = new Set<AMIActionType>([
   "VIEW_SERVICE",
   "VIEW_PROJECT",
   "VIEW_PRICING",
@@ -45,180 +53,71 @@ const VALID_BLOCKS = new Set([
   "quick_actions",
 ]);
 
+const MAX_BLOCKS = 12;
+const MAX_ACTIONS = 8;
+const MAX_TEXT_LENGTH = 1800;
+
 function cleanText(
   value: unknown,
   max = 1200,
 ): string {
-  if (typeof value !== "string") {
-    return "";
-  }
+  if (typeof value !== "string") return "";
 
-  return value
-    .trim()
-    .slice(0, max);
+  return value.trim().slice(0, max);
 }
 
-function cleanArray(
+function cleanPrice(
   value: unknown,
-  maxItems = 8,
-): string[] {
-  if (!Array.isArray(value)) {
-    return [];
+): number | null | undefined {
+  if (value === null) return null;
+
+  if (
+    typeof value !== "number" ||
+    !Number.isFinite(value) ||
+    value < 0
+  ) {
+    return undefined;
   }
 
-  return value
-    .filter(
-      (item): item is string =>
-        typeof item === "string",
-    )
-    .map((item) =>
-      cleanText(item, 300),
-    )
-    .filter(Boolean)
-    .slice(0, maxItems);
+  return value;
 }
+
+function cleanSlug(
+  value: unknown,
+): string | undefined {
+  if (typeof value !== "string") return undefined;
+
+  const slug = value.trim();
+
+  if (
+    !slug ||
+    !/^[a-z0-9]+(?:-[a-z0-9]+)*$/i.test(slug)
+  ) {
+    return undefined;
+  }
+
+  return slug.slice(0, 150);
+}
+
+function cleanIdentifier(
+  value: unknown,
+): string | undefined {
+  return cleanText(value, 200) || undefined;
+}
+
+/* =========================================================
+   CONTEXT PATCH
+========================================================= */
 
 function sanitizeContextPatch(
   value: unknown,
 ): AMIConversationContext {
-  if (
-    !value ||
-    typeof value !== "object" ||
-    Array.isArray(value)
-  ) {
-    return {};
-  }
-
-  const raw =
-    value as Record<
-      string,
-      unknown
-    >;
-
-  const leadRaw =
-    raw.leadProfile;
-
-  const leadProfile =
-    leadRaw &&
-    typeof leadRaw === "object" &&
-    !Array.isArray(leadRaw)
-      ? (leadRaw as Record<
-          string,
-          unknown
-        >)
-      : {};
-
-  const result: AMIConversationContext =
-    {};
-
-  const stringFields = [
-    "selectedServiceSlug",
-    "selectedProjectSlug",
-    "selectedOfferSlug",
-    "lastIntent",
-    "conversationStage",
-  ];
-
-  for (const field of stringFields) {
-    const item = cleanText(
-      raw[field],
-      200,
-    );
-
-    if (item) {
-      (
-        result as Record<
-          string,
-          unknown
-        >
-      )[field] = item;
-    }
-  }
-
-  const allowedLeadFields = [
-    "name",
-    "companyName",
-    "email",
-    "phone",
-    "location",
-    "service",
-    "serviceSlug",
-    "projectType",
-    "projectDescription",
-    "timeline",
-    "budget",
-    "currentWebsite",
-    "preferredContactMethod",
-  ];
-
-  const safeLead: Record<
-    string,
-    unknown
-  > = {};
-
-  for (const field of allowedLeadFields) {
-    const item = cleanText(
-      leadProfile[field],
-      field ===
-        "projectDescription"
-        ? 1000
-        : 300,
-    );
-
-    if (item) {
-      safeLead[field] = item;
-    }
-  }
-
-  if (
-    Array.isArray(
-      leadProfile.requiredPages,
-    )
-  ) {
-    safeLead.requiredPages =
-      cleanArray(
-        leadProfile.requiredPages,
-        15,
-      );
-  }
-
-  if (
-    Array.isArray(
-      leadProfile.requiredFeatures,
-    )
-  ) {
-    safeLead.requiredFeatures =
-      cleanArray(
-        leadProfile.requiredFeatures,
-        15,
-      );
-  }
-
-  if (
-    typeof leadProfile.qualificationScore ===
-    "number"
-  ) {
-    safeLead.qualificationScore =
-      Math.max(
-        0,
-        Math.min(
-          100,
-          Math.round(
-            leadProfile.qualificationScore,
-          ),
-        ),
-      );
-  }
-
-  if (
-    Object.keys(safeLead).length > 0
-  ) {
-    result.leadProfile =
-      safeLead as AMIConversationContext["leadProfile"];
-  }
-
-  return result;
+  return sanitizeAMIContext(value);
 }
+
+/* =========================================================
+   ACTION VALIDATION
+========================================================= */
 
 function sanitizeAction(
   value: unknown,
@@ -231,41 +130,51 @@ function sanitizeAction(
     return null;
   }
 
-  const action =
-    value as Record<
-      string,
-      unknown
-    >;
+  const raw = value as Record<string, unknown>;
 
-  const type =
-    typeof action.type === "string"
-      ? action.type
-      : "NONE";
-
-  if (!VALID_ACTIONS.has(type)) {
+  if (
+    typeof raw.type !== "string" ||
+    !VALID_ACTIONS.has(raw.type as AMIActionType)
+  ) {
     return null;
   }
 
-  const label = cleanText(
-    action.label,
-    100,
-  );
+  const label = cleanText(raw.label, 80);
 
-  if (!label) {
-    return null;
-  }
+  if (!label) return null;
 
-  const href =
-    typeof action.href === "string"
-      ? action.href
-      : undefined;
-
-  return {
-    type: type as AMIAction["type"],
+  const action: AMIAction = {
+    type: raw.type as AMIActionType,
     label,
-    href,
   };
+
+  // URLs are validated again by the API security layer.
+  if (typeof raw.href === "string") {
+    const href = cleanText(raw.href, 2048);
+
+    if (href) action.href = href;
+  }
+
+  const serviceId = cleanIdentifier(raw.serviceId);
+  const serviceSlug = cleanSlug(raw.serviceSlug);
+  const projectId = cleanIdentifier(raw.projectId);
+  const projectSlug = cleanSlug(raw.projectSlug);
+  const offerId = cleanIdentifier(raw.offerId);
+  const offerSlug = cleanSlug(raw.offerSlug);
+
+  if (serviceId) action.serviceId = serviceId;
+  if (serviceSlug) action.serviceSlug = serviceSlug;
+  if (projectId) action.projectId = projectId;
+  if (projectSlug) action.projectSlug = projectSlug;
+  if (offerId) action.offerId = offerId;
+  if (offerSlug) action.offerSlug = offerSlug;
+
+  return action;
 }
+
+/* =========================================================
+   BLOCK VALIDATION
+========================================================= */
 
 function sanitizeBlock(
   value: unknown,
@@ -278,23 +187,128 @@ function sanitizeBlock(
     return null;
   }
 
-  const block =
-    value as Record<
-      string,
-      unknown
-    >;
+  const raw = value as Record<string, unknown>;
+  const type = raw.type;
 
-  const type =
-    typeof block.type === "string"
-      ? block.type
-      : "";
-
-  if (!VALID_BLOCKS.has(type)) {
+  if (
+    typeof type !== "string" ||
+    !VALID_BLOCKS.has(type)
+  ) {
     return null;
   }
 
-  return block as unknown as AMIResponseBlock;
+  if (type === "text") {
+    const text = cleanText(raw.text, MAX_TEXT_LENGTH);
+
+    return text ? { type: "text", text } : null;
+  }
+
+  if (type === "quick_actions") {
+    if (!Array.isArray(raw.actions)) return null;
+
+    const actions = raw.actions
+      .map(sanitizeAction)
+      .filter(
+        (action): action is AMIAction => action !== null,
+      )
+      .slice(0, 6);
+
+    // Do not render an empty quick-actions block.
+    if (actions.length === 0) return null;
+
+    return {
+      type: "quick_actions",
+      actions,
+    };
+  }
+
+  const title = cleanText(raw.title, 200);
+
+  if (!title) return null;
+
+  const href =
+    typeof raw.href === "string"
+      ? cleanText(raw.href, 2048) || undefined
+      : undefined;
+
+  const description =
+    typeof raw.description === "string"
+      ? cleanText(raw.description, 1000) || undefined
+      : undefined;
+
+  if (type === "service") {
+    const startingPrice = cleanPrice(raw.startingPrice);
+
+    return {
+      type: "service",
+      serviceId: cleanIdentifier(raw.serviceId),
+      slug: cleanSlug(raw.slug),
+      title,
+      description,
+      ...(startingPrice !== undefined
+        ? { startingPrice }
+        : {}),
+      priceLabel: cleanText(raw.priceLabel, 150) || undefined,
+      href,
+    };
+  }
+
+  if (type === "project") {
+    return {
+      type: "project",
+      projectId: cleanIdentifier(raw.projectId),
+      slug: cleanSlug(raw.slug),
+      title,
+      description,
+      href,
+    };
+  }
+
+  if (type === "pricing") {
+    const price = cleanPrice(raw.price);
+
+    return {
+      type: "pricing",
+      title,
+      ...(price !== undefined ? { price } : {}),
+      priceLabel: cleanText(raw.priceLabel, 150) || undefined,
+      description,
+      href,
+    };
+  }
+
+  if (type === "offer") {
+    const originalPrice = cleanPrice(raw.originalPrice);
+    const offerPrice = cleanPrice(raw.offerPrice);
+
+    return {
+      type: "offer",
+      offerId: cleanIdentifier(raw.offerId),
+      slug: cleanSlug(raw.slug),
+      title,
+      badge: cleanText(raw.badge, 100) || undefined,
+      shortDescription:
+        cleanText(raw.shortDescription, 1000) || undefined,
+      ...(originalPrice !== undefined
+        ? { originalPrice }
+        : {}),
+      ...(offerPrice !== undefined
+        ? { offerPrice }
+        : {}),
+      discountLabel:
+        cleanText(raw.discountLabel, 100) || undefined,
+      couponCode:
+        cleanText(raw.couponCode, 100) || undefined,
+      href,
+    };
+  }
+
+  return null;
 }
+
+/* =========================================================
+   RESPONSE NORMALIZATION
+========================================================= */
 
 export function normalizeAMIResponse(
   input: unknown,
@@ -307,79 +321,55 @@ export function normalizeAMIResponse(
     return getFallbackResponse();
   }
 
-  const raw =
-    input as Record<
-      string,
-      unknown
-    >;
+  const raw = input as Record<string, unknown>;
 
   const message =
-    cleanText(
-      raw.message,
-      1600,
-    ) ||
-    "Tell me what you're looking to build and I’ll help you find the right solution.";
+    cleanText(raw.message, MAX_TEXT_LENGTH) ||
+    "Tell me what you're looking to build and I'll help you find the right solution.";
 
   const intent =
     typeof raw.intent === "string" &&
-    VALID_INTENTS.includes(
-      raw.intent as AMIIntent,
-    )
+    VALID_INTENTS.has(raw.intent as AMIIntent)
       ? (raw.intent as AMIIntent)
       : "UNKNOWN";
 
-  const blocks = Array.isArray(
-    raw.blocks,
-  )
+  const blocks = Array.isArray(raw.blocks)
     ? raw.blocks
         .map(sanitizeBlock)
         .filter(
-          (
-            block,
-          ): block is AMIResponseBlock =>
-            Boolean(block),
+          (block): block is AMIResponseBlock => block !== null,
         )
-        .slice(0, 8)
+        .slice(0, MAX_BLOCKS)
     : [];
 
-  const actions = Array.isArray(
-    raw.actions,
-  )
+  const actions = Array.isArray(raw.actions)
     ? raw.actions
         .map(sanitizeAction)
         .filter(
-          (
-            action,
-          ): action is AMIAction =>
-            Boolean(action),
+          (action): action is AMIAction => action !== null,
         )
-        .slice(0, 8)
+        .slice(0, MAX_ACTIONS)
     : [];
 
   const nextQuestion =
-    cleanText(
-      raw.nextQuestion,
-      500,
-    ) || null;
-
-  const needsInput =
-    raw.needsInput === true;
-
-  const contextPatch =
-    sanitizeContextPatch(
-      raw.contextPatch,
-    );
+    typeof raw.nextQuestion === "string"
+      ? cleanText(raw.nextQuestion, 500) || null
+      : null;
 
   return {
     message,
     intent,
     blocks,
     actions,
-    contextPatch,
-    needsInput,
+    contextPatch: sanitizeContextPatch(raw.contextPatch),
+    needsInput: raw.needsInput === true,
     nextQuestion,
   };
 }
+
+/* =========================================================
+   SAFE FALLBACK
+========================================================= */
 
 export function getFallbackResponse(): AMIResponse {
   return {
@@ -396,13 +386,11 @@ export function getFallbackResponse(): AMIResponse {
         label: "View Services",
         href: "/services",
       },
-
       {
         type: "VIEW_PRICING",
         label: "View Pricing",
         href: "/pricing",
       },
-
       {
         type: "START_PROJECT",
         label: "Start a Project",
