@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import {
   AnimatePresence,
   motion,
@@ -101,22 +101,15 @@ export default function AMIOverlay({
             "
           >
             <div className="flex items-center gap-3">
-              <div
-                className="
-                  flex
-                  h-9
-                  w-9
-                  items-center
-                  justify-center
-                  rounded-full
-                  bg-[#FFC400]
-                  text-black
-                "
-              >
-                <span className="text-sm font-bold">
-                  A
-                </span>
-              </div>
+             <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-[#FFC400]/50 bg-[#15110A]">
+  <Image
+    src="/ami.png"
+    alt="AMI AI Assistant"
+    fill
+    sizes="36px"
+    className="object-cover"
+  />
+</div>
 
               <div>
                 <div className="text-sm font-semibold">
