@@ -343,6 +343,29 @@ export default function AMIChat() {
               Your digital project assistant
             </div>
 
+            
+
+<div
+  role="status"
+  className="mt-4 rounded-xl border border-[#FFC400]/20 bg-[#FFC400]/[0.05] px-4 py-3 text-sm leading-6 text-white/60"
+>
+  <span className="font-medium text-[#FFC400]">
+    Service notice:
+  </span>{" "}
+  AMI is currently being improved. If a response
+  doesn't come through, please try again in a moment
+  or{" "}
+  <a
+    href="/contact"
+    className="font-medium text-[#FFC400] underline underline-offset-4 transition-colors hover:text-white"
+  >
+    contact Aman Digital Solutions
+  </a>{" "}
+  directly.
+</div>
+
+
+
             <h1
               className="
                 text-2xl

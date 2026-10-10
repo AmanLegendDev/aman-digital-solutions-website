@@ -69,9 +69,7 @@ export default function AMIButton({ onClick }: Props) {
           />
         </span>
 
-        <span className="text-[10px] leading-tight text-white/45 sm:hidden">
-          Hi, I’m AMI
-        </span>
+     
       </span>
 
       {/* Desktop divider */}
