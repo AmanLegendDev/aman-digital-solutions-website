@@ -132,7 +132,10 @@ export async function GET(request: NextRequest) {
     );
 
     const response = NextResponse.redirect(
-      new URL("/admin?googleBusinessProfile=connected", request.url)
+      new URL(
+  "/admin/dashboard?googleBusinessProfile=connected",
+  request.url
+)
     );
 
     response.cookies.delete("gbp_oauth_state");
