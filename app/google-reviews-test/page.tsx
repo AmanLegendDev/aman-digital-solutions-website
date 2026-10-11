@@ -16,6 +16,16 @@ type ReviewItem = {
   location: string;
   data: AnyRecord;
 };
+type LocationDiagnostic = {
+  account: string;
+  location: string;
+  locationId: string;
+  totalReviewCount: number | null;
+  fetchedCount: number;
+  pagesFetched: number;
+  nextPageTokenPresent: boolean;
+  error: string | null;
+};
 
 function decryptRefreshToken(
   encrypted: { iv: string; tag: string; data: string },
@@ -140,10 +150,75 @@ async function fetchAllPages(
   return all;
 }
 
+
+async function fetchReviewPages(
+  initialUrl: string,
+  accessToken: string
+): Promise<{
+  reviews: AnyRecord[];
+  pagesFetched: number;
+  totalReviewCount: number | null;
+  nextPageTokenPresent: boolean;
+}> {
+  const reviews: AnyRecord[] = [];
+  const visitedTokens = new Set<string>();
+
+  let pageToken = "";
+  let pagesFetched = 0;
+  let totalReviewCount: number | null = null;
+  let nextPageTokenPresent = false;
+
+  for (let page = 0; page < 1000; page++) {
+    const url = new URL(initialUrl);
+
+    if (pageToken) {
+      url.searchParams.set("pageToken", pageToken);
+    }
+
+    const result = await googleGet(url.toString(), accessToken);
+
+    pagesFetched++;
+
+    if (Array.isArray(result.reviews)) {
+      reviews.push(...result.reviews);
+    }
+
+    if (typeof result.totalReviewCount === "number") {
+      totalReviewCount = result.totalReviewCount;
+    }
+
+    const next = result.nextPageToken as string | undefined;
+
+    nextPageTokenPresent = Boolean(next);
+
+    if (!next) {
+      break;
+    }
+
+    if (visitedTokens.has(next)) {
+      throw new Error("Google returned a repeated reviews pagination token.");
+    }
+
+    visitedTokens.add(next);
+    pageToken = next;
+
+    if (page === 999) {
+      throw new Error("Pagination safety limit reached.");
+    }
+  }
+
+  return {
+    reviews,
+    pagesFetched,
+    totalReviewCount,
+    nextPageTokenPresent,
+  };
+}
 async function fetchEverything(): Promise<{
   reviews: ReviewItem[];
   accountCount: number;
   locationCount: number;
+  diagnostics: LocationDiagnostic[];
 }> {
   const mongoUri = process.env.MONGODB_URI;
   const dbName = process.env.MONGODB_DB_NAME;
@@ -180,9 +255,9 @@ async function fetchEverything(): Promise<{
       accessToken,
       "accounts"
     );
-
-    const reviews: ReviewItem[] = [];
-    let locationCount = 0;
+const reviews: ReviewItem[] = [];
+const diagnostics: LocationDiagnostic[] = [];
+let locationCount = 0;
 
     for (const account of accounts) {
       const accountName = String(account.name || "");
@@ -204,31 +279,58 @@ async function fetchEverything(): Promise<{
 
         locationCount++;
 
-        const reviewUrl =
-          `https://mybusiness.googleapis.com/v4/accounts/${accountId}` +
-          `/locations/${locationId}/reviews?pageSize=50`;
+      const reviewUrl =
+  `https://mybusiness.googleapis.com/v4/accounts/${accountId}` +
+  `/locations/${locationId}/reviews?pageSize=50`;
 
-        const locationReviews = await fetchAllPages(
-          reviewUrl,
-          accessToken,
-          "reviews"
-        );
+try {
+  const result = await fetchReviewPages(
+    reviewUrl,
+    accessToken
+  );
 
-        for (const review of locationReviews) {
-          reviews.push({
-            account: accountName,
-            location: location.title || locationName,
-            data: review,
-          });
-        }
+  diagnostics.push({
+    account: accountName,
+    location: location.title || locationName,
+    locationId,
+    totalReviewCount: result.totalReviewCount,
+    fetchedCount: result.reviews.length,
+    pagesFetched: result.pagesFetched,
+    nextPageTokenPresent: result.nextPageTokenPresent,
+    error: null,
+  });
+
+  for (const review of result.reviews) {
+    reviews.push({
+      account: accountName,
+      location: location.title || locationName,
+      data: review,
+    });
+  }
+} catch (e) {
+  diagnostics.push({
+    account: accountName,
+    location: location.title || locationName,
+    locationId,
+    totalReviewCount: null,
+    fetchedCount: 0,
+    pagesFetched: 0,
+    nextPageTokenPresent: false,
+    error:
+      e instanceof Error
+        ? e.message
+        : "Unknown Google API error",
+  });
+}
       }
     }
 
-    return {
-      reviews,
-      accountCount: accounts.length,
-      locationCount,
-    };
+  return {
+  reviews,
+  accountCount: accounts.length,
+  locationCount,
+  diagnostics,
+};
   } finally {
     await mongo.close();
   }
@@ -443,6 +545,77 @@ export default async function GoogleReviewsTestPage() {
 
             <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
               <div>
+                <section className="mb-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+  <h2 className="text-xl font-bold text-slate-900">
+    Location-wise API diagnostics
+  </h2>
+
+  <p className="mt-1 text-sm leading-6 text-slate-500">
+    Google se har location ke liye kitne reviews mile aur pagination
+    complete hui ya nahi, yahan check karo.
+  </p>
+
+  <div className="mt-4 space-y-4">
+    {result.diagnostics.map((item) => (
+      <article
+        key={`${item.account}-${item.locationId}`}
+        className="rounded-xl border border-slate-200 p-4"
+      >
+        <h3 className="font-semibold text-slate-900">
+          {item.location}
+        </h3>
+
+        <p className="mt-1 break-all text-xs text-slate-500">
+          Location ID: {item.locationId}
+        </p>
+
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-lg bg-slate-50 p-3">
+            <p className="text-xs text-slate-500">
+              Google totalReviewCount
+            </p>
+            <p className="mt-1 text-lg font-bold">
+              {item.totalReviewCount ?? "Not returned"}
+            </p>
+          </div>
+
+          <div className="rounded-lg bg-slate-50 p-3">
+            <p className="text-xs text-slate-500">
+              Reviews fetched
+            </p>
+            <p className="mt-1 text-lg font-bold">
+              {item.fetchedCount}
+            </p>
+          </div>
+
+          <div className="rounded-lg bg-slate-50 p-3">
+            <p className="text-xs text-slate-500">
+              Pages fetched
+            </p>
+            <p className="mt-1 text-lg font-bold">
+              {item.pagesFetched}
+            </p>
+          </div>
+
+          <div className="rounded-lg bg-slate-50 p-3">
+            <p className="text-xs text-slate-500">
+              More pages indicated
+            </p>
+            <p className="mt-1 text-lg font-bold">
+              {item.nextPageTokenPresent ? "Yes" : "No"}
+            </p>
+          </div>
+        </div>
+
+        {item.error && (
+          <div className="mt-3 break-words rounded-lg bg-red-50 p-3 text-sm text-red-800">
+            <strong>Google API error:</strong> {item.error}
+          </div>
+        )}
+      </article>
+    ))}
+  </div>
+</section>
                 <h2 className="text-2xl font-bold">All fetched reviews</h2>
                 <p className="mt-1 text-sm text-slate-500">
                   Full review data is available inside each card.
