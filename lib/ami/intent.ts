@@ -66,7 +66,16 @@ const INTENT_KEYWORDS: Record<DetectableIntent, string[]> = {
     "kya kya include hai",
     "kaise banate ho",
     "process kya hai",
-    "kya features hain",
+        "kya features hain",
+    "whats include",
+    "whats included",
+    "what s include",
+    "what s included",
+    "include in this",
+    "included in this",
+    "whats in this service",
+    "isme kya hai",
+    "kya include hai",
   ],
 
 

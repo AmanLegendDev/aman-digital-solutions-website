@@ -270,8 +270,8 @@ function activeOffer(o: DbRecord, now = Date.now()): boolean {
   return !(o.isClaimLimitEnabled === true && typeof o.claimLimit === "number" && typeof o.claimedCount === "number" && o.claimedCount >= o.claimLimit);
 }
 
-export async function retrieveAMIData({ message, intent }: { message: string; intent?: RetrievalIntent }): Promise<AMIRetrievedData> {
-  try {
+export async function retrieveAMIData({ message, intent, preferredServiceSlug }: { message: string; intent?: RetrievalIntent; preferredServiceSlug?: string }): Promise<AMIRetrievedData> {
+try {
     await connectDB();
     const retrievalNow = new Date();
     const words = keywords(message);
@@ -334,7 +334,7 @@ Offer.find({
       wantsSite ? SiteSettings.findOne({}).select("siteName tagline description contact primaryEmail primaryPhone whatsappNumber").lean() : Promise.resolve(null),
     ]);
 
-    const services = (serviceRecords as DbRecord[]).map((s) => ({ raw: s, data: serializeService(s), score: score(`${s.title ?? ""} ${s.slug ?? ""} ${s.shortDescription ?? ""} ${s.description ?? ""} ${s.category ?? ""} ${(s.keywords ?? []).join(" ")}`, words) }));
+    const services = (serviceRecords as DbRecord[]).map((s) => ({ raw: s, data: serializeService(s), score: score(`${s.title ?? ""} ${s.slug ?? ""} ${s.shortDescription ?? ""} ${s.description ?? ""} ${s.category ?? ""} ${(s.keywords ?? []).join(" ")}`, words) + (preferredServiceSlug && s.slug === preferredServiceSlug ? 10 : 0) }));
     services.sort((a, b) => b.score - a.score || Number(a.raw.displayOrder ?? 9999) - Number(b.raw.displayOrder ?? 9999));
 const selectedServices = allServicesRequest(message)
   ? services.map((item) => ({

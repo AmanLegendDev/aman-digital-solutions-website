@@ -346,22 +346,44 @@ export default function AMIChat() {
             
 
 <div
-  role="status"
-  className="mt-4 rounded-xl border border-[#FFC400]/20 bg-[#FFC400]/[0.05] px-4 py-3 text-sm leading-6 text-white/60"
+  role="note"
+  className="
+    mt-4 flex items-start gap-3
+    rounded-xl border border-[#FFC400]/15
+    bg-[#FFC400]/[0.04]
+    px-4 py-3
+    text-sm leading-6 text-white/60
+  "
 >
-  <span className="font-medium text-[#FFC400]">
-    Service notice:
-  </span>{" "}
-  AMI is currently being improved. If a response
-  doesn't come through, please try again in a moment
-  or{" "}
-  <a
-    href="/contact"
-    className="font-medium text-[#FFC400] underline underline-offset-4 transition-colors hover:text-white"
+  <span
+    className="
+      mt-1 flex h-5 w-5 shrink-0
+      items-center justify-center
+      rounded-full border border-[#FFC400]/30
+      text-[11px] font-semibold text-[#FFC400]
+    "
+    aria-hidden="true"
   >
-    contact Aman Digital Solutions
-  </a>{" "}
-  directly.
+    i
+  </span>
+
+  <p>
+    If you experience any issues while using AMI,
+    feel free to{" "}
+    <a
+      href="/contact"
+      className="
+        font-medium text-[#FFC400]
+        underline underline-offset-4
+        decoration-[#FFC400]/40
+        transition-colors duration-200
+        hover:text-white hover:decoration-white
+      "
+    >
+      contact Aman Digital Solutions
+    </a>
+    {" "}directly. We’ll be happy to help.
+  </p>
 </div>
 
 

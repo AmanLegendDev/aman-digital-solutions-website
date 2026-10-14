@@ -1,4 +1,3 @@
-
 import { NextResponse } from "next/server";
 
 import { AMI_SYSTEM_PROMPT } from "@/lib/ami/prompts";
@@ -10,6 +9,7 @@ import {
 } from "@/lib/ami/retrieve";
 import { detectAMIIntent } from "@/lib/ami/intent";
 import { secureAMIResponse } from "@/lib/ami/security";
+import { buildDirectResponse } from "@/lib/ami/direct";
 
 import {
   buildAMIContextInstruction,
@@ -26,7 +26,6 @@ import type {
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_HISTORY = 3;
 const MAX_HISTORY_MESSAGE_LENGTH = 500;
@@ -36,7 +35,6 @@ const MAX_OUTPUT_TOKENS = 800;
 
 const MAX_KNOWLEDGE_CHARS = 10_000;
 const MAX_CONTEXT_CHARS = 1_500;
-
 
 type ProviderMessage = {
   role: "system" | "user" | "assistant";
@@ -49,20 +47,11 @@ type ProviderConfig = {
   model: string;
 };
 
-function isRecord(
-  value: unknown,
-): value is Record<string, unknown> {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    !Array.isArray(value)
-  );
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function jsonResponse(
-  body: Record<string, unknown>,
-  status = 200,
-) {
+function jsonResponse(body: Record<string, unknown>, status = 200) {
   return NextResponse.json(body, {
     status,
     headers: {
@@ -73,26 +62,17 @@ function jsonResponse(
 }
 
 function errorResponse(error: string, status: number) {
-  return jsonResponse(
-    {
-      success: false,
-      error,
-    },
-    status,
-  );
+  return jsonResponse({ success: false, error }, status);
 }
 
 function trimHistory(value: unknown): AMIMessage[] {
-  if (!Array.isArray(value)) {
-    return [];
-  }
+  if (!Array.isArray(value)) return [];
 
   return value
     .filter(
       (item): item is Record<string, unknown> =>
         isRecord(item) &&
-        (item.role === "user" ||
-          item.role === "assistant") &&
+        (item.role === "user" || item.role === "assistant") &&
         typeof item.content === "string" &&
         item.content.trim().length > 0,
     )
@@ -109,13 +89,9 @@ function trimHistory(value: unknown): AMIMessage[] {
     }));
 }
 
-function buildConversationContext(
-  value: unknown,
-): AMIConversationContext {
+function buildConversationContext(value: unknown): AMIConversationContext {
   try {
-    return sanitizeAMIContext(
-      isRecord(value) ? value : {},
-    );
+    return sanitizeAMIContext(isRecord(value) ? value : {});
   } catch {
     return {};
   }
@@ -131,9 +107,7 @@ function extractJson(text: string): unknown {
   const start = text.indexOf("{");
   const end = text.lastIndexOf("}");
 
-  if (start < 0 || end <= start) {
-    return null;
-  }
+  if (start < 0 || end <= start) return null;
 
   try {
     return JSON.parse(text.slice(start, end + 1));
@@ -147,30 +121,18 @@ function getProviderConfig(): ProviderConfig | null {
   const rawBaseUrl = process.env.AMI_AI_BASE_URL?.trim();
   const model = process.env.AMI_AI_MODEL?.trim();
 
-  if (!apiKey || !rawBaseUrl || !model) {
-    return null;
-  }
+  if (!apiKey || !rawBaseUrl || !model) return null;
 
   try {
     const url = new URL(rawBaseUrl);
 
     const isLocalHttp =
       url.protocol === "http:" &&
-      (url.hostname === "localhost" ||
-        url.hostname === "127.0.0.1");
+      (url.hostname === "localhost" || url.hostname === "127.0.0.1");
 
-    if (url.protocol !== "https:" && !isLocalHttp) {
-      return null;
-    }
+    if (url.protocol !== "https:" && !isLocalHttp) return null;
 
-    if (
-      url.username ||
-      url.password ||
-      url.search ||
-      url.hash
-    ) {
-      return null;
-    }
+    if (url.username || url.password || url.search || url.hash) return null;
 
     return {
       apiKey,
@@ -191,21 +153,9 @@ function buildSafeResponse(
     intent,
     blocks: [],
     actions: [
-      {
-        type: "VIEW_SERVICE",
-        label: "View Services",
-        href: "/services",
-      },
-      {
-        type: "VIEW_PRICING",
-        label: "View Pricing",
-        href: "/pricing",
-      },
-      {
-        type: "START_PROJECT",
-        label: "Start a Project",
-        href: "/start-a-project",
-      },
+      { type: "VIEW_SERVICE", label: "View Services", href: "/services" },
+      { type: "VIEW_PRICING", label: "View Pricing", href: "/pricing" },
+      { type: "START_PROJECT", label: "Start a Project", href: "/start-a-project" },
     ],
     contextPatch: {},
     needsInput: false,
@@ -235,6 +185,68 @@ function buildProviderFailureResponse(): AMIResponse {
   );
 }
 
+function sendDirect(direct: AMIResponse) {
+  return jsonResponse({
+    success: true,
+    response: secureAMIResponse(normalizeAMIResponse(direct)),
+  });
+}
+
+async function callProvider(
+  provider: ProviderConfig,
+  payload: Record<string, unknown>,
+  signal: AbortSignal,
+): Promise<Response | null> {
+  const models = [
+    provider.model,
+    process.env.AMI_AI_FALLBACK_MODEL?.trim(),
+  ].filter((m): m is string => Boolean(m));
+
+  for (const model of models) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      let res: Response;
+
+      try {
+        res = await fetch(`${provider.baseUrl}/chat/completions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${provider.apiKey}`,
+          },
+          body: JSON.stringify({ ...payload, model }),
+          signal,
+          cache: "no-store",
+        });
+      } catch (error) {
+        console.error(
+          "[AMI] Provider connection failed:",
+          error instanceof Error ? error.message : "Unknown error",
+        );
+        return null;
+      }
+
+      if (res.ok) return res;
+
+      const errText = await res.text().catch(() => "");
+      console.error("[AMI] Provider error:", {
+        status: res.status,
+        model,
+        body: errText.slice(0, 500),
+      });
+
+      if (res.status !== 429) break;
+
+      const match = errText.match(/try again in ([\d.]+)s/i);
+      const waitMs = match ? Math.ceil(parseFloat(match[1]) * 1000) + 200 : 2000;
+
+      if (waitMs > 5000 || attempt === 1) break;
+      await new Promise((r) => setTimeout(r, waitMs));
+    }
+  }
+
+  return null;
+}
+
 function buildRequestMessages(
   message: string,
   intent: string,
@@ -243,14 +255,8 @@ function buildRequestMessages(
   conversation: AMIMessage[],
 ): ProviderMessage[] {
   return [
-    {
-      role: "system",
-      content: AMI_SYSTEM_PROMPT,
-    },
-    {
-      role: "system",
-      content: knowledgeInstruction,
-    },
+    { role: "system", content: AMI_SYSTEM_PROMPT },
+    { role: "system", content: knowledgeInstruction },
     {
       role: "system",
       content: [
@@ -273,15 +279,9 @@ function buildRequestMessages(
     },
     ...conversation.map((item) => ({
       role: item.role,
-      content: item.content.slice(
-        0,
-        MAX_HISTORY_MESSAGE_LENGTH,
-      ),
+      content: item.content.slice(0, MAX_HISTORY_MESSAGE_LENGTH),
     })),
-    {
-      role: "user",
-      content: message,
-    },
+    { role: "user", content: message },
   ];
 }
 
@@ -291,24 +291,18 @@ export async function POST(request: Request) {
 
   try {
     // 1. Validate the incoming request size.
-    const contentLengthHeader =
-      request.headers.get("content-length");
+    const contentLengthHeader = request.headers.get("content-length");
 
     if (contentLengthHeader !== null) {
       const contentLength = Number(contentLengthHeader);
 
-      if (
-        Number.isFinite(contentLength) &&
-        contentLength > MAX_REQUEST_BYTES
-      ) {
+      if (Number.isFinite(contentLength) && contentLength > MAX_REQUEST_BYTES) {
         return errorResponse("Request is too large.", 413);
       }
     }
 
     const rawBody = await request.text();
-
-    const requestBytes = new TextEncoder()
-      .encode(rawBody).byteLength;
+    const requestBytes = new TextEncoder().encode(rawBody).byteLength;
 
     if (requestBytes > MAX_REQUEST_BYTES) {
       return errorResponse("Request is too large.", 413);
@@ -329,57 +323,35 @@ export async function POST(request: Request) {
 
     const requestData = body as unknown as AMIChatRequest;
 
-    if (
-      typeof requestData.message !== "string" ||
-      !requestData.message.trim()
-    ) {
+    if (typeof requestData.message !== "string" || !requestData.message.trim()) {
       return errorResponse("Message is required.", 400);
     }
 
-    const message = requestData.message
-      .trim()
-      .slice(0, MAX_MESSAGE_LENGTH);
+    const message = requestData.message.trim().slice(0, MAX_MESSAGE_LENGTH);
+    const conversation = trimHistory(requestData.conversation);
+    const context = buildConversationContext(requestData.context);
 
-    const conversation = trimHistory(
-      requestData.conversation,
-    );
-
-    const context = buildConversationContext(
-      requestData.context,
-    );
-
-    // 3. Validate provider configuration.
-    const provider = getProviderConfig();
-
-    if (!provider) {
-      console.error(
-        "[AMI] AI provider configuration is missing or invalid.",
-      );
-
-      return jsonResponse({
-        success: true,
-        response: buildConfigurationResponse(),
-      });
-    }
-
-    // 4. Retrieve trusted business information.
+    // 3. Retrieve trusted business information.
     const intent = detectAMIIntent(message);
 
-    let knowledge: Awaited<
-      ReturnType<typeof retrieveAMIData>
-    >;
+    const preferredSlug =
+      context.selectedServiceSlug ||
+      context.serviceSlug ||
+      context.leadProfile?.serviceSlug ||
+      undefined;
+
+    let knowledge: Awaited<ReturnType<typeof retrieveAMIData>>;
 
     try {
       knowledge = await retrieveAMIData({
         message,
         intent,
+        preferredServiceSlug: preferredSlug,
       });
     } catch (error) {
       console.error(
         "[AMI] Retrieval failed:",
-        error instanceof Error
-          ? error.message
-          : "Unknown retrieval error",
+        error instanceof Error ? error.message : "Unknown retrieval error",
       );
 
       return jsonResponse({
@@ -389,9 +361,7 @@ export async function POST(request: Request) {
     }
 
     if (knowledge.retrievalError) {
-      console.error(
-        "[AMI] Retrieval reported an error.",
-      );
+      console.error("[AMI] Retrieval reported an error.");
 
       return jsonResponse({
         success: true,
@@ -399,27 +369,17 @@ export async function POST(request: Request) {
       });
     }
 
-    
-    // Return the complete published service list directly from trusted
-    // database data when the visitor explicitly requests every service.
+    // 4. Full service list directly from the database.
     if (allServicesRequest(message)) {
       const serviceBlocks = knowledge.services
-        .filter((service) => {
-          return (
-            typeof service.title === "string" &&
-            service.title.trim().length > 0
-          );
-        })
+        .filter(
+          (service) =>
+            typeof service.title === "string" && service.title.trim().length > 0,
+        )
         .map((service) => ({
           type: "service" as const,
-          serviceId:
-            typeof service.id === "string"
-              ? service.id
-              : undefined,
-          slug:
-            typeof service.slug === "string"
-              ? service.slug
-              : undefined,
+          serviceId: typeof service.id === "string" ? service.id : undefined,
+          slug: typeof service.slug === "string" ? service.slug : undefined,
           title: service.title as string,
           description:
             typeof service.shortDescription === "string" &&
@@ -435,8 +395,7 @@ export async function POST(request: Request) {
               ? service.startingPrice
               : undefined,
           priceLabel:
-            typeof service.priceLabel === "string" &&
-            service.priceLabel.trim()
+            typeof service.priceLabel === "string" && service.priceLabel.trim()
               ? service.priceLabel
               : undefined,
           href:
@@ -454,16 +413,8 @@ export async function POST(request: Request) {
         intent: "SERVICE_DISCOVERY",
         blocks: serviceBlocks,
         actions: [
-          {
-            type: "VIEW_SERVICE",
-            label: "View All Services",
-            href: "/services",
-          },
-          {
-            type: "START_PROJECT",
-            label: "Start a Project",
-            href: "/start-a-project",
-          },
+          { type: "VIEW_SERVICE", label: "View All Services", href: "/services" },
+          { type: "START_PROJECT", label: "Start a Project", href: "/start-a-project" },
         ],
         contextPatch: {},
         needsInput: false,
@@ -476,17 +427,34 @@ export async function POST(request: Request) {
       });
     }
 
+    // 5. Direct answers from the database (no AI needed).
+    const direct = buildDirectResponse(intent, knowledge, preferredSlug);
 
-    // 5. Keep the provider prompt bounded.
-    const knowledgeInstruction = buildKnowledgeInstruction(
-      knowledge,
-    ).slice(0, MAX_KNOWLEDGE_CHARS);
+    if (direct) {
+      return sendDirect(direct);
+    }
 
-    const contextInstruction =
-      buildAMIContextInstruction(context).slice(
-        0,
-        MAX_CONTEXT_CHARS,
-      );
+    // 6. AI is needed only for the remaining questions.
+    const provider = getProviderConfig();
+
+    if (!provider) {
+      console.error("[AMI] AI provider configuration is missing or invalid.");
+
+      return jsonResponse({
+        success: true,
+        response: buildConfigurationResponse(),
+      });
+    }
+
+    const knowledgeInstruction = buildKnowledgeInstruction(knowledge).slice(
+      0,
+      MAX_KNOWLEDGE_CHARS,
+    );
+
+    const contextInstruction = buildAMIContextInstruction(context).slice(
+      0,
+      MAX_CONTEXT_CHARS,
+    );
 
     const messages = buildRequestMessages(
       message,
@@ -501,22 +469,16 @@ export async function POST(request: Request) {
       messages,
       temperature: 0.2,
       max_tokens: MAX_OUTPUT_TOKENS,
-      response_format: {
-        type: "json_object",
-      },
+      response_format: { type: "json_object" },
     };
 
-    const serializedPayload = JSON.stringify(payload);
-    const payloadBytes = new TextEncoder()
-      .encode(serializedPayload).byteLength;
-
     console.info("[AMI] Provider request size:", {
-      bytes: payloadBytes,
+      bytes: new TextEncoder().encode(JSON.stringify(payload)).byteLength,
       messageCount: messages.length,
       intent,
     });
 
-    // 6. Call the configured OpenAI-compatible provider.
+    // 7. Call the provider (with retry and fallback model).
     const controller = new AbortController();
 
     if (request.signal.aborted) {
@@ -524,80 +486,30 @@ export async function POST(request: Request) {
     }
 
     abortFromClient = () => controller.abort();
+    request.signal.addEventListener("abort", abortFromClient, { once: true });
 
-    request.signal.addEventListener(
-      "abort",
-      abortFromClient,
-      { once: true },
+    timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
+    const providerResponse = await callProvider(
+      provider,
+      payload,
+      controller.signal,
     );
 
-    timeout = setTimeout(
-      () => controller.abort(),
-      REQUEST_TIMEOUT,
-    );
-
-    let providerResponse: Response;
-
-    try {
-      providerResponse = await fetch(
-        `${provider.baseUrl}/chat/completions`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${provider.apiKey}`,
-          },
-          body: serializedPayload,
-          signal: controller.signal,
-          cache: "no-store",
-        },
-      );
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        error.name === "AbortError"
-      ) {
-        console.error(
-          "[AMI] Provider request timed out or was aborted.",
-        );
-      } else {
-        console.error(
-          "[AMI] Provider connection failed:",
-          error instanceof Error
-            ? error.message
-            : "Unknown connection error",
-        );
-      }
-
-      return jsonResponse({
-        success: true,
-        response: buildProviderFailureResponse(),
-      });
-    } finally {
-      if (abortFromClient) {
-        request.signal.removeEventListener(
-          "abort",
-          abortFromClient,
-        );
-      }
+    if (abortFromClient) {
+      request.signal.removeEventListener("abort", abortFromClient);
     }
 
-    // 7. Capture useful provider diagnostics without logging secrets.
-    if (!providerResponse.ok) {
-      const providerError = await providerResponse
-        .text()
-        .catch(() => "");
+    if (!providerResponse) {
+      // AI failed: still give whatever the database can answer.
+      const fallbackDirect = buildDirectResponse(intent, knowledge, preferredSlug);
 
-      console.error("[AMI] Provider error:", {
-        status: providerResponse.status,
-        body: providerError.slice(0, 1000),
-        requestBytes: payloadBytes,
-      });
-
-      return jsonResponse({
-        success: true,
-        response: buildProviderFailureResponse(),
-      });
+      return fallbackDirect
+        ? sendDirect(fallbackDirect)
+        : jsonResponse({
+            success: true,
+            response: buildProviderFailureResponse(),
+          });
     }
 
     // 8. Parse the provider response.
@@ -606,9 +518,7 @@ export async function POST(request: Request) {
     try {
       providerResult = await providerResponse.json();
     } catch {
-      console.error(
-        "[AMI] Provider returned invalid JSON.",
-      );
+      console.error("[AMI] Provider returned invalid JSON.");
 
       return jsonResponse({
         success: true,
@@ -624,13 +534,8 @@ export async function POST(request: Request) {
         ? providerResult.choices[0].message.content
         : null;
 
-    if (
-      typeof rawContent !== "string" ||
-      !rawContent.trim()
-    ) {
-      console.error(
-        "[AMI] Provider returned no usable message content.",
-      );
+    if (typeof rawContent !== "string" || !rawContent.trim()) {
+      console.error("[AMI] Provider returned no usable message content.");
 
       return jsonResponse({
         success: true,
@@ -641,9 +546,7 @@ export async function POST(request: Request) {
     const parsed = extractJson(rawContent);
 
     if (!isRecord(parsed)) {
-      console.error(
-        "[AMI] Provider output was not a valid JSON object.",
-      );
+      console.error("[AMI] Provider output was not a valid JSON object.");
 
       return jsonResponse({
         success: true,
@@ -651,7 +554,7 @@ export async function POST(request: Request) {
       });
     }
 
-    // 9. Normalize and secure the response before returning it.
+    // 9. Normalize and secure the response.
     const normalized = normalizeAMIResponse(parsed);
     const secured = secureAMIResponse(normalized);
 
@@ -662,9 +565,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error(
       "[AMI] Chat route failed:",
-      error instanceof Error
-        ? error.message
-        : "Unknown server error",
+      error instanceof Error ? error.message : "Unknown server error",
     );
 
     return jsonResponse({
@@ -672,8 +573,6 @@ export async function POST(request: Request) {
       response: buildProviderFailureResponse(),
     });
   } finally {
-    if (timeout) {
-      clearTimeout(timeout);
-    }
+    if (timeout) clearTimeout(timeout);
   }
 }
