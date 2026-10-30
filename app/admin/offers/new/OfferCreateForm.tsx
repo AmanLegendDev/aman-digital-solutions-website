@@ -537,11 +537,10 @@ const claimLimit =
   register={register}
   errors={errors}
   setValue={setValue}
+  watch={watch}
   discountType={discountType}
   slug={slug}
-  setSlugManuallyEdited={
-    setSlugManuallyEdited
-  }
+  setSlugManuallyEdited={setSlugManuallyEdited}
   services={services}
   heroImage={normalizeImageValue(heroImage)}
   cardImage={normalizeImageValue(cardImage)}
@@ -556,53 +555,33 @@ const claimLimit =
       ================================================= */}
 
       <OfferContentSection
-        register={register}
-        errors={errors}
-        setValue={setValue}
-
-        highlights={highlights}
-        includedFeatures={
-          includedFeatures
-        }
-
-        updateHighlight={
-          updateHighlight
-        }
-
-        appendHighlight={
-          appendHighlight
-        }
-
-        removeHighlight={
-          removeHighlight
-        }
-
-        updateFeature={
-          updateFeature
-        }
-
-        appendFeature={
-          appendFeature
-        }
-
-        removeFeature={
-          removeFeature
-        }
-      />
+  register={register}
+  errors={errors}
+  setValue={setValue}
+  watch={watch}
+  highlights={highlights}
+  includedFeatures={includedFeatures}
+  updateHighlight={updateHighlight}
+  appendHighlight={appendHighlight}
+  removeHighlight={removeHighlight}
+  updateFeature={updateFeature}
+  appendFeature={appendFeature}
+  removeFeature={removeFeature}
+/>
 
       {/* =================================================
           SECTION 03
       ================================================= */}
 
    <OfferPublishingSection
-  register={register}
-  errors={errors}
-  setValue={setValue}
-  published={published}
-  isClaimLimitEnabled={isClaimLimitEnabled}
-  claimedCount={claimedCount}
-  claimLimit={claimLimit}
-/>
+        register={register}
+        errors={errors}
+        setValue={setValue}
+        published={published}
+        isClaimLimitEnabled={isClaimLimitEnabled}
+        claimedCount={claimedCount}
+        claimLimit={claimLimit}
+        watch={watch}/>
 
       {/* =================================================
           ACTIONS

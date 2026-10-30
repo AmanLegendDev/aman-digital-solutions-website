@@ -1,26 +1,58 @@
+
 /* =========================================================
-   TIPTAP EDITOR
-   Aman Digital Solutions — Blog CMS
+   AMAN DIGITAL SOLUTIONS
+   PREMIUM BLOG EDITOR — DARK EDITORIAL THEME
+========================================================= */
+
+:root {
+  --ads-editor-bg: #0b0b0b;
+  --ads-editor-surface: #111111;
+  --ads-editor-border: rgba(255, 255, 255, 0.09);
+  --ads-editor-text: #e8e8e8;
+  --ads-editor-muted: #a1a1aa;
+  --ads-editor-heading: #fafafa;
+  --ads-editor-accent: #ffc400;
+  --ads-editor-link: #ffd34d;
+  --ads-editor-code: #151515;
+}
+
+/* =========================================================
+   EDITOR CANVAS
 ========================================================= */
 
 .ProseMirror {
+  box-sizing: border-box;
   min-height: 520px;
-
-  padding: 28px;
-
+  width: 100%;
+  padding: clamp(22px, 4vw, 44px);
   outline: none;
-
-  color: #0f172a;
-
-  background: #ffffff;
-
-  font-size: 17px;
-
+  background: var(--ads-editor-bg);
+  color: var(--ads-editor-text);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 400;
   line-height: 1.85;
-
-  word-break: break-word;
-
   overflow-wrap: anywhere;
+  word-break: normal;
+  caret-color: var(--ads-editor-accent);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.ProseMirror:focus {
+  outline: none;
+}
+
+.ProseMirror:focus-visible {
+  outline: none;
+}
+
+.ProseMirror > :first-child {
+  margin-top: 0;
+}
+
+.ProseMirror > :last-child {
+  margin-bottom: 0;
 }
 
 /* =========================================================
@@ -29,24 +61,21 @@
 
 .ProseMirror p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
-
-  color: #94a3b8;
-
   float: left;
-
   height: 0;
-
+  color: #737373;
+  font-size: 16px;
+  font-weight: 400;
   pointer-events: none;
-
-  font-size: 17px;
 }
 
 /* =========================================================
-   SELECTION
+   TEXT SELECTION
 ========================================================= */
 
 .ProseMirror ::selection {
-  background: #fde68a;
+  color: #ffffff;
+  background: rgba(255, 196, 0, 0.35);
 }
 
 /* =========================================================
@@ -54,7 +83,14 @@
 ========================================================= */
 
 .ProseMirror p {
-  margin: 0.9rem 0;
+  margin: 0 0 1.15rem;
+  color: var(--ads-editor-text);
+  font-size: 1rem;
+  line-height: 1.9;
+}
+
+.ProseMirror p:last-child {
+  margin-bottom: 0;
 }
 
 /* =========================================================
@@ -67,81 +103,71 @@
 .ProseMirror h4,
 .ProseMirror h5,
 .ProseMirror h6 {
-  color: #0f172a;
-
-  line-height: 1.2;
-
-  font-weight: 700;
-
-  letter-spacing: -0.025em;
+  position: relative;
+  color: var(--ads-editor-heading);
+  font-weight: 750;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
 }
 
 .ProseMirror h1 {
-  margin-top: 2.25rem;
-
-  margin-bottom: 1.1rem;
-
-  font-size: clamp(
-    32px,
-    5vw,
-    44px
-  );
+  margin: 2.6rem 0 1.25rem;
+  font-size: clamp(2rem, 4.5vw, 2.8rem);
+  letter-spacing: -0.045em;
 }
 
 .ProseMirror h2 {
-  margin-top: 2rem;
+  margin: 2.5rem 0 1rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  font-size: clamp(1.65rem, 3.6vw, 2.15rem);
+  letter-spacing: -0.04em;
+}
 
-  margin-bottom: 0.95rem;
-
-  font-size: clamp(
-    27px,
-    4vw,
-    36px
-  );
+.ProseMirror h2::after {
+  display: block;
+  width: 42px;
+  height: 3px;
+  margin-top: 0.85rem;
+  border-radius: 999px;
+  background: var(--ads-editor-accent);
+  content: "";
 }
 
 .ProseMirror h3 {
-  margin-top: 1.7rem;
-
-  margin-bottom: 0.8rem;
-
-  font-size: clamp(
-    23px,
-    3vw,
-    29px
-  );
+  margin: 2rem 0 0.8rem;
+  font-size: clamp(1.3rem, 2.8vw, 1.65rem);
+  letter-spacing: -0.025em;
 }
 
 .ProseMirror h4 {
-  margin-top: 1.4rem;
-
-  margin-bottom: 0.65rem;
-
-  font-size: 22px;
+  margin: 1.6rem 0 0.65rem;
+  font-size: 1.2rem;
+  letter-spacing: -0.015em;
 }
 
 .ProseMirror h5 {
-  margin-top: 1.2rem;
-
-  margin-bottom: 0.6rem;
-
-  font-size: 19px;
+  margin: 1.4rem 0 0.6rem;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
 }
 
 .ProseMirror h6 {
-  margin-top: 1rem;
-
-  margin-bottom: 0.5rem;
-
-  font-size: 17px;
+  margin: 1.2rem 0 0.5rem;
+  color: #d4d4d4;
+  font-size: 1rem;
+  letter-spacing: 0;
 }
 
 /* =========================================================
-   STRONG / EMPHASIS
+   INLINE FORMATTING
 ========================================================= */
 
 .ProseMirror strong {
-  font-weight: 700;
+  color: #ffffff;
+  font-weight: 750;
 }
 
 .ProseMirror em {
@@ -149,9 +175,13 @@
 }
 
 .ProseMirror u {
+  text-decoration-color: var(--ads-editor-accent);
   text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
 
-  text-underline-offset: 3px;
+.ProseMirror s {
+  text-decoration-color: #a3a3a3;
 }
 
 /* =========================================================
@@ -159,53 +189,44 @@
 ========================================================= */
 
 .ProseMirror a {
-  color: #b77900;
-
+  color: var(--ads-editor-link);
   font-weight: 600;
-
   text-decoration: underline;
-
-  text-decoration-color: rgba(
-    183,
-    121,
-    0,
-    0.35
-  );
-
-  text-underline-offset: 3px;
-
+  text-decoration-color: rgba(255, 196, 0, 0.4);
+  text-underline-offset: 4px;
+  cursor: text;
   transition:
-    color 150ms ease,
-    text-decoration-color 150ms ease;
+    color 160ms ease,
+    text-decoration-color 160ms ease;
 }
 
 .ProseMirror a:hover {
-  color: #8a5b00;
-
+  color: #ffe58a;
   text-decoration-color: currentColor;
 }
 
 /* =========================================================
-   HIGHLIGHT
+   TEXT HIGHLIGHTS
 ========================================================= */
 
 .ProseMirror mark {
+  padding: 0.08em 0.3em;
   border-radius: 4px;
-
-  padding: 1px 4px;
-
-  background: #fef08a;
+  background: rgba(255, 196, 0, 0.2);
+  color: #ffe58a;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 /* =========================================================
-   BULLET / ORDERED LIST
+   BULLET AND NUMBERED LISTS
 ========================================================= */
 
 .ProseMirror ul,
 .ProseMirror ol {
-  margin: 1.1rem 0;
-
-  padding-left: 1.75rem;
+  margin: 1.3rem 0 1.5rem;
+  padding-left: 1.7rem;
+  color: var(--ads-editor-text);
 }
 
 .ProseMirror ul {
@@ -217,13 +238,18 @@
 }
 
 .ProseMirror li {
-  margin: 0.4rem 0;
+  margin: 0.45rem 0;
+  padding-left: 0.25rem;
+  line-height: 1.8;
+}
 
-  padding-left: 0.2rem;
+.ProseMirror li::marker {
+  color: var(--ads-editor-accent);
+  font-weight: 700;
 }
 
 .ProseMirror li > p {
-  margin: 0.25rem 0;
+  margin: 0.2rem 0;
 }
 
 .ProseMirror ul ul {
@@ -234,84 +260,78 @@
   list-style-type: square;
 }
 
+.ProseMirror ol ol {
+  list-style-type: lower-alpha;
+}
+
 /* =========================================================
    TASK LIST
 ========================================================= */
 
 .ProseMirror ul[data-type="taskList"] {
-  padding-left: 0;
-
-  margin: 1.1rem 0;
-
+  margin: 1.3rem 0;
+  padding: 0;
   list-style: none;
 }
 
-.ProseMirror
-  ul[data-type="taskList"]
-  li {
+.ProseMirror ul[data-type="taskList"] > li {
   display: flex;
-
   align-items: flex-start;
-
-  gap: 10px;
-
-  margin: 0.55rem 0;
-
-  padding: 0;
+  gap: 0.7rem;
+  margin: 0.65rem 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--ads-editor-border);
+  border-radius: 10px;
+  background: var(--ads-editor-surface);
 }
 
-.ProseMirror
-  ul[data-type="taskList"]
-  li
-  > label {
+.ProseMirror ul[data-type="taskList"] > li > label {
   flex: 0 0 auto;
-
-  margin-top: 5px;
-
+  margin-top: 0.35rem;
   user-select: none;
 }
 
-.ProseMirror
-  ul[data-type="taskList"]
-  li
-  > div {
+.ProseMirror ul[data-type="taskList"] > li > div {
   flex: 1;
+  min-width: 0;
 }
 
-.ProseMirror
-  ul[data-type="taskList"]
-  input[type="checkbox"] {
+.ProseMirror ul[data-type="taskList"] input[type="checkbox"] {
   width: 16px;
-
   height: 16px;
-
+  accent-color: var(--ads-editor-accent);
   cursor: pointer;
-
-  accent-color: #fbbf24;
 }
 
 /* =========================================================
-   BLOCKQUOTE
+   BLOCKQUOTES
 ========================================================= */
 
 .ProseMirror blockquote {
-  margin: 1.75rem 0;
-
-  padding: 18px 22px;
-
-  border-left: 4px solid #f59e0b;
-
+  position: relative;
+  margin: 1.8rem 0;
+  padding: 1.3rem 1.5rem;
+  border: 1px solid rgba(255, 196, 0, 0.15);
+  border-left: 4px solid var(--ads-editor-accent);
   border-radius: 0 14px 14px 0;
-
-  background: #fffbeb;
-
-  color: #475569;
-
-  font-style: italic;
+  background:
+    linear-gradient(
+      110deg,
+      rgba(255, 196, 0, 0.075),
+      rgba(255, 196, 0, 0.015)
+    );
+  color: #dedede;
 }
 
 .ProseMirror blockquote p {
-  margin: 0;
+  margin: 0.35rem 0;
+  color: inherit;
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.ProseMirror blockquote p:last-child {
+  margin-bottom: 0;
 }
 
 /* =========================================================
@@ -320,27 +340,26 @@
 
 .ProseMirror hr {
   height: 1px;
-
-  margin: 2.5rem 0;
-
+  margin: 2.6rem 0;
   border: 0;
-
-  background: #e2e8f0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 196, 0, 0.7),
+    rgba(255, 255, 255, 0.12) 35%,
+    transparent
+  );
 }
 
 /* =========================================================
    INLINE CODE
 ========================================================= */
 
-.ProseMirror code {
+.ProseMirror :not(pre) > code {
+  padding: 0.2rem 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 6px;
-
-  background: #f1f5f9;
-
-  color: #b45309;
-
-  padding: 2px 6px;
-
+  background: #1b1b1b;
+  color: #ffd86b;
   font-family:
     ui-monospace,
     SFMono-Regular,
@@ -348,57 +367,49 @@
     Monaco,
     Consolas,
     monospace;
-
-  font-size: 0.9em;
+  font-size: 0.88em;
+  overflow-wrap: anywhere;
 }
 
 /* =========================================================
-   CODE BLOCK
+   CODE BLOCKS
 ========================================================= */
 
 .ProseMirror pre {
-  margin: 1.75rem 0;
-
-  padding: 20px;
-
+  margin: 1.7rem 0;
+  padding: 1.25rem 1.4rem;
   overflow-x: auto;
-
-  border-radius: 16px;
-
-  background: #0f172a;
-
-  color: #e2e8f0;
-
-  box-shadow:
-    0 12px 30px
-    rgba(15, 23, 42, 0.12);
-
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 14px;
+  background: #07090d;
+  color: #e5e7eb;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
   -webkit-overflow-scrolling: touch;
 }
 
 .ProseMirror pre code {
   display: block;
-
   padding: 0;
-
   background: transparent;
-
   color: inherit;
-
-  font-size: 14px;
-
-  line-height: 1.7;
-
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
+  font-size: 0.875rem;
+  line-height: 1.8;
   white-space: pre;
+  overflow-wrap: normal;
 }
 
-/* =========================================================
-   CODE SYNTAX
-========================================================= */
+/* Optional syntax-highlighting class support */
 
 .ProseMirror pre .hljs-comment,
 .ProseMirror pre .hljs-quote {
-  color: #94a3b8;
+  color: #9ca3af;
 }
 
 .ProseMirror pre .hljs-keyword,
@@ -427,271 +438,360 @@
 
 .ProseMirror img {
   display: block;
-
   max-width: 100%;
-
   height: auto;
-
-  margin: 2rem auto;
-
-  border-radius: 18px;
-
-  box-shadow:
-    0 18px 40px
-    rgba(15, 23, 42, 0.12);
-
+  margin: 1.8rem auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  background: #151515;
   object-fit: contain;
+  transition:
+    outline-color 160ms ease,
+    border-color 160ms ease;
 }
 
 .ProseMirror img.ProseMirror-selectednode {
-  outline: 3px solid
-    rgba(245, 158, 11, 0.45);
-
+  outline: 2px solid var(--ads-editor-accent);
   outline-offset: 4px;
 }
 
 /* =========================================================
-   YOUTUBE / EMBEDS
+   IMAGE AND MEDIA NODE SELECTION
+========================================================= */
+
+.ProseMirror .ProseMirror-selectednode {
+  border-radius: 10px;
+}
+
+/* =========================================================
+   YOUTUBE / VIDEO EMBEDS
 ========================================================= */
 
 .ProseMirror iframe {
   display: block;
-
   width: 100%;
-
   max-width: 100%;
-
   aspect-ratio: 16 / 9;
+  margin: 1.8rem auto;
+  border: 1px solid var(--ads-editor-border);
+  border-radius: 14px;
+  background: #050505;
+}
 
-  margin: 2rem auto;
-
-  border: 0;
-
-  border-radius: 18px;
-
-  background: #0f172a;
-
-  box-shadow:
-    0 18px 40px
-    rgba(15, 23, 42, 0.12);
+.ProseMirror video {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 1.8rem auto;
+  border-radius: 14px;
+  background: #050505;
 }
 
 /* =========================================================
-   TABLE
+   TABLES — works with Tiptap table extensions
 ========================================================= */
 
-.ProseMirror
-  .tableWrapper {
+.ProseMirror .tableWrapper {
+  width: 100%;
+  max-width: 100%;
+  margin: 1.8rem 0;
   overflow-x: auto;
-
-  margin: 1.75rem 0;
-
-  border-radius: 14px;
-
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: #101010;
   -webkit-overflow-scrolling: touch;
 }
 
 .ProseMirror table {
   width: 100%;
-
-  min-width: 560px;
-
-  border-collapse: collapse;
-
-  table-layout: fixed;
-
-  overflow: hidden;
-
-  border: 1px solid #e2e8f0;
-
-  border-radius: 14px;
+  min-width: 520px;
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: auto;
+  color: var(--ads-editor-text);
+  font-size: 0.94rem;
 }
 
 .ProseMirror th,
 .ProseMirror td {
-  min-width: 100px;
-
-  padding: 12px 14px;
-
-  border: 1px solid #e2e8f0;
-
+  position: relative;
+  min-width: 110px;
+  padding: 0.9rem 1rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   text-align: left;
-
   vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.ProseMirror tr > :last-child {
+  border-right: 0;
+}
+
+.ProseMirror tr:last-child > td {
+  border-bottom: 0;
 }
 
 .ProseMirror th {
-  background: #f8fafc;
-
-  color: #0f172a;
-
-  font-weight: 700;
+  background: #1c1a12;
+  color: #ffe18a;
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0.035em;
 }
 
 .ProseMirror td {
-  background: #ffffff;
-
-  color: #334155;
+  background: #101010;
+  color: #dedede;
 }
 
-.ProseMirror
-  .selectedCell:after {
-  position: absolute;
+.ProseMirror tr:nth-child(even) td {
+  background: #141414;
+}
 
+.ProseMirror th p,
+.ProseMirror td p {
+  margin: 0.15rem 0;
+  font-size: inherit;
+  line-height: 1.65;
+}
+
+.ProseMirror .selectedCell {
+  position: relative;
+  background: rgba(255, 196, 0, 0.12);
+}
+
+.ProseMirror .selectedCell::after {
+  position: absolute;
   z-index: 2;
-
   inset: 0;
-
   pointer-events: none;
-
+  border: 1px solid rgba(255, 196, 0, 0.65);
+  background: rgba(255, 196, 0, 0.07);
   content: "";
-
-  background: rgba(
-    250,
-    204,
-    21,
-    0.14
-  );
 }
 
-/* =========================================================
-   TABLE CELL RESIZE HANDLE
-========================================================= */
-
-.ProseMirror
-  .column-resize-handle {
+.ProseMirror .column-resize-handle {
   position: absolute;
-
   top: 0;
-
   right: -2px;
-
   bottom: -2px;
-
   width: 4px;
-
   pointer-events: none;
+  background: var(--ads-editor-accent);
+}
 
-  background: #f59e0b;
+.ProseMirror.resize-cursor {
+  cursor: col-resize;
 }
 
 /* =========================================================
    GAP CURSOR
 ========================================================= */
 
-.ProseMirror
-  .ProseMirror-gapcursor {
+.ProseMirror .ProseMirror-gapcursor {
   position: relative;
-
   display: block;
-
   height: 0;
-
   pointer-events: none;
 }
 
-.ProseMirror
-  .ProseMirror-gapcursor::after {
+.ProseMirror .ProseMirror-gapcursor::after {
   display: block;
-
   height: 1px;
-
+  background: var(--ads-editor-accent);
   content: "";
-
-  background: #0f172a;
 }
 
 /* =========================================================
-   FOCUS
+   ACCESSIBILITY AND FOCUS
 ========================================================= */
 
-.ProseMirror:focus {
-  outline: none;
+.ProseMirror [contenteditable="false"] {
+  cursor: default;
+}
+
+.ProseMirror:focus-visible a {
+  outline-offset: 3px;
 }
 
 /* =========================================================
-   MOBILE
+   RESPONSIVE EDITOR
 ========================================================= */
 
 @media (max-width: 640px) {
   .ProseMirror {
     min-height: 460px;
-
-    padding: 20px 18px;
-
-    font-size: 16px;
-
-    line-height: 1.8;
+    padding: 22px 18px;
+    font-size: 15.5px;
+    line-height: 1.85;
   }
 
   .ProseMirror h1 {
-    margin-top: 1.7rem;
+    margin-top: 1.9rem;
+    font-size: 2rem;
   }
 
   .ProseMirror h2 {
-    margin-top: 1.5rem;
+    margin-top: 2rem;
+    font-size: 1.65rem;
   }
 
   .ProseMirror h3 {
-    margin-top: 1.3rem;
+    margin-top: 1.6rem;
+    font-size: 1.3rem;
   }
 
   .ProseMirror blockquote {
-    padding: 15px 17px;
-
     margin: 1.4rem 0;
+    padding: 1rem 1.1rem;
   }
 
   .ProseMirror pre {
-    margin-left: -4px;
-
-    margin-right: -4px;
-
-    padding: 16px;
-
-    border-radius: 12px;
+    margin: 1.4rem 0;
+    padding: 1rem;
+    border-radius: 11px;
   }
 
-  .ProseMirror img {
-    margin: 1.5rem auto;
-
-    border-radius: 14px;
+  .ProseMirror pre code {
+    font-size: 0.8rem;
   }
 
-  .ProseMirror iframe {
-    margin: 1.5rem auto;
-
-    border-radius: 14px;
+  .ProseMirror img,
+  .ProseMirror iframe,
+  .ProseMirror video {
+    margin: 1.4rem auto;
+    border-radius: 11px;
   }
 
-  .ProseMirror
-    .tableWrapper {
-    margin-left: -2px;
+  .ProseMirror .tableWrapper {
+    margin: 1.4rem 0;
+    border-radius: 10px;
+  }
 
-    margin-right: -2px;
+  .ProseMirror th,
+  .ProseMirror td {
+    padding: 0.75rem;
   }
 }
 
 /* =========================================================
-   SCROLLBAR
+   REDUCED MOTION
 ========================================================= */
 
-.ProseMirror::-webkit-scrollbar {
-  width: 8px;
-
-  height: 8px;
+@media (prefers-reduced-motion: reduce) {
+  .ProseMirror *,
+  .ProseMirror *::before,
+  .ProseMirror *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }
 
-.ProseMirror::-webkit-scrollbar-track {
-  background: transparent;
+/* =========================================================
+   FINAL POLISH — TEXT COLOURS, TABLES AND EDITOR SELECTION
+   Appended to the existing premium editor stylesheet.
+========================================================= */
+
+/* Inline colour marks created by Tiptap TextStyle + Color. */
+.ProseMirror span[style*="color"] {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
-.ProseMirror::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-
-  border-radius: 999px;
+/* Keep coloured text legible inside emphasized text too. */
+.ProseMirror strong span[style*="color"],
+.ProseMirror em span[style*="color"],
+.ProseMirror u span[style*="color"] {
+  color: inherit;
 }
 
-.ProseMirror::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+/* Table editing surface and responsive scrolling. */
+.ProseMirror .tableWrapper {
+  position: relative;
+  isolation: isolate;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 196, 0, 0.45) rgba(255, 255, 255, 0.04);
 }
+
+.ProseMirror table {
+  border: 0;
+  overflow: hidden;
+}
+
+.ProseMirror th {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.ProseMirror th:first-child {
+  border-top-left-radius: 2px;
+}
+
+.ProseMirror th:last-child {
+  border-top-right-radius: 2px;
+}
+
+.ProseMirror td:focus-within,
+.ProseMirror th:focus-within {
+  outline: 1px solid rgba(255, 196, 0, 0.55);
+  outline-offset: -1px;
+}
+
+.ProseMirror .selectedCell {
+  background: rgba(255, 196, 0, 0.12) !important;
+}
+
+.ProseMirror .selectedCell::after {
+  border: 1px solid rgba(255, 196, 0, 0.75);
+}
+
+/* Resizing affordance remains visible while dragging table columns. */
+.ProseMirror.resize-cursor,
+.ProseMirror .column-resize-handle {
+  cursor: col-resize;
+}
+
+.ProseMirror .column-resize-handle {
+  z-index: 5;
+  width: 3px;
+  background: #ffc400;
+}
+
+/* Avoid the editor's table/image/media overflowing narrow screens. */
+.ads-tiptap-editor-content,
+.ads-tiptap-canvas {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ads-tiptap-canvas img,
+.ads-tiptap-canvas video,
+.ads-tiptap-canvas iframe {
+  max-width: 100%;
+}
+
+/* Accessible keyboard focus without adding noisy default outlines. */
+.ProseMirror a:focus-visible,
+.ProseMirror img:focus-visible,
+.ProseMirror iframe:focus-visible {
+  outline: 2px solid rgba(255, 196, 0, 0.85);
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  .ProseMirror table {
+    min-width: 480px;
+    font-size: 0.875rem;
+  }
+
+  .ProseMirror th,
+  .ProseMirror td {
+    min-width: 100px;
+    overflow-wrap: anywhere;
+  }
+}
+

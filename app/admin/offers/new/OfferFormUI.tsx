@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { ReactNode } from "react";
@@ -5,9 +6,13 @@ import type {
   FieldErrors,
   UseFormRegister,
   UseFormSetValue,
+  UseFormWatch,
 } from "react-hook-form";
 
-import type { FormValues, ImageValue } from "./OfferForm.types";
+import type {
+  FormValues,
+  ImageValue,
+} from "./OfferForm.types";
 
 export const inputClass =
   "w-full rounded-xl border border-[#292929] bg-[#0D0D0D] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-[#FFC400]/60 focus:ring-2 focus:ring-[#FFC400]/10";
@@ -102,4 +107,5 @@ export type CommonSectionProps = {
   register: UseFormRegister<FormValues>;
   errors: FieldErrors<FormValues>;
   setValue: UseFormSetValue<FormValues>;
+  watch: UseFormWatch<FormValues>;
 };

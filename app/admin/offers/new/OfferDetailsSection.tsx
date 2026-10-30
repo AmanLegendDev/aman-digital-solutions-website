@@ -1,6 +1,10 @@
+
 "use client";
 
+import { useState } from "react";
+
 import CloudinaryImageUploader from "@/components/admin/media/CloudinaryImageUploader";
+import Editor from "@/components/editor/Editor";
 
 import {
   FieldError,
@@ -67,6 +71,7 @@ export default function OfferDetailsSection(
   const {
     register,
     errors,
+    setValue,
     discountType,
     slug,
     setSlugManuallyEdited,
@@ -80,6 +85,18 @@ export default function OfferDetailsSection(
     updateCardImage,
     updateOgImage,
   } = props;
+
+  // Local editor state, synchronized with React Hook Form.
+  const [description, setDescription] = useState("");
+
+  const handleDescriptionChange = (html: string) => {
+    setDescription(html);
+
+    setValue("description", html, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
 
   return (
     <Section
@@ -185,34 +202,42 @@ export default function OfferDetailsSection(
               />
 
               <FieldError
-                message={
-                  errors.shortDescription?.message
-                }
+                message={errors.shortDescription?.message}
               />
             </div>
 
-            {/* DESCRIPTION */}
+            {/* FULL DESCRIPTION — TIPTAP */}
 
             <div>
-              <label className={labelClass}>
-                Full description *
-              </label>
+              <div className="mb-3">
+                <label className={labelClass}>
+                  Full description *
+                </label>
 
-              <textarea
-                {...register("description")}
-                rows={10}
-                placeholder="Explain the offer, who it is for, what is included and why it matters."
-                className={textareaClass}
-              />
+                <p className="mt-1 text-xs leading-5 text-white/35">
+                  Create a detailed offer description with headings,
+                  formatting, links, images, lists and structured content.
+                </p>
+              </div>
+
+              <div className="overflow-hidden rounded-2xl border border-[#292929] bg-[#0B0B0B]">
+                <Editor
+                  value={description}
+                  onChange={handleDescriptionChange}
+                />
+              </div>
 
               <FieldError
-                message={
-                  errors.description?.message
-                }
+                message={errors.description?.message}
               />
+
+              <p className="mt-2 text-xs text-white/30">
+                Use clear headings and concise paragraphs to explain
+                the offer and its value.
+              </p>
             </div>
 
-            {/* TYPES */}
+            {/* OFFER TYPE & DISCOUNT TYPE */}
 
             <div className="grid gap-5 md:grid-cols-2">
 
@@ -314,9 +339,7 @@ export default function OfferDetailsSection(
                 />
 
                 <FieldError
-                  message={
-                    errors.discountValue?.message
-                  }
+                  message={errors.discountValue?.message}
                 />
               </div>
             )}
@@ -335,9 +358,7 @@ export default function OfferDetailsSection(
               />
 
               <FieldError
-                message={
-                  errors.discountLabel?.message
-                }
+                message={errors.discountLabel?.message}
               />
             </div>
 
@@ -358,9 +379,7 @@ export default function OfferDetailsSection(
               />
 
               <FieldError
-                message={
-                  errors.originalPrice?.message
-                }
+                message={errors.originalPrice?.message}
               />
             </div>
 
@@ -381,9 +400,7 @@ export default function OfferDetailsSection(
               />
 
               <FieldError
-                message={
-                  errors.offerPrice?.message
-                }
+                message={errors.offerPrice?.message}
               />
             </div>
 
@@ -401,15 +418,11 @@ export default function OfferDetailsSection(
               />
 
               <FieldError
-                message={
-                  errors.couponCode?.message
-                }
+                message={errors.couponCode?.message}
               />
             </div>
 
-            {/* =================================================
-                RELATED SERVICE
-            ================================================= */}
+            {/* RELATED SERVICE */}
 
             <div className="md:col-span-2">
               <label className={labelClass}>
@@ -441,9 +454,7 @@ export default function OfferDetailsSection(
               </p>
 
               <FieldError
-                message={
-                  errors.serviceId?.message
-                }
+                message={errors.serviceId?.message}
               />
             </div>
 
@@ -488,9 +499,7 @@ export default function OfferDetailsSection(
                     alt: value,
                   });
                 }}
-                error={
-                  errors.heroImage?.alt?.message
-                }
+                error={errors.heroImage?.alt?.message}
               />
             </div>
 
@@ -514,9 +523,7 @@ export default function OfferDetailsSection(
                     alt: value,
                   });
                 }}
-                error={
-                  errors.cardImage?.alt?.message
-                }
+                error={errors.cardImage?.alt?.message}
               />
             </div>
 
@@ -540,9 +547,7 @@ export default function OfferDetailsSection(
                     alt: value,
                   });
                 }}
-                error={
-                  errors.ogImage?.alt?.message
-                }
+                error={errors.ogImage?.alt?.message}
               />
             </div>
 
