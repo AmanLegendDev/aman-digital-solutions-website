@@ -3,11 +3,55 @@ import {
   FileText,
   ShieldCheck,
 } from "lucide-react";
-import DOMPurify from "isomorphic-dompurify";
+import sanitizeHtml from "sanitize-html";
 
 type OfferDetailTermsProps = {
   terms: string;
 };
+
+const sanitizeRichContent = (html: string) =>
+  sanitizeHtml(html, {
+    allowedTags: [
+      "p",
+      "br",
+      "strong",
+      "b",
+      "em",
+      "i",
+      "u",
+      "s",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "ul",
+      "ol",
+      "li",
+      "blockquote",
+      "hr",
+      "a",
+      "img",
+      "table",
+      "thead",
+      "tbody",
+      "tr",
+      "th",
+      "td",
+      "code",
+    ],
+    allowedAttributes: {
+      a: ["href", "target", "rel"],
+      img: ["src", "alt", "title", "width", "height"],
+      th: ["colspan", "rowspan"],
+      td: ["colspan", "rowspan"],
+    },
+    allowedSchemes: ["http", "https", "mailto"],
+    transformTags: {
+      a: sanitizeHtml.simpleTransform("a", {
+        rel: "noopener noreferrer",
+      }),
+    },
+  });
 
 export default function OfferDetailTerms({
   terms,
@@ -16,9 +60,7 @@ export default function OfferDetailTerms({
     return null;
   }
 
-  const safeTerms = DOMPurify.sanitize(terms, {
-    USE_PROFILES: { html: true },
-  });
+  const safeTerms = sanitizeRichContent(terms);
 
   if (!safeTerms.trim()) {
     return null;

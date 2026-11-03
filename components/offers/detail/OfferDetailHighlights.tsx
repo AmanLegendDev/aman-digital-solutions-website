@@ -1,11 +1,54 @@
 
 import { Check, Sparkles } from "lucide-react";
-import DOMPurify from "isomorphic-dompurify";
+import sanitizeHtml from "sanitize-html";
 
 type OfferDetailHighlightsProps = {
   highlights: string[];
   description: string;
 };
+
+const sanitizeRichContent = (html: string) =>
+  sanitizeHtml(html, {
+    allowedTags: [
+      "p",
+      "br",
+      "strong",
+      "b",
+      "em",
+      "i",
+      "u",
+      "s",
+      "h2",
+      "h3",
+      "h4",
+      "ul",
+      "ol",
+      "li",
+      "blockquote",
+      "hr",
+      "a",
+      "img",
+      "table",
+      "thead",
+      "tbody",
+      "tr",
+      "th",
+      "td",
+      "code",
+    ],
+    allowedAttributes: {
+      a: ["href", "target", "rel"],
+      img: ["src", "alt", "title", "width", "height"],
+      th: ["colspan", "rowspan"],
+      td: ["colspan", "rowspan"],
+    },
+    allowedSchemes: ["http", "https", "mailto"],
+    transformTags: {
+      a: sanitizeHtml.simpleTransform("a", {
+        rel: "noopener noreferrer",
+      }),
+    },
+  });
 
 export default function OfferDetailHighlights({
   highlights,
@@ -15,9 +58,7 @@ export default function OfferDetailHighlights({
     (item) => item.trim().length > 0,
   );
 
-  const safeDescription = DOMPurify.sanitize(description || "", {
-    USE_PROFILES: { html: true },
-  });
+  const safeDescription = sanitizeRichContent(description || "");
 
   return (
     <section
