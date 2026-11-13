@@ -1014,3 +1014,64 @@ body {
     border-radius: 14px;
   }
 }
+/* =========================================================
+   FIX: BULLET & NUMBERED LISTS
+   Applies to Tiptap Editor + Published Blog
+========================================================= */
+
+/* Bullet lists */
+.ProseMirror ul:not([data-type="taskList"]),
+.blog-article-content ul:not([data-type="taskList"]) {
+  list-style-type: disc !important;
+  list-style-position: outside;
+  padding-left: 1.75rem !important;
+  margin: 1.2rem 0 !important;
+}
+
+/* Numbered lists */
+.ProseMirror ol,
+.blog-article-content ol {
+  list-style-type: decimal !important;
+  list-style-position: outside;
+  padding-left: 1.75rem !important;
+  margin: 1.2rem 0 !important;
+}
+
+/* Individual list items */
+.ProseMirror li,
+.blog-article-content li {
+  display: list-item;
+  margin: 0.45rem 0 !important;
+  padding-left: 0.25rem;
+  line-height: 1.85;
+}
+
+/* Yellow bullet / number markers */
+.ProseMirror li::marker,
+.blog-article-content li::marker {
+  color: #ffc400;
+  font-weight: 700;
+}
+
+/* Nested bullet lists */
+.ProseMirror ul ul,
+.blog-article-content ul ul {
+  list-style-type: circle !important;
+}
+
+.ProseMirror ul ul ul,
+.blog-article-content ul ul ul {
+  list-style-type: square !important;
+}
+
+/* Nested numbered lists */
+.ProseMirror ol ol,
+.blog-article-content ol ol {
+  list-style-type: lower-alpha !important;
+}
+
+/* Keep task lists without normal bullet markers */
+.ProseMirror ul[data-type="taskList"] {
+  list-style: none !important;
+  padding-left: 0 !important;
+}
