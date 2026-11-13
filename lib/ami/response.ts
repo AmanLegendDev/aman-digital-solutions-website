@@ -1,14 +1,15 @@
-
 import type {
   AMIAction,
   AMIActionType,
   AMIConversationContext,
+  AMIGalleryImage,
   AMIIntent,
   AMIResponse,
   AMIResponseBlock,
 } from "./types";
 
 import { sanitizeAMIContext } from "./context";
+import { isSafeImageUrl, isSafeLiveUrl } from "./urls";
 
 /* =========================================================
    AMI RESPONSE VALIDATION
@@ -26,6 +27,10 @@ const VALID_INTENTS = new Set<AMIIntent>([
   "START_PROJECT",
   "CONTACT",
   "ABOUT",
+  "REVIEWS",
+  "GALLERY",
+  "POLICY",
+  "BLOG",
   "GENERAL",
   "UNKNOWN",
 ]);
@@ -50,6 +55,10 @@ const VALID_BLOCKS = new Set([
   "project",
   "pricing",
   "offer",
+  "review",
+  "gallery",
+  "blog",
+  "faq",
   "quick_actions",
 ]);
 
@@ -57,61 +66,51 @@ const MAX_BLOCKS = 12;
 const MAX_ACTIONS = 8;
 const MAX_TEXT_LENGTH = 1800;
 
-function cleanText(
-  value: unknown,
-  max = 1200,
-): string {
+function cleanText(value: unknown, max = 1200): string {
   if (typeof value !== "string") return "";
 
   return value.trim().slice(0, max);
 }
 
-function cleanPrice(
-  value: unknown,
-): number | null | undefined {
+function cleanPrice(value: unknown): number | null | undefined {
   if (value === null) return null;
 
-  if (
-    typeof value !== "number" ||
-    !Number.isFinite(value) ||
-    value < 0
-  ) {
+  if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
     return undefined;
   }
 
   return value;
 }
 
-function cleanSlug(
-  value: unknown,
-): string | undefined {
+function cleanSlug(value: unknown): string | undefined {
   if (typeof value !== "string") return undefined;
 
   const slug = value.trim();
 
-  if (
-    !slug ||
-    !/^[a-z0-9]+(?:-[a-z0-9]+)*$/i.test(slug)
-  ) {
+  if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/i.test(slug)) {
     return undefined;
   }
 
   return slug.slice(0, 150);
 }
 
-function cleanIdentifier(
-  value: unknown,
-): string | undefined {
+function cleanIdentifier(value: unknown): string | undefined {
   return cleanText(value, 200) || undefined;
 }
 
-/* =========================================================
-   CONTEXT PATCH
-========================================================= */
+function cleanList(value: unknown, maxItems: number, maxLen: number): string[] | undefined {
+  if (!Array.isArray(value)) return undefined;
 
-function sanitizeContextPatch(
-  value: unknown,
-): AMIConversationContext {
+  const list = value
+    .filter((item): item is string => typeof item === "string")
+    .map((item) => item.trim().slice(0, maxLen))
+    .filter(Boolean)
+    .slice(0, maxItems);
+
+  return list.length > 0 ? list : undefined;
+}
+
+function sanitizeContextPatch(value: unknown): AMIConversationContext {
   return sanitizeAMIContext(value);
 }
 
@@ -119,14 +118,8 @@ function sanitizeContextPatch(
    ACTION VALIDATION
 ========================================================= */
 
-function sanitizeAction(
-  value: unknown,
-): AMIAction | null {
-  if (
-    !value ||
-    typeof value !== "object" ||
-    Array.isArray(value)
-  ) {
+function sanitizeAction(value: unknown): AMIAction | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
     return null;
   }
 
@@ -148,7 +141,6 @@ function sanitizeAction(
     label,
   };
 
-  // URLs are validated again by the API security layer.
   if (typeof raw.href === "string") {
     const href = cleanText(raw.href, 2048);
 
@@ -176,26 +168,22 @@ function sanitizeAction(
    BLOCK VALIDATION
 ========================================================= */
 
-function sanitizeBlock(
-  value: unknown,
-): AMIResponseBlock | null {
-  if (
-    !value ||
-    typeof value !== "object" ||
-    Array.isArray(value)
-  ) {
+function sanitizeBlock(value: unknown): AMIResponseBlock | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
     return null;
   }
 
   const raw = value as Record<string, unknown>;
   const type = raw.type;
 
-  if (
-    typeof type !== "string" ||
-    !VALID_BLOCKS.has(type)
-  ) {
+  if (typeof type !== "string" || !VALID_BLOCKS.has(type)) {
     return null;
   }
+
+  const href =
+    typeof raw.href === "string"
+      ? cleanText(raw.href, 2048) || undefined
+      : undefined;
 
   if (type === "text") {
     const text = cleanText(raw.text, MAX_TEXT_LENGTH);
@@ -208,33 +196,92 @@ function sanitizeBlock(
 
     const actions = raw.actions
       .map(sanitizeAction)
-      .filter(
-        (action): action is AMIAction => action !== null,
-      )
+      .filter((action): action is AMIAction => action !== null)
       .slice(0, 6);
 
-    // Do not render an empty quick-actions block.
-    if (actions.length === 0) return null;
+    return actions.length > 0 ? { type: "quick_actions", actions } : null;
+  }
+
+  if (type === "review") {
+    const name = cleanText(raw.name, 100);
+    const quote = cleanText(raw.quote, 600);
+
+    if (!name || !quote) return null;
+
+    const rating =
+      typeof raw.rating === "number" && raw.rating >= 1 && raw.rating <= 5
+        ? raw.rating
+        : null;
 
     return {
-      type: "quick_actions",
-      actions,
+      type: "review",
+      name,
+      quote,
+      rating,
+      role: cleanText(raw.role, 100) || undefined,
+      company: cleanText(raw.company, 100) || undefined,
+      location: cleanText(raw.location, 100) || undefined,
     };
+  }
+
+  if (type === "faq") {
+    const question = cleanText(raw.question, 300);
+    const answer = cleanText(raw.answer, 800);
+
+    return question && answer
+      ? { type: "faq", question, answer, href }
+      : null;
   }
 
   const title = cleanText(raw.title, 200);
 
   if (!title) return null;
 
-  const href =
-    typeof raw.href === "string"
-      ? cleanText(raw.href, 2048) || undefined
-      : undefined;
-
   const description =
     typeof raw.description === "string"
       ? cleanText(raw.description, 1000) || undefined
       : undefined;
+
+  if (type === "gallery") {
+    const images: AMIGalleryImage[] = (Array.isArray(raw.images) ? raw.images : [])
+      .map((item) => {
+        const rec = item as Record<string, unknown>;
+
+        return {
+          url: typeof rec?.url === "string" ? rec.url : "",
+          title: cleanText(rec?.title, 120) || undefined,
+        };
+      })
+      .filter((item) => isSafeImageUrl(item.url))
+      .slice(0, 8);
+
+    if (images.length === 0) return null;
+
+    return {
+      type: "gallery",
+      title,
+      projectSlug: cleanSlug(raw.projectSlug),
+      images,
+      href,
+    };
+  }
+
+  if (type === "blog") {
+    const readingTime =
+      typeof raw.readingTime === "number" && raw.readingTime > 0
+        ? Math.round(raw.readingTime)
+        : undefined;
+
+    return {
+      type: "blog",
+      title,
+      excerpt: cleanText(raw.excerpt, 400) || undefined,
+      category: cleanText(raw.category, 80) || undefined,
+      readingTime,
+      imageUrl: isSafeImageUrl(raw.imageUrl) ? raw.imageUrl : undefined,
+      href,
+    };
+  }
 
   if (type === "service") {
     const startingPrice = cleanPrice(raw.startingPrice);
@@ -245,9 +292,7 @@ function sanitizeBlock(
       slug: cleanSlug(raw.slug),
       title,
       description,
-      ...(startingPrice !== undefined
-        ? { startingPrice }
-        : {}),
+      ...(startingPrice !== undefined ? { startingPrice } : {}),
       priceLabel: cleanText(raw.priceLabel, 150) || undefined,
       href,
     };
@@ -260,6 +305,11 @@ function sanitizeBlock(
       slug: cleanSlug(raw.slug),
       title,
       description,
+      industry: cleanText(raw.industry, 100) || undefined,
+      imageUrl: isSafeImageUrl(raw.imageUrl) ? raw.imageUrl : undefined,
+      results: cleanList(raw.results, 4, 120),
+      technologies: cleanList(raw.technologies, 6, 40),
+      liveUrl: isSafeLiveUrl(raw.liveUrl) ? raw.liveUrl : undefined,
       href,
     };
   }
@@ -273,6 +323,7 @@ function sanitizeBlock(
       ...(price !== undefined ? { price } : {}),
       priceLabel: cleanText(raw.priceLabel, 150) || undefined,
       description,
+      features: cleanList(raw.features, 6, 120),
       href,
     };
   }
@@ -287,18 +338,11 @@ function sanitizeBlock(
       slug: cleanSlug(raw.slug),
       title,
       badge: cleanText(raw.badge, 100) || undefined,
-      shortDescription:
-        cleanText(raw.shortDescription, 1000) || undefined,
-      ...(originalPrice !== undefined
-        ? { originalPrice }
-        : {}),
-      ...(offerPrice !== undefined
-        ? { offerPrice }
-        : {}),
-      discountLabel:
-        cleanText(raw.discountLabel, 100) || undefined,
-      couponCode:
-        cleanText(raw.couponCode, 100) || undefined,
+      shortDescription: cleanText(raw.shortDescription, 1000) || undefined,
+      ...(originalPrice !== undefined ? { originalPrice } : {}),
+      ...(offerPrice !== undefined ? { offerPrice } : {}),
+      discountLabel: cleanText(raw.discountLabel, 100) || undefined,
+      couponCode: cleanText(raw.couponCode, 100) || undefined,
       href,
     };
   }
@@ -310,14 +354,8 @@ function sanitizeBlock(
    RESPONSE NORMALIZATION
 ========================================================= */
 
-export function normalizeAMIResponse(
-  input: unknown,
-): AMIResponse {
-  if (
-    !input ||
-    typeof input !== "object" ||
-    Array.isArray(input)
-  ) {
+export function normalizeAMIResponse(input: unknown): AMIResponse {
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
     return getFallbackResponse();
   }
 
@@ -336,18 +374,14 @@ export function normalizeAMIResponse(
   const blocks = Array.isArray(raw.blocks)
     ? raw.blocks
         .map(sanitizeBlock)
-        .filter(
-          (block): block is AMIResponseBlock => block !== null,
-        )
+        .filter((block): block is AMIResponseBlock => block !== null)
         .slice(0, MAX_BLOCKS)
     : [];
 
   const actions = Array.isArray(raw.actions)
     ? raw.actions
         .map(sanitizeAction)
-        .filter(
-          (action): action is AMIAction => action !== null,
-        )
+        .filter((action): action is AMIAction => action !== null)
         .slice(0, MAX_ACTIONS)
     : [];
 
@@ -375,33 +409,15 @@ export function getFallbackResponse(): AMIResponse {
   return {
     message:
       "I can help you explore Aman Digital Solutions services, pricing and projects. What are you looking to build?",
-
     intent: "GENERAL",
-
     blocks: [],
-
     actions: [
-      {
-        type: "VIEW_SERVICE",
-        label: "View Services",
-        href: "/services",
-      },
-      {
-        type: "VIEW_PRICING",
-        label: "View Pricing",
-        href: "/pricing",
-      },
-      {
-        type: "START_PROJECT",
-        label: "Start a Project",
-        href: "/start-a-project",
-      },
+      { type: "VIEW_SERVICE", label: "View Services", href: "/services" },
+      { type: "VIEW_PRICING", label: "View Pricing", href: "/pricing" },
+      { type: "START_PROJECT", label: "Start a Project", href: "/start-a-project" },
     ],
-
     contextPatch: {},
-
     needsInput: false,
-
     nextQuestion: null,
   };
 }

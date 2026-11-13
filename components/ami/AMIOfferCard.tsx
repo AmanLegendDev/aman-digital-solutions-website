@@ -1,38 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import {
-  ArrowRight,
-  BadgePercent,
-  Check,
-  Copy,
-  Sparkles,
-  Tag,
-} from "lucide-react";
+import { ArrowRight, BadgePercent, Copy, Sparkles, Tag } from "lucide-react";
 import type { AMIOfferBlock } from "@/lib/ami/types";
 
-type AMIOfferCardProps = {
-  block: AMIOfferBlock;
-};
+type Props = { block: AMIOfferBlock };
 
-export default function AMIOfferCard({ block }: AMIOfferCardProps) {
-  const slug =
-    typeof block.slug === "string" ? block.slug.trim() : "";
+export default function AMIOfferCard({ block }: Props) {
+  const slug = typeof block.slug === "string" ? block.slug.trim() : "";
 
-  const offerHref = slug
-    ? `/offers/${encodeURIComponent(slug)}`
-    : "/offers";
+  const offerHref = slug ? `/offers/${encodeURIComponent(slug)}` : "/offers";
 
   const claimHref = slug
     ? `/start-a-project?offer=${encodeURIComponent(slug)}`
     : "/start-a-project";
 
   const hasPrice =
-    typeof block.originalPrice === "number" ||
-    typeof block.offerPrice === "number";
+    typeof block.originalPrice === "number" || typeof block.offerPrice === "number";
 
   return (
-    <article className="group relative mt-4 overflow-hidden rounded-3xl border border-[#FFD400]/25 bg-[#0b0b0b] shadow-[0_12px_50px_rgba(255,212,0,0.06)] transition duration-300 hover:border-[#FFD400]/50">
+    <article className="group relative overflow-hidden rounded-3xl border border-[#FFD400]/25 bg-[#0b0b0b] shadow-[0_12px_50px_rgba(255,212,0,0.06)] transition duration-300 hover:border-[#FFD400]/50">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#FFD400]/[0.12] via-transparent to-transparent" />
       <div className="pointer-events-none absolute -right-12 -top-16 h-40 w-40 rounded-full bg-[#FFD400]/[0.08] blur-3xl" />
 
@@ -41,7 +28,7 @@ export default function AMIOfferCard({ block }: AMIOfferCardProps) {
           <div className="min-w-0">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#FFD400]/25 bg-[#FFD400]/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#FFD400]">
               <Sparkles size={13} />
-              Exclusive offer
+              {block.badge || "Exclusive offer"}
             </div>
 
             <h3 className="mt-4 text-lg font-bold leading-snug text-white sm:text-xl">
@@ -55,9 +42,7 @@ export default function AMIOfferCard({ block }: AMIOfferCardProps) {
         </div>
 
         {block.shortDescription && (
-          <p className="mt-3 text-sm leading-6 text-white/60">
-            {block.shortDescription}
-          </p>
+          <p className="mt-3 text-sm leading-6 text-white/60">{block.shortDescription}</p>
         )}
 
         {hasPrice && (
@@ -72,17 +57,13 @@ export default function AMIOfferCard({ block }: AMIOfferCardProps) {
                   ₹{block.offerPrice.toLocaleString("en-IN")}
                 </p>
               ) : (
-                <p className="mt-1 text-lg font-bold text-white">
-                  Contact for price
-                </p>
+                <p className="mt-1 text-lg font-bold text-white">Contact for price</p>
               )}
             </div>
 
             {typeof block.originalPrice === "number" && (
               <div className="text-right">
-                <p className="text-xs text-white/35">
-                  Original price
-                </p>
+                <p className="text-xs text-white/35">Original price</p>
                 <p className="mt-1 text-sm text-white/45 line-through">
                   ₹{block.originalPrice.toLocaleString("en-IN")}
                 </p>
@@ -101,9 +82,7 @@ export default function AMIOfferCard({ block }: AMIOfferCardProps) {
         {block.couponCode && (
           <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-dashed border-[#FFD400]/30 bg-black/30 px-3 py-3">
             <Copy size={15} className="text-[#FFD400]" />
-            <span className="text-xs text-white/50">
-              Coupon code
-            </span>
+            <span className="text-xs text-white/50">Coupon code</span>
             <span className="font-mono text-sm font-bold tracking-wider text-[#FFD400]">
               {block.couponCode}
             </span>
@@ -125,17 +104,6 @@ export default function AMIOfferCard({ block }: AMIOfferCardProps) {
           >
             Offer details
             <ArrowRight size={15} />
-          </Link>
-        </div>
-
-        <div className="mt-4 border-t border-white/[0.07] pt-3">
-          <Link
-            href="/#testimonials"
-            className="inline-flex items-center gap-2 text-xs font-medium text-white/45 transition hover:text-[#FFD400]"
-          >
-            <Check size={14} />
-            Read client reviews
-            <ArrowRight size={13} />
           </Link>
         </div>
       </div>

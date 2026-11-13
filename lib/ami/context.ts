@@ -1,4 +1,3 @@
-
 import type {
   AMIConversationContext,
   AMIConversationStage,
@@ -25,6 +24,9 @@ const VALID_INTENTS = new Set<AMIIntent>([
   "START_PROJECT",
   "CONTACT",
   "ABOUT",
+  "REVIEWS",
+  "GALLERY",
+  "POLICY",
   "GENERAL",
   "UNKNOWN",
 ]);
@@ -102,21 +104,14 @@ const LEAD_STRING_LIMITS: Record<string, number> = {
 };
 
 function readRecord(value: unknown): Record<string, unknown> {
-  if (
-    value === null ||
-    typeof value !== "object" ||
-    Array.isArray(value)
-  ) {
+  if (value === null || typeof value !== "object" || Array.isArray(value)) {
     return {};
   }
 
   return value as Record<string, unknown>;
 }
 
-function cleanString(
-  value: unknown,
-  maxLength = 500,
-): string | undefined {
+function cleanString(value: unknown, maxLength = 500): string | undefined {
   if (typeof value !== "string") return undefined;
 
   const cleaned = value.trim().slice(0, maxLength);
@@ -124,15 +119,8 @@ function cleanString(
   return cleaned || undefined;
 }
 
-function cleanNumber(
-  value: unknown,
-  min = 0,
-  max = 100,
-): number | undefined {
-  if (
-    typeof value !== "number" ||
-    !Number.isFinite(value)
-  ) {
+function cleanNumber(value: unknown, min = 0, max = 100): number | undefined {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
     return undefined;
   }
 
@@ -162,19 +150,14 @@ function cleanSlug(value: unknown): string | undefined {
 }
 
 function cleanIntent(value: unknown): AMIIntent | undefined {
-  if (
-    typeof value === "string" &&
-    VALID_INTENTS.has(value as AMIIntent)
-  ) {
+  if (typeof value === "string" && VALID_INTENTS.has(value as AMIIntent)) {
     return value as AMIIntent;
   }
 
   return undefined;
 }
 
-function cleanStage(
-  value: unknown,
-): AMIConversationStage | undefined {
+function cleanStage(value: unknown): AMIConversationStage | undefined {
   if (
     typeof value === "string" &&
     VALID_STAGES.has(value as AMIConversationStage)
@@ -222,7 +205,6 @@ function copyConsentAndScore(
     result.qualificationScore = score;
   }
 
-  // False is a valid value and must not be converted to true.
   if (typeof input.privacyConsent === "boolean") {
     result.privacyConsent = input.privacyConsent;
   }
@@ -232,9 +214,7 @@ function copyConsentAndScore(
    LEAD PROFILE SANITIZATION
 ========================================================= */
 
-function sanitizeLeadProfile(
-  value: unknown,
-): AMILeadProfile | undefined {
+function sanitizeLeadProfile(value: unknown): AMILeadProfile | undefined {
   const input = readRecord(value);
   const result: Record<string, unknown> = {};
 
@@ -251,9 +231,7 @@ function sanitizeLeadProfile(
    CONTEXT SANITIZATION
 ========================================================= */
 
-export function sanitizeAMIContext(
-  value: unknown,
-): AMIConversationContext {
+export function sanitizeAMIContext(value: unknown): AMIConversationContext {
   const input = readRecord(value);
   const result: Record<string, unknown> = {};
 
@@ -296,11 +274,7 @@ function mergeLeadProfiles(
     ...patchSafe,
   };
 
-  // Preserve collected arrays if a patch does not contain valid items.
-  if (
-    !patchSafe.requiredPages?.length &&
-    currentSafe.requiredPages?.length
-  ) {
+  if (!patchSafe.requiredPages?.length && currentSafe.requiredPages?.length) {
     merged.requiredPages = currentSafe.requiredPages;
   }
 
@@ -314,10 +288,6 @@ function mergeLeadProfiles(
   return sanitizeLeadProfile(merged);
 }
 
-/**
- * Valid incoming values update existing context.
- * Missing, empty or invalid values do not erase collected information.
- */
 export function mergeAMIContext(
   current: AMIConversationContext | null | undefined,
   patch: unknown,

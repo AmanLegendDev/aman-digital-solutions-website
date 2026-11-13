@@ -1,4 +1,3 @@
-
 /* =========================================================
    AMI — CORE TYPES
 ========================================================= */
@@ -15,6 +14,10 @@ export type AMIIntent =
   | "START_PROJECT"
   | "CONTACT"
   | "ABOUT"
+  | "REVIEWS"
+  | "GALLERY"
+  | "POLICY"
+  | "BLOG"
   | "GENERAL"
   | "UNKNOWN";
 
@@ -37,6 +40,10 @@ export type AMIResponseBlockType =
   | "project"
   | "pricing"
   | "offer"
+  | "review"
+  | "gallery"
+  | "blog"
+  | "faq"
   | "quick_actions";
 
 export type AMIMessageRole = "user" | "assistant";
@@ -48,9 +55,7 @@ export interface AMIMessage {
   createdAt?: string;
 }
 
-/* =========================================================
-   LEAD PROFILE
-========================================================= */
+/* ---------- LEAD PROFILE ---------- */
 
 export interface AMILeadProfile {
   name?: string;
@@ -81,9 +86,7 @@ export interface AMILeadProfile {
   qualificationScore?: number;
 }
 
-/* =========================================================
-   USER CONTEXT
-========================================================= */
+/* ---------- USER CONTEXT ---------- */
 
 export interface AMIUserContext {
   fullName?: string;
@@ -107,10 +110,7 @@ export interface AMIUserContext {
   budget?: string;
   budgetRange?: string;
 
-  preferredContactMethod?:
-    | "WHATSAPP"
-    | "PHONE"
-    | "EMAIL";
+  preferredContactMethod?: "WHATSAPP" | "PHONE" | "EMAIL";
 
   currentWebsite?: string;
   requiredPages?: string[];
@@ -119,9 +119,7 @@ export interface AMIUserContext {
   privacyConsent?: boolean;
 }
 
-/* =========================================================
-   CONVERSATION CONTEXT
-========================================================= */
+/* ---------- CONVERSATION CONTEXT ---------- */
 
 export type AMIConversationStage =
   | "DISCOVERY"
@@ -138,7 +136,6 @@ export interface AMIConversationContext {
   lastIntent?: AMIIntent;
   conversationStage?: AMIConversationStage;
 
-  // Backward-compatible flat fields used by existing code.
   intent?: AMIIntent | string;
   serviceSlug?: string;
   projectSlug?: string;
@@ -171,13 +168,10 @@ export interface AMIConversationContext {
 
   qualificationScore?: number;
 
-  // Keep compatibility with older context consumers.
   [key: string]: unknown;
 }
 
-/* =========================================================
-   ACTION
-========================================================= */
+/* ---------- ACTION ---------- */
 
 export interface AMIAction {
   type: AMIActionType;
@@ -194,9 +188,7 @@ export interface AMIAction {
   offerSlug?: string;
 }
 
-/* =========================================================
-   RESPONSE BLOCKS
-========================================================= */
+/* ---------- BLOCKS ---------- */
 
 export interface AMITextBlock {
   type: "text";
@@ -220,6 +212,11 @@ export interface AMIProjectBlock {
   slug?: string;
   title: string;
   description?: string;
+  industry?: string;
+  imageUrl?: string;
+  results?: string[];
+  technologies?: string[];
+  liveUrl?: string;
   href?: string;
 }
 
@@ -229,6 +226,7 @@ export interface AMIPricingBlock {
   price?: number | null;
   priceLabel?: string;
   description?: string;
+  features?: string[];
   href?: string;
 }
 
@@ -246,6 +244,46 @@ export interface AMIOfferBlock {
   href?: string;
 }
 
+export interface AMIReviewBlock {
+  type: "review";
+  name: string;
+  role?: string;
+  company?: string;
+  quote: string;
+  rating?: number | null;
+  location?: string;
+}
+
+export interface AMIGalleryImage {
+  url: string;
+  title?: string;
+}
+
+export interface AMIGalleryBlock {
+  type: "gallery";
+  title: string;
+  projectSlug?: string;
+  images: AMIGalleryImage[];
+  href?: string;
+}
+
+export interface AMIBlogBlock {
+  type: "blog";
+  title: string;
+  excerpt?: string;
+  category?: string;
+  readingTime?: number;
+  imageUrl?: string;
+  href?: string;
+}
+
+export interface AMIFaqBlock {
+  type: "faq";
+  question: string;
+  answer: string;
+  href?: string;
+}
+
 export interface AMIQuickActionsBlock {
   type: "quick_actions";
   actions: AMIAction[];
@@ -257,11 +295,13 @@ export type AMIResponseBlock =
   | AMIProjectBlock
   | AMIPricingBlock
   | AMIOfferBlock
+  | AMIReviewBlock
+  | AMIGalleryBlock
+  | AMIBlogBlock
+  | AMIFaqBlock
   | AMIQuickActionsBlock;
 
-/* =========================================================
-   RESPONSE
-========================================================= */
+/* ---------- RESPONSE ---------- */
 
 export interface AMIResponse {
   message: string;
@@ -275,9 +315,7 @@ export interface AMIResponse {
   nextQuestion?: string | null;
 }
 
-/* =========================================================
-   CHAT REQUEST / RESPONSE
-========================================================= */
+/* ---------- CHAT REQUEST / RESPONSE ---------- */
 
 export interface AMIChatRequest {
   message: string;
