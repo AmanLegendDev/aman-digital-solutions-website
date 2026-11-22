@@ -6,7 +6,7 @@ import GlobalStructuredData from "@/components/seo/GlobalStructuredData";
 import { getSiteSettings } from "@/lib/site-settings/getSiteSettings";
 import SiteAnalytics from "@/components/analytics/SiteAnalytics";
 import CookieBannerWrapper from "@/components/cookies/CookieBannerWrapper";
-import AMI from "@/components/ami/AMI";
+import AMIWrapper from "@/components/ami/AMIWrapper";
 
 /* =========================================================
    SITE CONFIG
@@ -229,7 +229,7 @@ export default async function RootLayout({
 
         {children}
 
-        <AMI />
+      <AMIWrapper />
       </body>
     </html>
   );
