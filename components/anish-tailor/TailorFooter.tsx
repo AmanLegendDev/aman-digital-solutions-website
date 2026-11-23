@@ -136,11 +136,11 @@ export default function TailorFooter() {
             © {new Date().getFullYear()} Anish Tailor. All rights reserved.
           </p>
 
-        <Link href="https://www.amandigitalsolutions.com/">
+        <a href="https://www.amandigitalsolutions.com/">
             <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-[#D8B66A]/80">
             A Little something, Made with endless Love for DAD
           </p>
-        </Link>
+        </a>
         </div>
 
       </div>
