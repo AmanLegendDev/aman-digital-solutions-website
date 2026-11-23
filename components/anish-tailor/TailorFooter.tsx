@@ -1,3 +1,4 @@
+import { Link } from "lucide-react";
 
 const contactNumbers = ["8219800388", "9816941390"];
 
@@ -117,7 +118,7 @@ export default function TailorFooter() {
 
             <div className="mt-4">
               <p className="font-serif text-xl text-[#FFF8E9]">
-                15 Years of Experience
+                15+ Years of Experience
               </p>
 
               <p className="mt-2 text-sm leading-6 text-[#FFF8E9]/70">
@@ -135,9 +136,11 @@ export default function TailorFooter() {
             © {new Date().getFullYear()} Anish Tailor. All rights reserved.
           </p>
 
-          <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-[#D8B66A]/80">
-            Made with care in Shimla
+        <Link href="https://www.amandigitalsolutions.com/">
+            <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-[#D8B66A]/80">
+            A Little something, Made with endless Love for DAD
           </p>
+        </Link>
         </div>
 
       </div>

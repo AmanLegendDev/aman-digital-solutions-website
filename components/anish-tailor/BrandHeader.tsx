@@ -29,7 +29,7 @@ export default function BrandHeader() {
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D8B66A]/50 bg-[#F8F0DE] px-4 py-2">
               <span className="h-2 w-2 rounded-full bg-[#741B2B]" />
               <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#741B2B]">
-                Trusted Tailoring Since 15 Years
+                Trusted Tailoring Since 15+ Years
               </span>
             </div>
 
@@ -74,7 +74,7 @@ export default function BrandHeader() {
                 />
               </div>
               <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[#D8B66A] bg-[#741B2B] px-5 py-2 text-xs font-semibold tracking-wide text-[#FFF8E9] shadow-lg">
-                15 YEARS OF EXPERIENCE
+                15+ YEARS OF EXPERIENCE
               </div>
             </div>
           </div>

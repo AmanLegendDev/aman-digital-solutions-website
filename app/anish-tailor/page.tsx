@@ -8,7 +8,7 @@ import TailorFooter from "@/components/anish-tailor/TailorFooter";
 export const metadata: Metadata = {
   title: "Anish Tailor | Premium Tailoring Services in Dhalli, Shimla",
   description:
-    "Explore stitching services and rates at Anish Tailor, Satguru Building, Dhalli, Shimla. 15 years of tailoring experience. Call or WhatsApp to enquire.",
+    "Explore stitching services and rates at Anish Tailor, Satguru Building, Dhalli, Shimla. 15+ years of tailoring experience. Call or WhatsApp to enquire.",
   keywords: [
     "Anish Tailor",
     "Tailor in Dhalli Shimla",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Anish Tailor | Dhalli, Shimla",
     description:
-      "Explore our stitching services and rates. Trusted tailoring experience for 15 years.",
+      "Explore our stitching services and rates. Trusted tailoring experience for 15+ years.",
     type: "website",
     images: ["/anishlogo.png"],
   },
