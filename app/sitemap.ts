@@ -165,7 +165,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...(offer.updatedAt
       ? { lastModified: new Date(offer.updatedAt) }
       : {}),
-    changeFrequency: "weekly",
+    changeFrequency: "daily",
     priority: 0.9,
   }));
 
